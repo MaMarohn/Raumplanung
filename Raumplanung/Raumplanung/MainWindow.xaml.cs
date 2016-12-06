@@ -23,6 +23,13 @@ namespace Raumplanung
         public MainWindow()
         {
             InitializeComponent();
+            ReservationContext reservationContext = new ReservationContext();
+
+            Room r = new Room();
+            r.Name = "Raum-1";
+            reservationContext.Rooms.Add(r);
+            
+            reservationContext.SaveChanges();
         }
     }
 }

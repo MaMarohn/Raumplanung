@@ -6,22 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raumplanung
+namespace Raumplanung.Entities
 {
-    class Room
+    class Reservation
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         private int _id;
-        private String _name;
+        private Room _room;
+        private Teacher _teacher;
 
         public int Id { set; get; }
-
-        public String Name
-        {
-            set { this._name = value; }
-            get { return _name; }
-        }
-
+        public Room Room { set; get; }
+        public Teacher Teacher { set; get; }
     }
 }
