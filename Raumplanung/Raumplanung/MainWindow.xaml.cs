@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Raumplanung.Database;
 
 namespace Raumplanung
 {
@@ -23,13 +24,21 @@ namespace Raumplanung
         public MainWindow()
         {
             InitializeComponent();
-            ReservationContext reservationContext = new ReservationContext();
-
-            Room r = new Room();
-            r.Name = "Raum-1";
-            reservationContext.Rooms.Add(r);
             
-            reservationContext.SaveChanges();
+
+            
+
+
+            ReservationContext db = new ReservationContext();
+            //reservationContext.Rooms.Add(new Room("ser"));
+            //reservationContext.SaveChanges();
+            int i = db.Rooms.Count();
+            Console.WriteLine(i);
+            //Room r = new Room();
+            //r.Name = "Raum-1";
+            //reservationContext.Rooms.Add(r);
+
+            //reservationContext.SaveChanges();
         }
     }
 }

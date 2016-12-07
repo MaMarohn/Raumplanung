@@ -8,20 +8,13 @@ using System.Threading.Tasks;
 
 namespace Raumplanung
 {
-    class Room
+    class Teacher
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         private int _id;
-        private String _name;
+        private string _name;
 
         public int Id { set; get; }
-
-        public String Name
-        {
-            set { this._name = value; }
-            get { return _name; }
-        }
-
+        public string Name { set; get; }
     }
 }

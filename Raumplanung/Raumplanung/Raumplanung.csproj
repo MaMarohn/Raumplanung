@@ -64,10 +64,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Entities\Reservation.cs" />
-    <Compile Include="Entities\ReservationContext.cs" />
-    <Compile Include="Entities\Room.cs" />
-    <Compile Include="Entities\Teacher.cs" />
+    <Compile Include="Database\DatabaseHandler.cs" />
+    <Compile Include="Database\DatabaseInitializer.cs" />
+    <Compile Include="Database\IDatabaseHandler.cs" />
+    <Compile Include="Database\Reservation.cs" />
+    <Compile Include="Database\ReservationContext.cs" />
+    <Compile Include="Database\Room.cs" />
+    <Compile Include="Database\Teacher.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

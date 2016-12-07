@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Raumplanung.Database;
 using Raumplanung.Entities;
 
 namespace Raumplanung
@@ -12,12 +13,13 @@ namespace Raumplanung
     {
 
         public DbSet<Room> Rooms { set; get; }
-        private DbSet<Teacher> _teachers;
-        private DbSet<Reservation> _reservations;
+        public DbSet<Teacher> Teachers { set; get; }
+        public DbSet<Reservation> Reservations { set; get; }
 
         public ReservationContext() : base("ReservationService")
         {
-            
+            DatabaseInitializer databaseInitializer = new DatabaseInitializer();
+            databaseInitializer.fillDatabase(this);
         }
     }
 }
