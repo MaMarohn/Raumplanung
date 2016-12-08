@@ -23,6 +23,11 @@ namespace Raumplanung.Database
             return new List<Teacher>(_reservationContext.Teachers);
         }
 
+        public List<Teacher> GetAllTeachersOrderedByReservations()
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Reservation> GetAllReservations()
         {
             return new List<Reservation>(_reservationContext.Reservations);

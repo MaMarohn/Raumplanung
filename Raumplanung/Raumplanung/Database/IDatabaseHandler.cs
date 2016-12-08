@@ -9,10 +9,9 @@ namespace Raumplanung.Database
 {
     interface IDatabaseHandler
     {
-
         List<Room> GetAllRooms();
         List<Teacher> GetAllTeachers();
+        List<Teacher> GetAllTeachersOrderedByReservations();
         List<Reservation> GetAllReservations();
-
     }
 }

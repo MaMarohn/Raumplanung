@@ -11,7 +11,6 @@ namespace Raumplanung
 {
     class ReservationContext : DbContext
     {
-
         public DbSet<Room> Rooms { set; get; }
         public DbSet<Teacher> Teachers { set; get; }
         public DbSet<Reservation> Reservations { set; get; }
@@ -20,6 +19,7 @@ namespace Raumplanung
         {
             DatabaseInitializer databaseInitializer = new DatabaseInitializer();
             databaseInitializer.fillDatabase(this);
+            databaseInitializer.fillDatabaseWithTestData(this);
         }
     }
 }

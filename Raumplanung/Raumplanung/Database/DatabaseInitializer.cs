@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
@@ -21,12 +22,25 @@ namespace Raumplanung.Database
         {
             if (!context.Rooms.Any())
             {
-                for (int i = 1; i <= 12; i++)
+                for (var i = 1; i <= 12; i++)
                 {
                     context.Rooms.Add(new Room("Raum" + i));
                 }
                 context.SaveChanges();
             } 
+        }
+
+        public void fillDatabaseWithTestData(ReservationContext context)
+        {
+            if (!context.Teachers.Any())
+            {
+                Random random = new Random();
+                for (var index = 0; index < 20; index++)
+                {
+                    context.Teachers.Add(new Teacher("Teacher" + index + 1, random.Next(1, 20)));
+                }
+                context.SaveChanges();
+            }
         }
     }
 }

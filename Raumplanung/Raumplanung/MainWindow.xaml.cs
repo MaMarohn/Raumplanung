@@ -24,21 +24,8 @@ namespace Raumplanung
         public MainWindow()
         {
             InitializeComponent();
-            
-
-            
-
-
             ReservationContext db = new ReservationContext();
-            //reservationContext.Rooms.Add(new Room("ser"));
-            //reservationContext.SaveChanges();
-            int i = db.Rooms.Count();
-            Console.WriteLine(i);
-            //Room r = new Room();
-            //r.Name = "Raum-1";
-            //reservationContext.Rooms.Add(r);
-
-            //reservationContext.SaveChanges();
+            Console.WriteLine(db.Teachers.Count());
         }
     }
 }
