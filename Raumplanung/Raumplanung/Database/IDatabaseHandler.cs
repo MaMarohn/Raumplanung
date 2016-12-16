@@ -11,7 +11,23 @@ namespace Raumplanung.Database
     {
         List<Room> GetAllRooms();
         List<Teacher> GetAllTeachers();
-        List<Teacher> GetAllTeachersOrderedByReservations();
         List<Reservation> GetAllReservations();
+
+        List<Room> GetFreeRooms();
+        List<Room> GetRoomByDate(DateTime date);
+        List<Teacher> GetAllTeachersOrderedByReservations();
+        Teacher GetTeacher(int id);
+        Teacher GetTeacherByName(String name);
+        Room GetRoom(int id);
+        Room GetRoomByName(String name);
+
+        Boolean AddNewTeacher(String name);
+        Boolean AddNewRoom(String name);
+        Boolean AddNewReservation();
+
+        Boolean RemoveRoom(String name);
+        Boolean RemoveTeacher(String name);
+        Boolean RemoveReservation(int id);
+
     }
 }

@@ -24,8 +24,8 @@ namespace Raumplanung
         public MainWindow()
         {
             InitializeComponent();
-            ReservationContext db = new ReservationContext();
-            Console.WriteLine(db.Teachers.Count());
+            
+            
         }
     }
 }

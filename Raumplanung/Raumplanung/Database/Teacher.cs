@@ -11,27 +11,24 @@ namespace Raumplanung
     class Teacher
     {
         [Key]
-        private int _id;
-        private string _name;
+        public int Id { set; get; }
+        public string Name { set; get; }
+        public int CountAssignedRooms { set; get; }
+
+        public Teacher()
+        {
+            
+        }
 
         public Teacher(String name)
         {
-            this._name = name;
+            this.Name = name;
         }
 
         public Teacher(String name, int countAssignedRooms)
         {
-            this._name = name;
+            this.Name = name;
             this.CountAssignedRooms = countAssignedRooms;
         }
-
-        public int Id { set; get; }
-        public String Name
-        {
-            set { this._name = value; }
-            get { return _name; }
-        }
-
-        public int CountAssignedRooms { set; get; }
     }
 }

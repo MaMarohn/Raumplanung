@@ -11,15 +11,15 @@ namespace Raumplanung
 {
     class ReservationContext : DbContext
     {
-        public DbSet<Room> Rooms { set; get; }
-        public DbSet<Teacher> Teachers { set; get; }
-        public DbSet<Reservation> Reservations { set; get; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Teacher> Teachers { get; set;  }
+        public DbSet<Reservation> Reservations { get; set;  }
 
         public ReservationContext() : base("ReservationService")
         {
             DatabaseInitializer databaseInitializer = new DatabaseInitializer();
-            databaseInitializer.fillDatabase(this);
-            databaseInitializer.fillDatabaseWithTestData(this);
+            databaseInitializer.FillDatabase(this);
+            databaseInitializer.FillDatabaseWithTestData(this);
         }
     }
 }

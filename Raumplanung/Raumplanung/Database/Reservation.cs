@@ -12,12 +12,9 @@ namespace Raumplanung.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int _id;
-        private Room _room;
-        private Teacher _teacher;
-
         public int Id { set; get; }
         public Room Room { set; get; }
         public Teacher Teacher { set; get; }
+        public DateTime Date { set; get; }
     }
 }

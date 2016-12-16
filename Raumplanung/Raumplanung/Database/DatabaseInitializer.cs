@@ -18,7 +18,7 @@ namespace Raumplanung.Database
             base.Seed(context);
         }
 
-        public void fillDatabase(ReservationContext context)
+        public void FillDatabase(ReservationContext context)
         {
             if (!context.Rooms.Any())
             {
@@ -30,7 +30,7 @@ namespace Raumplanung.Database
             } 
         }
 
-        public void fillDatabaseWithTestData(ReservationContext context)
+        public void FillDatabaseWithTestData(ReservationContext context)
         {
             if (!context.Teachers.Any())
             {
