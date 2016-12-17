@@ -25,7 +25,6 @@ namespace Raumplanung
         {
             InitializeComponent();
             
-            
         }
     }
 }

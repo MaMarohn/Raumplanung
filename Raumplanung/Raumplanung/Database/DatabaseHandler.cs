@@ -29,7 +29,7 @@ namespace Raumplanung.Database
 
         public List<Room> GetFreeRooms()
         {
-            throw new NotImplementedException();
+            return _reservationContext.Rooms.Where(room => room.Free == true).ToList();
         }
 
         public List<Room> GetRoomByDate(DateTime date)
@@ -44,6 +44,9 @@ namespace Raumplanung.Database
 
         public List<Teacher> GetAllTeachersOrderedByReservations()
         {
+            //?
+            _reservationContext.Teachers.SqlQuery("SELECT * FROM dbo.Teacher ORDER BY CountAssignedRooms Desc");
+
             throw new NotImplementedException();
         }
 
@@ -76,10 +79,11 @@ namespace Raumplanung.Database
             return true;
         }
 
-        public bool AddNewReservation()
+        public bool AddNewReservation(Room r, Teacher t, DateTime d)
         {
-            throw new NotImplementedException();
+            _reservationContext.Reservations.Add(new Reservation(r,t,d));
             _reservationContext.SaveChanges();
+            return true;
         }
 
         public bool RemoveRoom(String name)
@@ -112,8 +116,10 @@ namespace Raumplanung.Database
 
         public bool RemoveReservation(int id)
         {
-            throw new NotImplementedException();
+            Reservation r = _reservationContext.Reservations.Find(id);
+            _reservationContext.Reservations.Remove(r);
             _reservationContext.SaveChanges();
+            return true;
         }
 
         public Teacher GetTeacherByName(string name)

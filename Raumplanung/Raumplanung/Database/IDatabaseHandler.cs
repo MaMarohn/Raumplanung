@@ -23,7 +23,7 @@ namespace Raumplanung.Database
 
         Boolean AddNewTeacher(String name);
         Boolean AddNewRoom(String name);
-        Boolean AddNewReservation();
+        Boolean AddNewReservation(Room r , Teacher t , DateTime d);
 
         Boolean RemoveRoom(String name);
         Boolean RemoveTeacher(String name);

@@ -16,5 +16,16 @@ namespace Raumplanung.Entities
         public Room Room { set; get; }
         public Teacher Teacher { set; get; }
         public DateTime Date { set; get; }
+
+        public Reservation()
+        {
+        }
+
+        public Reservation(Room r, Teacher t, DateTime date)
+        {
+            Room = r;
+            Teacher = t;
+            Date = date;
+        }
     }
 }
