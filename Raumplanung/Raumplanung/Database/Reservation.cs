@@ -1,31 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raumplanung.Entities
+namespace Raumplanung
 {
-    class Reservation
+    partial class Reservation
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { set; get; }
-        public Room Room { set; get; }
-        public Teacher Teacher { set; get; }
-        public DateTime Date { set; get; }
 
         public Reservation()
-        {
+        { 
         }
 
-        public Reservation(Room r, Teacher t, DateTime date)
+        public Reservation(int teacherId , int roomId , DateTime d)
         {
-            Room = r;
-            Teacher = t;
-            Date = date;
+            this.Teacher = teacherId;
+            this.Room = roomId;
+            this.Date = d;
         }
     }
 }

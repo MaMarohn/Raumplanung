@@ -46,6 +46,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -68,10 +70,35 @@
     <Compile Include="Database\DatabaseHandler.cs" />
     <Compile Include="Database\DatabaseInitializer.cs" />
     <Compile Include="Database\IDatabaseHandler.cs" />
+    <Compile Include="Database\MyDataContextDbInitializer.cs" />
     <Compile Include="Database\Reservation.cs" />
     <Compile Include="Database\ReservationContext.cs" />
     <Compile Include="Database\Room.cs" />
     <Compile Include="Database\Teacher.cs" />
+    <Compile Include="Reservation.cs">
+      <DependentUpon>ReservationModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ReservationModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReservationModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ReservationModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReservationModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ReservationModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReservationModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Room.cs">
+      <DependentUpon>ReservationModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Teacher.cs">
+      <DependentUpon>ReservationModel.tt</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -109,9 +136,32 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <EntityDeploy Include="ReservationModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ReservationModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="ReservationModel.edmx.diagram">
+      <DependentUpon>ReservationModel.edmx</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\CreateDatabase.sql" />
+    <Content Include="ReservationModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ReservationModel.Context.cs</LastGenOutput>
+      <DependentUpon>ReservationModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="ReservationModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ReservationModel.edmx</DependentUpon>
+      <LastGenOutput>ReservationModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

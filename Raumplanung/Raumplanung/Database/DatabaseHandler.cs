@@ -5,31 +5,33 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Raumplanung.Entities;
 
-/*
- * For unit testing
- */
-[assembly: InternalsVisibleTo("Database_Test")] 
+
+
+//For unit testing
+[assembly: InternalsVisibleTo("TestDatabase")]
+[assembly: InternalsVisibleTo("Database_Test")]
 namespace Raumplanung.Database
 {
-    class DatabaseHandler : IDatabaseHandler
+    class DatabaseHandler
     {
         private readonly ReservationContext _reservationContext;
 
         public DatabaseHandler()
         { 
             _reservationContext = new ReservationContext();
+            _reservationContext.FillDatabase();
         }
 
         public List<Room> GetAllRooms()
         {
-            return new List<Room>(_reservationContext.Rooms);
+            return new List<Room>(_reservationContext.Room);
         }
 
         public List<Room> GetFreeRooms()
         {
-            return _reservationContext.Rooms.Where(room => room.Free == true).ToList();
+            return null;
+            //return _reservationContext.Room.Where(room => room.Free == true).ToList();
         }
 
         public List<Room> GetRoomByDate(DateTime date)
@@ -39,49 +41,49 @@ namespace Raumplanung.Database
 
         public List<Teacher> GetAllTeachers()
         {
-            return new List<Teacher>(_reservationContext.Teachers);
+            return new List<Teacher>(_reservationContext.Teacher);
         }
 
         public List<Teacher> GetAllTeachersOrderedByReservations()
         {
             //?
-            _reservationContext.Teachers.SqlQuery("SELECT * FROM dbo.Teacher ORDER BY CountAssignedRooms Desc");
+            _reservationContext.Teacher.SqlQuery("SELECT * FROM dbo.Teacher ORDER BY CountAssignedRooms Desc");
 
             throw new NotImplementedException();
         }
 
         public Teacher GetTeacher(int id)
         {
-            return _reservationContext.Teachers.Find(id);
+            return _reservationContext.Teacher.Find(id);
         }
 
         public Room GetRoom(int id)
         {
-            return _reservationContext.Rooms.Find(id);
+            return _reservationContext.Room.Find(id);
         }
 
         public List<Reservation> GetAllReservations()
         {
-            return new List<Reservation>(_reservationContext.Reservations);
+            return new List<Reservation>(_reservationContext.Reservation);
         }
 
         public bool AddNewTeacher(string name)
         {
-            _reservationContext.Teachers.Add(new Teacher(name));
+            _reservationContext.Teacher.Add(new Teacher(name));
             _reservationContext.SaveChanges();
             return true;
         }
 
         public bool AddNewRoom(string name)
         {
-            _reservationContext.Rooms.Add(new Room(name));
+            _reservationContext.Room.Add(new Room(name));
             _reservationContext.SaveChanges();
             return true;
         }
 
         public bool AddNewReservation(Room r, Teacher t, DateTime d)
         {
-            _reservationContext.Reservations.Add(new Reservation(r,t,d));
+            _reservationContext.Reservation.Add(new Reservation(r.RoomID,t.TeacherID,d));
             _reservationContext.SaveChanges();
             return true;
         }
@@ -92,7 +94,7 @@ namespace Raumplanung.Database
 
             if (r != null)
             {
-                _reservationContext.Rooms.Remove(r);
+                _reservationContext.Room.Remove(r);
                 _reservationContext.SaveChanges();
                 return true;
             }
@@ -106,7 +108,7 @@ namespace Raumplanung.Database
 
             if (t != null)
             {
-                _reservationContext.Teachers.Remove(t);
+                _reservationContext.Teacher.Remove(t);
                 _reservationContext.SaveChanges();
                 return true;
             }
@@ -116,20 +118,20 @@ namespace Raumplanung.Database
 
         public bool RemoveReservation(int id)
         {
-            Reservation r = _reservationContext.Reservations.Find(id);
-            _reservationContext.Reservations.Remove(r);
+            Reservation r = _reservationContext.Reservation.Find(id);
+            _reservationContext.Reservation.Remove(r);
             _reservationContext.SaveChanges();
             return true;
         }
 
         public Teacher GetTeacherByName(string name)
         {
-            return Enumerable.FirstOrDefault(_reservationContext.Teachers, t => t.Name.Equals(name));
+            return Enumerable.FirstOrDefault(_reservationContext.Teacher, t => t.Name.Equals(name));
         }
 
         public Room GetRoomByName(string name)
         {
-            return Enumerable.FirstOrDefault(_reservationContext.Rooms, t => t.Name.Equals(name));
+            return Enumerable.FirstOrDefault(_reservationContext.Room, t => t.Name.Equals(name));
         }
 
     }
