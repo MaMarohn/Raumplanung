@@ -1,12 +1,17 @@
+-- Lokale Datenbank name: (localdb)\MSSQLLocalDB
+
+drop table dbo.Room;
+drop table dbo.Reservation;
+drop table dbo.Teacher;
+
+
+Create Database Reservation_Service;
+
 CREATE TABLE dbo.Room
 (
 RoomID INT PRIMARY KEY IDENTITY(1,1),
 Name VARCHAR(255),
 );
-
-drop table dbo.Room;
-drop table dbo.Reservation;
-drop table dbo.Teacher;
 
 CREATE TABLE dbo.Teacher
 (
