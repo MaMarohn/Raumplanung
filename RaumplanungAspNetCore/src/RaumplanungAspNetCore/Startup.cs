@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using RaumplanungAspNetCore.Data;
 using RaumplanungAspNetCore.Models;
 using RaumplanungAspNetCore.Services;
+using RaumplanungAspNetCore.Testklassen;
 
 namespace RaumplanungAspNetCore
 {
@@ -52,6 +53,7 @@ namespace RaumplanungAspNetCore
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddScoped<Hund, Hund>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
