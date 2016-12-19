@@ -9,9 +9,8 @@
 
 namespace Raumplanung
 {
-    using System;
     using System.Collections.Generic;
-    
+
     public partial class Teacher
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

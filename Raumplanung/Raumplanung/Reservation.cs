@@ -10,8 +10,7 @@
 namespace Raumplanung
 {
     using System;
-    using System.Collections.Generic;
-    
+
     public partial class Reservation
     {
         public int ReservationID { get; set; }

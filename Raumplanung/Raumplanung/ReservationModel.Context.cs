@@ -9,10 +9,9 @@
 
 namespace Raumplanung
 {
-    using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+
     public partial class ReservationContext : DbContext
     {
         public ReservationContext()

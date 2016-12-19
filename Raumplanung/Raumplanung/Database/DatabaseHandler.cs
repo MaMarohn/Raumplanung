@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 
 
@@ -98,7 +95,7 @@ namespace Raumplanung.Database
                 _reservationContext.SaveChanges();
                 return true;
             }
-            Console.WriteLine("Room was not found");
+            Console.WriteLine(@"Teacher was not found");
             return false;
         }
 
@@ -112,7 +109,7 @@ namespace Raumplanung.Database
                 _reservationContext.SaveChanges();
                 return true;
             }
-            Console.WriteLine("Teacher was not found");
+            Console.WriteLine(@"Teacher was not found");
             return false;
         }
 
