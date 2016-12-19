@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raumplanung", "Raumplanung\Raumplanung.csproj", "{126C9113-B3D3-4712-A1F4-E90C997BD72E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_Database", "..\..\..\..\Documents\Tmp\Database_Test\Test_Database.csproj", "{48C2E611-7027-4299-97B5-F30B5CA0C833}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_Database", "Database_Test\Test_Database.csproj", "{48C2E611-7027-4299-97B5-F30B5CA0C833}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
