@@ -9,8 +9,17 @@ namespace RaumplanungAspNetCore.Controllers
     [Route("[controller]")]
     public class TestController : Controller
     {
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
+
+        [Route("[controller]/String")]
         [HttpGet]
-        public String getTestString()
+        public string getTestString()
         {
             return "TEST";
         }
@@ -18,11 +27,14 @@ namespace RaumplanungAspNetCore.Controllers
 
 
 
-        [HttpGet("{wert}")]
-        public String GetTest(int wert)
+
+        [Route("[controller]/Add")]
+        [HttpGet("{wert}", Name= "Add" )]
+        public int GetTest(int wert)
         {
-            wert = wert++;
-            return wert+"";
+
+            wert++;
+            return wert;
         }
     }
 }
