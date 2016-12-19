@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using RaumplanungCore.Database;
 
 namespace RaumplanungCore
 {
@@ -11,6 +13,7 @@ namespace RaumplanungCore
     {
         public static void Main(string[] args)
         {
+           
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
@@ -18,7 +21,10 @@ namespace RaumplanungCore
                 .UseStartup<Startup>()
                 .Build();
 
+            
+
             host.Run();
+
         }
     }
 }

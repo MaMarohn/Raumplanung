@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RaumplanungCore.Database;
+using Microsoft.EntityFrameworkCore;
+using Raumplanung.Database;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace RaumplanungCore
 {
@@ -16,10 +21,17 @@ namespace RaumplanungCore
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddMvcCore(); // ?
+            services.AddMvc();
+
+            services.AddDbContext<ReservationContext>(
+                options =>
+                    options.UseSqlServer(
+                        "Server=(localdb)\\mssqllocaldb;Database=Reservation;Trusted_Connection=True;MultipleActiveResultSets=true"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ReservationContext reservationContext)
         {
             loggerFactory.AddConsole();
 
@@ -28,10 +40,24 @@ namespace RaumplanungCore
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
+            app.UseMvc();
+
+            app.UseMvc(routes =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index2}");
             });
+
+            /* app.Run(async (context) =>
+              {
+                  await context.Response.WriteAsync("Hello World!");
+              });*/
+
+
+
+
+            DbInitializer.Initialize(reservationContext);
         }
     }
 }
