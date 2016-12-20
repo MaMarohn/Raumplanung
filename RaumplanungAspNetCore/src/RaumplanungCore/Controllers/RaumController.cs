@@ -28,7 +28,7 @@ namespace RaumplanungCore.Controllers
         }
 
         // GET: /<controller>/Detail/reservationId
-        [HttpGet("Detail/{reservationId}")]
+        [HttpGet("raum/detail/{reservationId}")]
         public IActionResult Detail(int reservationId)
         {
             ViewData["ReservationId"] = reservationId;

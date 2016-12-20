@@ -46,7 +46,7 @@ namespace RaumplanungCore
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index2}");
+                    template: "{controller=raum}/{action=Index}");
             });
 
             /* app.Run(async (context) =>
