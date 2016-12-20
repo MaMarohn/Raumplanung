@@ -1,8 +1,72 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
+
 @{
     ViewData["Title"] = "Neue Reservierung";
 }
 
-<h1> Neue Reservierung erstellen </h1>
+@using RaumplanungCore.Models
+@using RaumplanungCore.ViewModels.Reservation
+@model RaumplanungCore.Database.ReservationContext
+@inject NewModel NewModel
+
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="src/ha-datetimepicker.css" />
+</head>
+<body>
+
+    <h1> Neue Reservierung erstellen </h1>
+
+    <br />
+    <br />
+
+    <h4>Gewünschten Termin anklicken, um verfügbare Räume anzuzeigen</h4>
+    <br />
+
+    <table>
+        <tr>
+            <th></th>
+            <th> Montag </th>
+            <th> Dienstag </th>
+            <th> Mittwoch </th>
+            <th> Donnerstag </th>
+            <th> Freitag </th>
+        </tr>
+        <tr>
+            <td> "Zeit 1.Block "</td>
+            @if (NewModel.AllRoomsAvailable())
+            {
+                <td style="color: green"> <a asp-controller="Reservation" asp-action="List" asp-route-id=""> asdf </a></td>
+            }
+        </tr>
+        <tr>
+            <td> "Zeit 2.Block "</td>
+        </tr>
+        <tr>
+            <td> "Zeit 3.Block "</td>
+        </tr>
+        <tr>
+            <td> "Zeit 4.Block "</td>
+        </tr>
+        <tr>
+            <td> "Zeit 5.Block "</td>
+        </tr>
+    </table>
+    
+<input type="text" id="datetime" placeholder="select a date and time" data-ha-datetimepicker="#datetime"/> 
+    
+<br/>
+<br/>
+
+<script type="text/javascript" src="src/ha-solardate.js"></script>    
+<script type="text/javascript" src="src/ha-datetimepicker.js">
+  
+</script>
+
+</body>
+
+</html>
+

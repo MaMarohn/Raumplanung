@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Raumplanung.Database;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using RaumplanungCore.ViewModels.Reservation;
 
 namespace RaumplanungCore
 {
@@ -23,7 +24,7 @@ namespace RaumplanungCore
         {
             //services.AddMvcCore(); // ?
             services.AddMvc();
-
+            services.AddScoped<NewModel, NewModel>();
             services.AddDbContext<ReservationContext>(
                 options =>
                     options.UseSqlServer(
