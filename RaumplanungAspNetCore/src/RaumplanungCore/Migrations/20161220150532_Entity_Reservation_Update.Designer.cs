@@ -8,9 +8,10 @@ using RaumplanungCore.Database;
 namespace RaumplanungCore.Migrations
 {
     [DbContext(typeof(ReservationContext))]
-    partial class ReservationContextModelSnapshot : ModelSnapshot
+    [Migration("20161220150532_Entity_Reservation_Update")]
+    partial class Entity_Reservation_Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")

@@ -9,5 +9,13 @@ namespace RaumplanungCore.Models
     {
         public int RoomId { get; set; }
         public string Name { get; set; }
+
+        public virtual ICollection<Reservation> Reservations { set; get; }
+
+        public Room()
+        {
+            if (Reservations == null)
+                Reservations = new List<Reservation>();
+        }
     }
 }

@@ -28,5 +28,37 @@ namespace Raumplanung.Database
         {
             return new List<Room>(_reservationContext.Rooms);
         }
+
+        public List<Room> GetAllFreeRooms(DateTime date, int block)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Reservation> GetAllReservations()
+        {
+            return new List<Reservation>();
+        }
+
+        public List<Reservation> GetReservationsWithDate(DateTime date)
+        {
+            /*
+             * To Do date
+             */
+
+            var reservations = from t in _reservationContext.Reservations
+                                               where t.Date.Equals(date)
+                                               select t;
+
+            return new List<Reservation>(reservations);
+        }
+
+        public List<Reservation> GetReservationsFromTeacher(int teacherId)
+        {
+            var reservations = from t in _reservationContext.Reservations
+                        where t.TeacherId.Equals(teacherId)
+                        select t;
+
+            return new List<Reservation>(reservations);
+        }
     }
 }

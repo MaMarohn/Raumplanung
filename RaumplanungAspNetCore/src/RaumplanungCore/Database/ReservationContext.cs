@@ -14,5 +14,6 @@ namespace RaumplanungCore.Database
         }
         public DbSet<Room> Rooms { set; get; }
         public DbSet<Teacher> Teachers { set; get; }
+        public DbSet<Reservation> Reservations { set; get; }
     }
 }

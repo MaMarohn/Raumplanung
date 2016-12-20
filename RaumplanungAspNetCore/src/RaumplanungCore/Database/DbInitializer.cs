@@ -16,22 +16,77 @@ namespace RaumplanungCore.Database
         {
             context.Database.EnsureCreated();
 
-            
-            if (context.Rooms.Any())
+            const int countRoom = 12;
+            if (context.Rooms.Count() < 12)
             {
-                return; // DB has been seeded
+                //Datenbank wird neu gefüllt
+                foreach (var entity in context.Rooms)
+                    context.Rooms.Remove(entity);
+                context.SaveChanges();
+
+                var rooms = new Room[countRoom];
+                for (var c = 0; c < countRoom; c++)
+                {
+                    rooms[c] = new Room {Name = "Room" + c};
+                }
+
+                foreach (Room s in rooms)
+                {
+                    context.Rooms.Add(s);
+                }
+                context.SaveChanges();
             }
 
-            var rooms = new Room[]
+            const int countTeacher = 100;
+            //Console.WriteLine(context.Rooms.Count());
+            if (context.Teachers.Count() < countTeacher - 1)
             {
-                new Room {Name = "Room1"},
-                new Room {Name = "Room3"},
-            };
-            foreach (Room s in rooms)
+                //Datenbank wird neu gefüllt
+                foreach (var entity in context.Teachers)
+                    context.Teachers.Remove(entity);
+                context.SaveChanges();
+
+                var teachers = new Teacher[countTeacher];
+                for (var c = 0; c < countTeacher; c++)
+                {
+                    teachers[c] = new Teacher {Name = "Teacher" + c};
+                }
+
+                foreach (Teacher s in teachers)
+                {
+                    context.Teachers.Add(s);
+                }
+            }
+            context.SaveChanges();
+
+            const int countReservation = 10;
+            if (context.Reservations.Count() < countReservation)
             {
-                context.Rooms.Add(s);
+                //Datenbank wird neu gefüllt
+                foreach (var entity in context.Reservations)
+                    context.Reservations.Remove(entity);
+                context.SaveChanges();
+
+                List<Teacher> teachers = new List<Teacher>(context.Teachers);
+                List<Room> rooms = new List<Room>(context.Rooms);
+
+                for (int c = 0; c < rooms.Count; c++)
+                {
+                    Teacher t = teachers[c];
+                    Room r = rooms[c];
+
+                    Reservation reservation = new Reservation();
+                    reservation.Date = new DateTime(2016,12,20);
+                    reservation.Teacher = t;
+                    reservation.Room = r;
+                    
+                    //t.Reservations.Add(reservation);
+                    //r.Reservations.Add(reservation);
+                    context.Reservations.Add(reservation);
+                }
             }
             context.SaveChanges();
         }
+
     }
 }

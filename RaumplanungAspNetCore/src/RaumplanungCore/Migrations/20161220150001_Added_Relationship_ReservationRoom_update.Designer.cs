@@ -8,9 +8,10 @@ using RaumplanungCore.Database;
 namespace RaumplanungCore.Migrations
 {
     [DbContext(typeof(ReservationContext))]
-    partial class ReservationContextModelSnapshot : ModelSnapshot
+    [Migration("20161220150001_Added_Relationship_ReservationRoom_update")]
+    partial class Added_Relationship_ReservationRoom_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
@@ -20,10 +21,6 @@ namespace RaumplanungCore.Migrations
                 {
                     b.Property<int>("ReservationId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("Block");
-
-                    b.Property<DateTime?>("Date");
 
                     b.Property<int>("RoomId");
 
@@ -65,7 +62,7 @@ namespace RaumplanungCore.Migrations
             modelBuilder.Entity("RaumplanungCore.Models.Reservation", b =>
                 {
                     b.HasOne("RaumplanungCore.Models.Room", "Room")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade);
 
