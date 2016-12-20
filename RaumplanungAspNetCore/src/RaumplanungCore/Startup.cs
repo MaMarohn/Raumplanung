@@ -35,9 +35,9 @@ namespace RaumplanungCore
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddMvcCore(); // ?
-            services.AddMvc();
+           
             services.AddScoped<NewModel, NewModel>();
-            services.AddDbContext<ReservationContext>(
+            
             services.AddEntityFramework()
                 .AddDbContext<ReservationContext>(
                 options =>
