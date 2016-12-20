@@ -11,11 +11,11 @@ using RaumplanungCore.Models;
 
 namespace RaumplanungCore.Controllers
 {
-    public class RaumController : Controller
+    public class ReservationController : Controller
     {
         private readonly DatabaseHandler _databaseHandler;
 
-        public RaumController(ReservationContext context)
+        public ReservationController(ReservationContext context)
         {
             _databaseHandler = new DatabaseHandler(context);
         }
@@ -28,10 +28,24 @@ namespace RaumplanungCore.Controllers
         }
 
         // GET: /<controller>/Detail/reservationId
-        [HttpGet("raum/detail/{reservationId}")]
+        //[HttpGet("reservation/detail/{reservationId}")]
         public IActionResult Detail(int reservationId)
         {
             ViewData["ReservationId"] = reservationId;
+            return View();
+        }
+
+        [HttpGet("reservation/delete/{reservationId}")]
+        public IActionResult Delete(int reservationId)
+        {
+            //_databasHandler.deleteReservation(reservationId);
+            List<Room> rooms = _databaseHandler.GetAllRooms();
+            return View("Index", rooms);
+        }
+
+        [HttpGet("reservation/New")]
+        public IActionResult New()
+        {
             return View();
         }
     }

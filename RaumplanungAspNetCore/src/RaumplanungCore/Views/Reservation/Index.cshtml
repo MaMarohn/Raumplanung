@@ -4,7 +4,8 @@
 
 @using RaumplanungCore.Models
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<RaumplanungCore.Models.Room>
+@model IEnumerable<RaumplanungCore.Models.Room> 
+//später reservations
 
 @{
     ViewData["Title"] = "Startseite";
@@ -24,10 +25,12 @@
         <tr>
             <td> @room.Name </td>
             <td> 20.12.2016 </td>
-            <td> <a href="raum/Detail/@room.RoomId"> Details</a></td>
+            <td> <a asp-controller="Reservation" asp-action="Detail" asp-route-id="@room.RoomId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-id="@room.RoomId">Delete</a></td>
         </tr>
     }
 </table>
+
+<p> <a asp-controller="Reservation" asp-action="New"> Neue Reservierung anlegen </a></p>
 
 
 
