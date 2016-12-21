@@ -1,0 +1,36 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using RaumplanungCore.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<RaumplanungCore.Models.Room> 
+//später reservations
+
+@{
+    ViewData["Title"] = "Startseite";
+}
+
+<h1> Meine Reservierungen </h1>
+
+<table>
+    <tr>
+        <th> Raum </th>
+            
+        <th> Datum </th>
+        <th> Bearbeiten </th>
+    </tr>
+    @foreach (var room in Model)
+    {
+        <tr>
+            <td> @room.Name </td>
+            <td> 20.12.2016 </td>
+            <td> <a asp-controller="Reservation" asp-action="Detail" asp-route-id="@room.RoomId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-id="@room.RoomId">Delete</a></td>
+        </tr>
+    }
+</table>
+
+<p> <a asp-controller="Reservation" asp-action="New"> Neue Reservierung anlegen </a></p>
+
+
+
