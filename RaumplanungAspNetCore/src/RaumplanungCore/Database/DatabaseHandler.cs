@@ -60,5 +60,10 @@ namespace Raumplanung.Database
 
             return new List<Reservation>(reservations);
         }
+
+        public List<Teacher> GetAllTeachers()
+        {
+            return new List<Teacher>(_reservationContext.Teachers);
+        }
     }
 }

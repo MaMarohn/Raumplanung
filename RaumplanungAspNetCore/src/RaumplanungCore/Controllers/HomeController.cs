@@ -23,11 +23,7 @@ namespace RaumplanungCore.Controllers
 
 
         public String Index2()
-        {
-
-            List<Reservation> r = _databaseHandler.GetReservationsWithDate(new DateTime(2016, 12, 20));
-            Console.WriteLine(r.Count);
-
+        { 
             return _databaseHandler.GetAllRooms()[0].Name;
         }
 

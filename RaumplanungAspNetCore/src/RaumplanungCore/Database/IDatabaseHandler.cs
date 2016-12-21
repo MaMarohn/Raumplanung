@@ -14,7 +14,8 @@ namespace Raumplanung.Database
         List<Reservation> GetAllReservations();
         List<Reservation> GetReservationsWithDate(DateTime date);
         List<Reservation> GetReservationsFromTeacher(int teacherId);
-        /*List<Teacher> GetAllTeachers();
+        List<Teacher> GetAllTeachers();
+        /*
 
         List<Room> GetFreeRooms();
         List<Room> GetRoomByDate(DateTime date);
