@@ -17,8 +17,8 @@ namespace Raumplanung.Database
         List<Reservation> GetReservationsFromRoom(int roomId);
         List<Teacher> GetAllTeachers();
         bool DeleteReservation(int reservationId);
-        bool AddReservation(DateTime date, int block, int teacherId, int roomId);
-        Teacher GetTeacher(int teacherId);
+        bool AddReservation(DateTime date, int block, string teacherId, int roomId);
+        Teacher GetTeacher(string teacherId);
         Room GetRoom(int roomId);
         Reservation GetReservation(int reservationId);
     }

@@ -51,7 +51,7 @@ namespace Raumplanung.Database
         public List<Reservation> GetReservationsWithDate(DateTime date)
         {
             /*
-             * To Do date
+             * To Do date and block
              */
 
             var reservations = from t in _reservationContext.Reservations
@@ -99,7 +99,7 @@ namespace Raumplanung.Database
             return true;
         }
 
-        public bool AddReservation(DateTime date, int block, int teacherId, int roomId)
+        public bool AddReservation(DateTime date, int block, string teacherId, int roomId)
         {
             _reservationContext.Reservations.Add(new Reservation
             {
@@ -111,7 +111,7 @@ namespace Raumplanung.Database
             return true;
         }
 
-        public Teacher GetTeacher(int teacherId)
+        public Teacher GetTeacher(string teacherId)
         {
             return _reservationContext.Teachers.Find(teacherId);
         }

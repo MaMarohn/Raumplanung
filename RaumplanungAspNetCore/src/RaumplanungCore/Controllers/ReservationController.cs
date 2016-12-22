@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Raumplanung.Database;
 using RaumplanungCore.Database;
@@ -23,8 +24,20 @@ namespace RaumplanungCore.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            List<Reservation> reservations = _databaseHandler.GetAllReservations();
-            int count = reservations.Count;            
+            //List<Reservation> reservations = _databaseHandler.GetAllReservations();
+            //HIER:var userId = User.Identity.GetUserId(); oder ähnliches
+            List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher("0b5b8029-45f1-4314-aa08-b23f25f6af03");
+            int count;
+            if (reservations != null)
+            {
+                count = reservations.Count;
+            }
+            else
+            {
+                //sonst gibts null exception
+                reservations = new List<Reservation>();
+            }
+
             return View("Index", reservations);
         }
 
@@ -39,7 +52,7 @@ namespace RaumplanungCore.Controllers
         [HttpGet("reservation/delete/{reservationId}")]
         public IActionResult Delete(int reservationId)
         {
-            //_databasHandler.deleteReservation(reservationId);
+            _databaseHandler.DeleteReservation(reservationId);
             List<Room> rooms = _databaseHandler.GetAllRooms();
             return View("Index", rooms);
         }
