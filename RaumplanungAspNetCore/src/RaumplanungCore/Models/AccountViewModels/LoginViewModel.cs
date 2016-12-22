@@ -11,6 +11,9 @@ namespace RaumplanungCore.Models.AccountViewModels
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        
+
+       
 
         [Required]
         [DataType(DataType.Password)]
