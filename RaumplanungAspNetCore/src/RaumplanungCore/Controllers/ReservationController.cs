@@ -23,10 +23,7 @@ namespace RaumplanungCore.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            //List<Reservation> reservationsX = _databaseHandler.GetAllReservations();
-            //List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(6014);
-            //_databaseHandler.DeleteReservation(reservations[0].ReservationId);
-            List<Reservation> reservations = _databaseHandler.GetReservationsFromRoom(4);
+            _databaseHandler.GetAllFreeRoomsOnDate(new DateTime(2016, 12, 20), 1);
             List<Room> rooms = _databaseHandler.GetAllRooms();
             return View("Index", rooms);
         }

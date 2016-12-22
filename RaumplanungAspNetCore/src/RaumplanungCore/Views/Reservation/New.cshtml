@@ -9,39 +9,30 @@
 
 <html>
 <head>
-    <link rel="stylesheet" href="/src/ha-datetimepicker.min.css" />
-    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css"/>
-    <script src="/fullCalendar/lib/jquery.min.js"></script>
-    <script src="/fullCalendar/lib/moment.min.js"></script>
-    <script src="/fullCalendar/fullcalendar.js"></script>
-    <script>
-        $(document)
-            .ready(function() {
-                $('#calendar')
-                    .fullCalendar({
-                        defaultView: 'agendaWeek',
-                        weekends: false
-                    })
-            });
+
+    <script language="VB" runat="server">
+
+        Sub Date_Selected(sender As Object, e As EventArgs)
+            Label1.Text = "Selected date is: " + Calendar1.SelectedDate.ToShortDateString
+        End Sub
+
     </script>
+
 </head>
+
 <body>
 
-    <h1> Neue Reservierung erstellen </h1>
+    <h3><font face="Verdana">Calendar Example</font></h3>
 
-    <br />
-    <br />
+    <form runat=server>
 
-    <h4>Gewünschten Termin anklicken, um verfügbare Räume anzuzeigen</h4>
+        <asp:Calendar id=Calendar1 onselectionchanged="Date_Selected" runat="server" />
 
-<!-- input type="text" id="datetime" placeholder="select a date and time" data-ha-datetimepicker="#datetime" data-ha-dp-disabletime="true" data-ha-dp-disabledweekdays="1,7"/--> 
-    
-<br/>
-<br/>
-    
-<div id="calendar"> </div>
-  
-<script type="text/javascript" src="/src/ha-datetimepicker.min.js"> </script>
+        <p>
+
+            <asp:Label id=Label1 runat="server" />
+
+    </form>
 
 </body>
 

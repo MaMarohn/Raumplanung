@@ -28,9 +28,19 @@ namespace Raumplanung.Database
             return new List<Room>(_reservationContext.Rooms);
         }
 
-        public List<Room> GetAllFreeRooms(DateTime date, int block)
+        public List<Room> GetAllFreeRoomsOnDate(DateTime date, int block)
         {
-            throw new NotImplementedException();
+            /*var firstName = "John";
+            var id = 12;
+            var sql = @"Update [User] SET FirstName = {0} WHERE Id = {1}";
+            ctx.Database.ExecuteSqlCommand(sql, firstName, id);*/
+
+            //var sql = "Select Reser From Reservation WHERE block={0} AND Date={1}";
+            //var result = _reservationContext.Reservations.FromSql(sql, block, date).ToList();
+
+            //To-Do
+            return null;
+
         }
 
         public List<Reservation> GetAllReservations()
@@ -91,7 +101,29 @@ namespace Raumplanung.Database
 
         public bool AddReservation(DateTime date, int block, int teacherId, int roomId)
         {
-            throw new NotImplementedException();
+            _reservationContext.Reservations.Add(new Reservation
+            {
+                Date = date,
+                Block = block,
+                TeacherId = teacherId,
+                RoomId = roomId
+            });
+            return true;
+        }
+
+        public Teacher GetTeacher(int teacherId)
+        {
+            return _reservationContext.Teachers.Find(teacherId);
+        }
+
+        public Room GetRoom(int roomId)
+        {
+            return _reservationContext.Rooms.Find(roomId);
+        }
+
+        public Reservation GetReservation(int reservationId)
+        {
+            return _reservationContext.Reservations.Find(reservationId);
         }
     }
 }
