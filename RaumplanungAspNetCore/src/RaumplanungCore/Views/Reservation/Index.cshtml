@@ -12,6 +12,7 @@
 
 <h1> Meine Reservierungen </h1>
 
+<br/>
 <table>
     <tr>
         <th> Raum </th>
@@ -22,13 +23,13 @@
     @foreach (var reservation in Model)
     {
         <tr>
-            <td> @reservation.Room.Name </td>
-            <td> @reservation.Date </td>
-            <td> <a asp-controller="Reservation" asp-action="Detail" asp-route-id="@reservation.RoomId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-id="@reservation.RoomId">Delete</a></td>
+            <td width="50"> @reservation.RoomId </td>
+            <td width="150"> @reservation.Date </td>
+            <td width="150"> <a asp-controller="Reservation" asp-action="Detail" asp-route-id="@reservation.RoomId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-id="@reservation.RoomId">Delete</a></td>
         </tr>
     }
 </table>
-
+<br/>
 <p> <a asp-controller="Reservation" asp-action="New"> Neue Reservierung anlegen </a></p>
 
 
