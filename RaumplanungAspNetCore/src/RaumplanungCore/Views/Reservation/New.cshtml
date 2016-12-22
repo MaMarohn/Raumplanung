@@ -43,8 +43,7 @@
                                 ],
                                 eventClick: function(event, element) {
                                     var start = moment(event.start).format("DD-MM-YYYY HH:mm");
-                                    event.title = start;
-                                    element.color = 'green';
+                                    event.title = start;                                    
                                     $('#calendar').fullCalendar('updateEvent', event);
                                 }
                             })
