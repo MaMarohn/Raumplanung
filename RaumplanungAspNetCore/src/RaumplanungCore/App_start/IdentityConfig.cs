@@ -9,7 +9,7 @@ using RaumplanungCore.Models;
 
 namespace RaumplanungCore.App_start
 {
-    public class ReservationUserStore : UserStore<ApplicationUser>
+    public class ReservationUserStore : UserStore<Teacher>
     {
 
         public ReservationUserStore(ReservationContext context) : base(context)
