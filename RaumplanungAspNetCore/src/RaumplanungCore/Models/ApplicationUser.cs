@@ -9,9 +9,7 @@ namespace RaumplanungCore.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        
-        public string Email { get; set; }
-        
+          
 
     }
 }

@@ -8,12 +8,14 @@ using RaumplanungCore.Models;
 
 namespace RaumplanungCore.Database
 {
-    public class ReservationContext : DbContext
+    public class ReservationContext : IdentityDbContext<ApplicationUser>
     {
         public ReservationContext(DbContextOptions<ReservationContext> options) : base(options)
         {
             
         }
+       
+
 
         public DbSet<Room> Rooms { set; get; }
         public DbSet<Teacher> Teachers { set; get; }
