@@ -28,8 +28,9 @@ namespace RaumplanungCore.Models
         //public override ICollection<IdentityUserRole<string>> Roles { get; }
 
         //public override string UserName { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
 
-        public virtual ICollection<Reservation> Reservations { set; get; }
+
 
         public Teacher()
         {
