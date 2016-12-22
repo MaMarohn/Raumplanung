@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using RaumplanungCore.Database;
 using RaumplanungCore.Models;
+using Microsoft.EntityFrameworkCore;
+
 
 /*
  * For unit testing
  */
-[assembly: InternalsVisibleTo("Database_Test")] 
+[assembly: InternalsVisibleTo("Database_Test")]
 namespace Raumplanung.Database
 {
     class DatabaseHandler : IDatabaseHandler
@@ -36,7 +35,7 @@ namespace Raumplanung.Database
 
         public List<Reservation> GetAllReservations()
         {
-            return new List<Reservation>();
+            return new List<Reservation>(_reservationContext.Reservations);
         }
 
         public List<Reservation> GetReservationsWithDate(DateTime date)
@@ -54,16 +53,45 @@ namespace Raumplanung.Database
 
         public List<Reservation> GetReservationsFromTeacher(int teacherId)
         {
-            var reservations = from t in _reservationContext.Reservations
-                        where t.TeacherId.Equals(teacherId)
-                        select t;
+            List<Teacher> t = new List<Teacher>(_reservationContext.Teachers.Include(r => r.Reservations).Where(te => te.TeacherId == teacherId));
 
-            return new List<Reservation>(reservations);
+            if (t.Count == 0)
+                return null;
+
+            return new List<Reservation>(t.First().Reservations);
         }
+
+        public List<Reservation> GetReservationsFromRoom(int roomId)
+        {
+            List<Room> t = new List<Room>(_reservationContext.Rooms.Include(r => r.Reservations).Where(te => te.RoomId == roomId));
+
+            if (t.Count == 0)
+                return null;
+
+            return new List<Reservation>(t.First().Reservations);
+        }
+
 
         public List<Teacher> GetAllTeachers()
         {
             return new List<Teacher>(_reservationContext.Teachers);
+        }
+
+        public bool DeleteReservation(int reservationId)
+        {
+            Reservation r = _reservationContext.Reservations.Find(reservationId);
+
+            if (r == null)
+                return false;
+
+            _reservationContext.Reservations.Remove(r);
+            _reservationContext.SaveChanges();
+            return true;
+        }
+
+        public bool AddReservation(DateTime date, int block, int teacherId, int roomId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

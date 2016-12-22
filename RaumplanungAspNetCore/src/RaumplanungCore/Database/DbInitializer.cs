@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RaumplanungCore.Models;
 
 /*
@@ -80,9 +80,15 @@ namespace RaumplanungCore.Database
                     reservation.Teacher = t;
                     reservation.Room = r;
                     
-                    //t.Reservations.Add(reservation);
-                    //r.Reservations.Add(reservation);
+                    t.Reservations.Add(reservation);
+                    r.Reservations.Add(reservation);
+
+                    context.Entry(t).State = EntityState.Modified;
+                    context.Entry(r).State = EntityState.Modified;
+
                     context.Reservations.Add(reservation);
+
+                    context.SaveChanges();
                 }
             }
             context.SaveChanges();
