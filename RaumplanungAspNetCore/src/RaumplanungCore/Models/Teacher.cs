@@ -14,12 +14,12 @@ namespace RaumplanungCore.Models
  * Asp.net idenity tutorial
  * http://tektutorialshub.com/asp-net-identity-tutorial-basics/
  */
-    public class Teacher 
+    public class Teacher :IdentityUser
     {
         //public override TKey Id { get; set; }
 
-        public int TeacherId { get; set; }
-        public string Name { get; set; }
+        //public int TeacherId { get; set; }
+        //public string Name { get; set; }
 
         //public override string Id { get; set; }
 
@@ -30,6 +30,8 @@ namespace RaumplanungCore.Models
         //public override string UserName { get; set; }
 
         public virtual ICollection<Reservation> Reservations { set; get; }
+
+        
 
         public Teacher()
         {

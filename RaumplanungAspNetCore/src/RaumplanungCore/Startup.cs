@@ -44,7 +44,7 @@ namespace RaumplanungCore
                     options.UseSqlServer(
                         "Server=(localdb)\\mssqllocaldb;Database=Reservation;Trusted_Connection=True;MultipleActiveResultSets=true"));
             
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            services.AddIdentity<Teacher, IdentityRole>(options =>
 
                 {
                 // Password settings

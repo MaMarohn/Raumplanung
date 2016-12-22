@@ -13,7 +13,7 @@ namespace RaumplanungCore.Models
         public int Block { get; set; }
         public DateTime? Date { get; set; }
 
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; }
         public Teacher Teacher { get; set; }
 
         public int RoomId { get; set; }
