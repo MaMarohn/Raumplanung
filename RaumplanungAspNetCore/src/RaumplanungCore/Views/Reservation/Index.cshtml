@@ -4,8 +4,7 @@
 
 @using RaumplanungCore.Models
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<RaumplanungCore.Models.Room> 
-//später reservations
+@model IEnumerable<RaumplanungCore.Models.Reservation> 
 
 @{
     ViewData["Title"] = "Startseite";
@@ -20,12 +19,12 @@
         <th> Datum </th>
         <th> Bearbeiten </th>
     </tr>
-    @foreach (var room in Model)
+    @foreach (var reservation in Model)
     {
         <tr>
-            <td> @room.Name </td>
-            <td> 20.12.2016 </td>
-            <td> <a asp-controller="Reservation" asp-action="Detail" asp-route-id="@room.RoomId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-id="@room.RoomId">Delete</a></td>
+            <td> @reservation.Room.Name </td>
+            <td> @reservation.Date </td>
+            <td> <a asp-controller="Reservation" asp-action="Detail" asp-route-id="@reservation.RoomId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-id="@reservation.RoomId">Delete</a></td>
         </tr>
     }
 </table>

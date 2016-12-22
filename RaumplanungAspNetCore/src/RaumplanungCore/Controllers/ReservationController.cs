@@ -23,8 +23,8 @@ namespace RaumplanungCore.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            List<Room> rooms = _databaseHandler.GetAllRooms();
-            return View("Index", rooms);
+            List<Reservation> reservations = _databaseHandler.GetAllReservations();
+            return View("Index", reservations);
         }
 
         // GET: /<controller>/Detail/reservationId
