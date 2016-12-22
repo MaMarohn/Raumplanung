@@ -8,7 +8,7 @@
     <!--<script src="/fullCalendar/lib/jquery.min.js"></script>-->
     <script src="/fullCalendar/lib/moment.min.js"></script>
     <script src="/fullCalendar/fullcalendar.js"></script>
-
+    <script src="/fullCalendar/locale/de.js"></script>
 
     <script>
                 $(document)
@@ -16,7 +16,15 @@
                         $('#calendar')
                             .fullCalendar({
                                 defaultView: 'agendaWeek',
-                                weekends: false
+                                weekends: false,
+                                editable: false,
+                                timezone: 'local',
+                                locale: 'de',
+                                views: {
+                                    week: {
+                                        timeFormat: 'h:(mm)t'
+                                    }
+                                }
                             })
                     });
     </script>    
@@ -36,7 +44,7 @@
 <br />
 <br />
 
-<div id="calendar" style="width: 500px"> </div>
+<div id="calendar" style="width: 55em"> </div>
 
 
 
