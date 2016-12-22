@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Raumplanung.Database;
 using RaumplanungCore.Models;
 using RaumplanungCore.Models.AccountViewModels;
+using RaumplanungCore.Models.Roles;
 using RaumplanungCore.Services;
 
 namespace RaumplanungCore.Controllers
@@ -21,16 +22,19 @@ namespace RaumplanungCore.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly RoleManager<RoleAdmin> _roleManager;
 
         public AccountController(
             UserManager<Teacher> userManager,
             SignInManager<Teacher> signInManager,
+            RoleManager<RoleAdmin> roleManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -102,6 +106,15 @@ namespace RaumplanungCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
+
+            if (!_roleManager.RoleExistsAsync("Administrator").Result)
+            {
+                RoleAdmin newRole = new RoleAdmin("Administrator", "Administrators can do something with data");
+                await _roleManager.CreateAsync(newRole);
+            }
+
+
+
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
@@ -115,6 +128,10 @@ namespace RaumplanungCore.Controllers
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    if (model.Admin)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Administrator");
+                    }
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToAction("Index", "Reservation");

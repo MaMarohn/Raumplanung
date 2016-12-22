@@ -17,7 +17,7 @@ namespace RaumplanungCore.Database
         }
        
 
-        //public DbSet<RoleAdmin> Admins { set; get; }
+        public DbSet<RoleAdmin> Admins { set; get; }
         public DbSet<Room> Rooms { set; get; }
         public DbSet<Teacher> Teachers { set; get; }
         public DbSet<Reservation> Reservations { set; get; }

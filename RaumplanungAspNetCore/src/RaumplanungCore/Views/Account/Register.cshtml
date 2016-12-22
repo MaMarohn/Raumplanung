@@ -25,6 +25,7 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="Password" class="col-md-2 control-label">Password:</label>
         <div class="col-md-10">
@@ -40,10 +41,19 @@
         </div>
     </div>
     <div class="form-group">
+        <label asp-for="Admin" class="col-md-2 control-label">Admin:</label>
+        <div class="col-md-10">
+            <input asp-for="Admin" type="checkbox" value="true" />
+            <input asp-for="Admin" type="hidden" value="false"/>
+            <span asp-validation-for="Admin" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <button type="submit" class="btn btn-default">Register</button>
         </div>
     </div>
+    
 </form>
 
 @section Scripts {
