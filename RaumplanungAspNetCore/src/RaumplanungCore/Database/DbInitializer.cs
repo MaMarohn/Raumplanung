@@ -49,7 +49,7 @@ namespace RaumplanungCore.Database
                 var teachers = new Teacher[countTeacher];
                 for (var c = 0; c < countTeacher; c++)
                 {
-                    teachers[c] = new Teacher {Name = "Teacher" + c};
+                    teachers[c] = new Teacher {UserName = "Teacher" + c};
                 }
 
                 foreach (Teacher s in teachers)

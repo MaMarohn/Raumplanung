@@ -61,9 +61,9 @@ namespace Raumplanung.Database
             return new List<Reservation>(reservations);
         }
 
-        public List<Reservation> GetReservationsFromTeacher(int teacherId)
+        public List<Reservation> GetReservationsFromTeacher(string teacherId)
         {
-            List<Teacher> t = new List<Teacher>(_reservationContext.Teachers.Include(r => r.Reservations).Where(te => te.TeacherId == teacherId));
+            List<Teacher> t = new List<Teacher>(_reservationContext.Teachers.Include(r => r.Reservations).Where(te => te.Id == teacherId));
 
             if (t.Count == 0)
                 return null;

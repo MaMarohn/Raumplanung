@@ -23,9 +23,9 @@ namespace RaumplanungCore.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            _databaseHandler.GetAllFreeRoomsOnDate(new DateTime(2016, 12, 20), 1);
-            List<Room> rooms = _databaseHandler.GetAllRooms();
-            return View("Index", rooms);
+            List<Reservation> reservations = _databaseHandler.GetAllReservations();
+            int count = reservations.Count;            
+            return View("Index", reservations);
         }
 
         // GET: /<controller>/Detail/reservationId

@@ -2,39 +2,41 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+@section scripts
+{
+    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css" />
+    <!--<script src="/fullCalendar/lib/jquery.min.js"></script>-->
+    <script src="/fullCalendar/lib/moment.min.js"></script>
+    <script src="/fullCalendar/fullcalendar.js"></script>
+
+
+    <script>
+                $(document)
+                    .ready(function() {
+                        $('#calendar')
+                            .fullCalendar({
+                                defaultView: 'agendaWeek',
+                                weekends: false
+                            })
+                    });
+    </script>    
+}
 
 @{
     ViewData["Title"] = "Neue Reservierung";
 }
 
-<html>
-<head>
+<h1> Neue Reservierung erstellen </h1>
 
-    <script language="VB" runat="server">
+<br />
+<br />
 
-        Sub Date_Selected(sender As Object, e As EventArgs)
-            Label1.Text = "Selected date is: " + Calendar1.SelectedDate.ToShortDateString
-        End Sub
+<h4>Gewünschten Termin anklicken, um verfügbare Räume anzuzeigen</h4>
 
-    </script>
+<br />
+<br />
 
-</head>
+<div id="calendar" style="width: 500px"> </div>
 
-<body>
 
-    <h3><font face="Verdana">Calendar Example</font></h3>
-
-    <form runat=server>
-
-        <asp:Calendar id=Calendar1 onselectionchanged="Date_Selected" runat="server" />
-
-        <p>
-
-            <asp:Label id=Label1 runat="server" />
-
-    </form>
-
-</body>
-
-</html>
 
