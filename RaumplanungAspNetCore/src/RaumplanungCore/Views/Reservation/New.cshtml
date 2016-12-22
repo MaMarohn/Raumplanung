@@ -32,7 +32,7 @@
                                         title: 'Erster Block',
                                         start: '08:30',    
                                         end: '10:00',
-                                        dow: [1,2,3,4,5]
+                                        dow: [1, 2, 3, 4, 5]
                                     },
                                     {
                                         title: 'Zweiter Block',
@@ -40,7 +40,13 @@
                                         end: '11:45',
                                         dow: [1,2,3,4,5]
                                     }
-                                ]
+                                ],
+                                eventClick: function(event, element) {
+                                    var start = moment(event.start).format("DD-MM-YYYY HH:mm");
+                                    event.title = start;
+                                    element.color = 'green';
+                                    $('#calendar').fullCalendar('updateEvent', event);
+                                }
                             })
                     });
     </script>    
