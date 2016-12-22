@@ -63,7 +63,7 @@ namespace RaumplanungCore.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index","Reservation");
                 }
                 if (result.RequiresTwoFactor)
                 {
