@@ -338,3 +338,6 @@ ModelManifest.xml
 /Raumplanung/RaumplanungWeb/appsettings.json
 /Raumplanung/RaumplanungWeb/app.config
 /Raumplanung/RaumplanungWeb/.bowerrc
+/RaumplanungAspNetCore/src/RaumplanungCore/Properties/PublishProfiles/publish-module.psm1
+/RaumplanungAspNetCore/src/RaumplanungCore/Properties/PublishProfiles/raumplanung - Web Deploy.pubxml
+/RaumplanungAspNetCore/src/RaumplanungCore/Properties/PublishProfiles/raumplanung - Web Deploy-publish.ps1
