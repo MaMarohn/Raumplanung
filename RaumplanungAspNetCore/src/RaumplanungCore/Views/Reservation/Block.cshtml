@@ -1,0 +1,41 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Reservierungen";
+}
+@model IEnumerable<RaumplanungCore.ViewModels.RaumbelegungModel>
+
+<h1> Reservierungen in diesem Block </h1>
+    <table>
+        <tr>
+            <th> Raum </th>
+            <th> Datum </th>
+            <th> Block </th>
+            <th> Lehrer </th>
+            <th> Belegen/Tauschen</th>
+        </tr>
+        @foreach (var belegung in Model)
+        {
+        <tr>
+            <td width="100px"> @belegung.room.Name </td>
+            <td width="150px"> @belegung.date </td>
+            <td width="50px"> @belegung.block </td>
+            @if (belegung.reserved)
+            {
+                <td width="350px"> @belegung.teacherId</td>
+                <td width="50px"> Tausch vorschlagen </td>
+            }
+            else
+            {
+                <td width="50px"> - </td>
+                <td width="50px"> Reservieren </td>
+            }
+        </tr>
+        }
+    </table>
+
+
+
+
+

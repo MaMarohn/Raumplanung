@@ -17,6 +17,8 @@ namespace RaumplanungCore.Models
     public class Teacher :IdentityUser
     {
         public ICollection<Reservation> Reservations { get; set; }
+        public string Vorname { get; set; }
+        public string Anrede { get; set; }
 
         public Teacher()
         {

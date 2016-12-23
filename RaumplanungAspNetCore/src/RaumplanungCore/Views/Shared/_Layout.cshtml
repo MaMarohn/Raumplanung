@@ -55,7 +55,10 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Reservation" asp-action="Index">Meine Reservierungen</a></li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li><a asp-area="" asp-controller="Reservation" asp-action="Index">Meine Reservierungen</a></li>
+                    }
                     @if (User.IsInRole("Administrator"))
                     {
                         <li><a asp-area="" asp-controller="Admin" asp-action="Index">AdminPage</a></li>

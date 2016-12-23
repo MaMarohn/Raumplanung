@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -46,8 +47,15 @@ namespace RaumplanungCore.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Reservation");
+
+            }
+            
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            
         }
 
         //
@@ -60,29 +68,52 @@ namespace RaumplanungCore.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user=_userManager.FindByEmailAsync(model.Email).Result;
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var user = _userManager.FindByEmailAsync(model.Email).Result;
+
+
+                if (user != null)
                 {
-                    _logger.LogInformation(1, "User logged in.");
-                    return RedirectToAction("Index","Reservation");
+                    // This doesn't count login failures towards account lockout
+                    // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                    var result =
+                        await
+                            _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe,
+                                lockoutOnFailure: false);
+                    if (result.Succeeded)
+                    {
+                        if (user.EmailConfirmed)
+                        {
+                            _logger.LogInformation(1, "User logged in.");
+                            return RedirectToAction("Index", "Reservation");
+                        }
+                        else
+                        {
+                            return View("Waitforemailconfirm");
+                        }
+
+                    }
+                    if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToAction(nameof(SendCode),
+                            new {ReturnUrl = returnUrl, RememberMe = model.RememberMe});
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning(2, "User account locked out.");
+                        return View("Lockout");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return View(model);
+                    }
+
+
+
                 }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning(2, "User account locked out.");
-                    return View("Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
-                }
+                ModelState.AddModelError(string.Empty, "Specified User doesn't exist.");
+                return View(model);
+
             }
 
             // If we got this far, something failed, redisplay form
@@ -95,6 +126,7 @@ namespace RaumplanungCore.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
+            ViewData["Emailok"] = "true";
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -118,25 +150,30 @@ namespace RaumplanungCore.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new Teacher { UserName = model.Name, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                //if(model.Email.Contains("@lioba.de")&&model.Email.Length==13)
                 {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    if (model.Admin)
+                    var user = new Teacher {UserName = model.Name, Email = model.Email,Vorname = model.Vorname,Anrede = model.Anrede};
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(user, "Administrator");
+                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new {userId = user.Id, code = code},
+                            protocol: HttpContext.Request.Scheme);
+                        await _emailSender.SendEmailAsync(user.UserName, model.Email, "Confirm your account",
+                            $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                        if (model.Admin)
+                        {
+                            await _userManager.AddToRoleAsync(user, "Administrator");
+                        }
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation(3, "User created a new account with password.");
+                        return RedirectToAction("Waitforemailconfirm", "Account");
                     }
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToAction("Index", "Reservation");
+                    AddErrors(result);
                 }
-                AddErrors(result);
+               // ViewData["Emailok"] = "false";
             }
 
             // If we got this far, something failed, redisplay form
@@ -151,7 +188,7 @@ namespace RaumplanungCore.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         //
@@ -258,6 +295,11 @@ namespace RaumplanungCore.Controllers
                 return View("Error");
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+            {
+                await _userManager.AddClaimAsync(user, new Claim("MailConfirmed", "true"));
+               
+            }
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -281,7 +323,7 @@ namespace RaumplanungCore.Controllers
             {
                 ViewData["email"]=model.Email;
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null )
+                if (user == null || !(user.EmailConfirmed))
                 {
                     ViewData["email"] = model.Email;
                     // Don't reveal that the user does not exist or is not confirmed
@@ -295,7 +337,7 @@ namespace RaumplanungCore.Controllers
                 
                 await _emailSender.SendEmailAsync(user.UserName,model.Email, "Reset Password",
                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
-                ViewData["email"] = model.Email+"should be successfull"+user.UserName+_emailSender.ToString();
+                ViewData["email"] = model.Email;
                 return View("ForgotPasswordConfirmation");
             }
 
@@ -470,6 +512,13 @@ namespace RaumplanungCore.Controllers
         private Task<Teacher> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Waitforemailconfirm()
+        {
+            return View();
         }
 
         private IActionResult RedirectToLocal(string returnUrl)

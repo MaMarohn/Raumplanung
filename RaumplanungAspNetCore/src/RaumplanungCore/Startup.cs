@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -71,6 +72,11 @@ namespace RaumplanungCore
             //services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddMvc();
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ConfirmedEmailOnly", policy => policy.RequireClaim("MailConfirmed","true"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,7 +95,7 @@ namespace RaumplanungCore
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=reservation}/{action=Index}");
+                    template: "{controller=Account}/{action=Login}");
             });
 
             /* app.Run(async (context) =>

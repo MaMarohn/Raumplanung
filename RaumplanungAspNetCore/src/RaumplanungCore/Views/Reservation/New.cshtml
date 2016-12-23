@@ -96,17 +96,12 @@
                                         dow: [5]                                        
                                     }
                                 ]*/,
-                                eventClick: function(event, element) {
+                                eventClick: function(event) {
                                     var start = moment(event.start).format("DD-MM-YYYY HH:mm");
                                     event.title = start;
-                                    //@time = start;                          
-                                    var scriptTime;
-                                    //@ViewData["time"] = start;
-                                    //var color = @NewModel.FindReservationByDate(time);
-                                    //event.color = color;
-                                    $('#calendar').fullCalendar('updateEvent', event);
+                                    window.open("/reservation/onclick/" + start.toString());
                                 }
-                                    
+                                
 
                             })
                     });
@@ -126,7 +121,7 @@
 
 <h4>Gewünschten Termin anklicken, um verfügbare Räume anzuzeigen</h4>
 
-<a href="/reservation/loadevents"> testlink </a>
+<a href="/reservation/onclick/1"> testlink </a>
 <br />
 <br />
 
