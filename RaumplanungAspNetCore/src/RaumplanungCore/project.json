@@ -20,7 +20,9 @@
     "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
-    "Microsoft.AspNet.Identity.Core": "2.2.1"
+    "Microsoft.AspNet.Identity.Core": "2.2.1",
+    "System.Net.Mail.Abstractions": "1.0.8",
+    "MailKit": "1.10.1"
   },
 
   "tools": {

@@ -68,7 +68,7 @@ namespace RaumplanungCore
         .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            //services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddMvc();
         }
