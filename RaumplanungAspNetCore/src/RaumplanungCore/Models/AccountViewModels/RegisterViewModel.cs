@@ -13,6 +13,12 @@ namespace RaumplanungCore.Models.AccountViewModels
         public string Name { get; set; }
 
         [Required]
+        [Display(Name = "Admin")]
+        public bool Admin { get; set; }
+
+
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }

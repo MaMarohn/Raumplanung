@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using RaumplanungCore.ViewModels.Reservation;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using RaumplanungCore.Models;
+using RaumplanungCore.Models.Roles;
 using RaumplanungCore.Services;
 
 namespace RaumplanungCore
@@ -41,7 +42,7 @@ namespace RaumplanungCore
                     options.UseSqlServer(
                         "Server=(localdb)\\mssqllocaldb;Database=Reservation;Trusted_Connection=True;MultipleActiveResultSets=true"));
             
-            services.AddIdentity<Teacher, IdentityRole>(options =>
+            services.AddIdentity<Teacher, RoleAdmin>(options =>
 
                 {
                 // Password settings
@@ -67,7 +68,7 @@ namespace RaumplanungCore
         .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            //services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddMvc();
         }
@@ -97,7 +98,7 @@ namespace RaumplanungCore
               });*/
 
 
-
+            
 
             DbInitializer.Initialize(reservationContext);
         }

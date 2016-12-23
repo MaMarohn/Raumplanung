@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Raumplanung.Database;
 using RaumplanungCore.Models;
 using RaumplanungCore.Models.AccountViewModels;
+using RaumplanungCore.Models.Roles;
 using RaumplanungCore.Services;
 
 namespace RaumplanungCore.Controllers
@@ -19,20 +20,23 @@ namespace RaumplanungCore.Controllers
         private readonly UserManager<Teacher> _userManager;
         private readonly SignInManager<Teacher> _signInManager;
         private readonly IEmailSender _emailSender;
-        private readonly ISmsSender _smsSender;
+        //private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly RoleManager<RoleAdmin> _roleManager;
 
         public AccountController(
             UserManager<Teacher> userManager,
             SignInManager<Teacher> signInManager,
+            RoleManager<RoleAdmin> roleManager,
             IEmailSender emailSender,
-            ISmsSender smsSender,
+            //ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _emailSender = emailSender;
-            _smsSender = smsSender;
+            //_smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
@@ -102,6 +106,15 @@ namespace RaumplanungCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
+
+            if (!_roleManager.RoleExistsAsync("Administrator").Result)
+            {
+                RoleAdmin newRole = new RoleAdmin("Administrator", "Administrators can do something with data");
+                await _roleManager.CreateAsync(newRole);
+            }
+
+
+
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
@@ -115,6 +128,10 @@ namespace RaumplanungCore.Controllers
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    if (model.Admin)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Administrator");
+                    }
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToAction("Index", "Reservation");
@@ -262,20 +279,24 @@ namespace RaumplanungCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                ViewData["email"]=model.Email;
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null )
                 {
+                    ViewData["email"] = model.Email;
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
                 }
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 // Send an email with this link
-                //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                //   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
-                //return View("ForgotPasswordConfirmation");
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                
+                await _emailSender.SendEmailAsync(user.UserName,model.Email, "Reset Password",
+                   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+                ViewData["email"] = model.Email+"should be successfull"+user.UserName+_emailSender.ToString();
+                return View("ForgotPasswordConfirmation");
             }
 
             // If we got this far, something failed, redisplay form
@@ -311,7 +332,7 @@ namespace RaumplanungCore.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByNameAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
@@ -379,12 +400,12 @@ namespace RaumplanungCore.Controllers
             var message = "Your security code is: " + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
+                await _emailSender.SendEmailAsync(await _userManager.GetUserNameAsync(user),await _userManager.GetEmailAsync(user), "Security Code", message);
             }
-            else if (model.SelectedProvider == "Phone")
+            /*else if (model.SelectedProvider == "Phone")
             {
                 await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
-            }
+            }*/
 
             return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }

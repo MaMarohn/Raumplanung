@@ -1,6 +1,10 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using System.Reflection
+@using Microsoft.AspNetCore.Http
+@model IEnumerable<Room>
+
 
 @section scripts
 {
@@ -8,7 +12,7 @@
     <!--<script src="/fullCalendar/lib/jquery.min.js"></script>-->
     <script src="/fullCalendar/lib/moment.min.js"></script>
     <script src="/fullCalendar/fullcalendar.js"></script>
-
+    <script src="/fullCalendar/locale/de.js"></script>
 
     <script>
                 $(document)
@@ -16,7 +20,34 @@
                         $('#calendar')
                             .fullCalendar({
                                 defaultView: 'agendaWeek',
-                                weekends: false
+                                weekends: false,
+                                editable: false,
+                                timezone: 'local',
+                                locale: 'de',
+                                views: {
+                                    week: {
+                                        timeFormat: 'h:mm'
+                                    }
+                                },
+                                events: [
+                                    {
+                                        title: 'Erster Block',
+                                        start: '08:30',    
+                                        end: '10:00',
+                                        dow: [1, 2, 3, 4, 5]
+                                    },
+                                    {
+                                        title: 'Zweiter Block',
+                                        start: '10:15',
+                                        end: '11:45',
+                                        dow: [1,2,3,4,5]
+                                    }
+                                ],
+                                eventClick: function(event, element) {
+                                    var start = moment(event.start).format("DD-MM-YYYY HH:mm");
+                                    event.title = start;                                    
+                                    $('#calendar').fullCalendar('updateEvent', event);
+                                }
                             })
                     });
     </script>    
@@ -28,6 +59,8 @@
 
 <h1> Neue Reservierung erstellen </h1>
 
+
+
 <br />
 <br />
 
@@ -36,7 +69,7 @@
 <br />
 <br />
 
-<div id="calendar" style="width: 500px"> </div>
+<div id="calendar" style="width: 55em"> </div>
 
 
 
