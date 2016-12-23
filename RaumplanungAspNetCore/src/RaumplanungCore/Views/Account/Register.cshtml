@@ -14,17 +14,37 @@
     <div class="form-group">
         <label asp-for="Email" class="col-md-2 control-label">E-Mail:</label>
         <div class="col-md-10">
-            <input asp-for="Email" class="form-control" />@if (ViewData["Emailok"].Equals("false"))
-            {<font color="red">
+            <input asp-for="Email" class="form-control" />
+            @if (ViewData["Emailok"].Equals("false"))
+             {<font color="red">
                 <label asp-for="Email" class="col-md-2 control-label">Ungültige Mailadresse! Es sind nur Lehrermailadressen der Form "xxxx@lioba.de" gültig.</label></font> }
-                <span asp-validation-for="Email" class="text-danger"></span>
-</div>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
     </div>
+    
+    <div class="form-group">
+        <label asp-for="Anrede" class="col-md-2 control-label">Anrede:</label>
+        <div class="col-md-10">
+            <select asp-for="Anrede" class="form-control">
+                <option value="Frau">Frau</option>
+                <option value="Herr">Herr</option>
+            </select>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
     <div class="form-group">
         <label asp-for="Name" class="col-md-2 control-label">Name:</label>
         <div class="col-md-10">
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Vorname" class="col-md-2 control-label">Vorname:</label>
+        <div class="col-md-10">
+            <input asp-for="Vorname" class="form-control" />
+            <span asp-validation-for="Vorname" class="text-danger"></span>
         </div>
     </div>
     

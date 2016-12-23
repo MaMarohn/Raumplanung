@@ -47,8 +47,15 @@ namespace RaumplanungCore.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Reservation");
+
+            }
+            
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            
         }
 
         //
@@ -61,8 +68,10 @@ namespace RaumplanungCore.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user=_userManager.FindByEmailAsync(model.Email).Result;
-                if (user.EmailConfirmed)
+                var user = _userManager.FindByEmailAsync(model.Email).Result;
+
+
+                if (user != null)
                 {
                     // This doesn't count login failures towards account lockout
                     // To enable password failures to trigger account lockout, set lockoutOnFailure: true
@@ -72,8 +81,16 @@ namespace RaumplanungCore.Controllers
                                 lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        _logger.LogInformation(1, "User logged in.");
-                        return RedirectToAction("Index", "Reservation");
+                        if (user.EmailConfirmed)
+                        {
+                            _logger.LogInformation(1, "User logged in.");
+                            return RedirectToAction("Index", "Reservation");
+                        }
+                        else
+                        {
+                            return View("Waitforemailconfirm");
+                        }
+
                     }
                     if (result.RequiresTwoFactor)
                     {
@@ -90,8 +107,12 @@ namespace RaumplanungCore.Controllers
                         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                         return View(model);
                     }
+
+
+
                 }
-                return View("Waitforemailconfirm");
+                ModelState.AddModelError(string.Empty, "Specified User doesn't exist.");
+                return View(model);
 
             }
 
@@ -131,7 +152,7 @@ namespace RaumplanungCore.Controllers
             {
                 //if(model.Email.Contains("@lioba.de")&&model.Email.Length==13)
                 {
-                    var user = new Teacher {UserName = model.Name, Email = model.Email};
+                    var user = new Teacher {UserName = model.Name, Email = model.Email,Vorname = model.Vorname,Anrede = model.Anrede};
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
@@ -167,7 +188,7 @@ namespace RaumplanungCore.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         //
