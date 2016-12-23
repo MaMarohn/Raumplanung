@@ -42,7 +42,7 @@ namespace RaumplanungCore
                     options.UseSqlServer(
                         "Server=(localdb)\\mssqllocaldb;Database=Reservation;Trusted_Connection=True;MultipleActiveResultSets=true"));
             
-            services.AddIdentity<Teacher, RoleAdmin>(options =>
+           services.AddIdentity<Teacher, RoleAdmin>(options =>
 
                 {
                 // Password settings
@@ -65,7 +65,7 @@ namespace RaumplanungCore
                 options.User.RequireUniqueEmail = true;
             })
         .AddEntityFrameworkStores<ReservationContext>()
-        .AddDefaultTokenProviders();
+        .AddDefaultTokenProviders(); 
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
             //services.AddTransient<ISmsSender, AuthMessageSender>();

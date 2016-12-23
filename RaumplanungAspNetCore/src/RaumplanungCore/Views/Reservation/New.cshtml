@@ -3,8 +3,13 @@
 *@
 @using System.Reflection
 @using Microsoft.AspNetCore.Http
+@using RaumplanungCore.ViewModels.Reservation
 @model IEnumerable<Room>
+@inject NewModel NewModel
 
+@{
+    DateTime time = DateTime.Now;
+}
 
 @section scripts
 {
@@ -28,26 +33,81 @@
                                     week: {
                                         timeFormat: 'h:mm'
                                     }
-                                },
-                                events: [
+                                },                                
+                                events: "/reservation/loadevents/" /*[
                                     {
-                                        title: 'Erster Block',
+                                        title: 'Mo1',
                                         start: '08:30',    
                                         end: '10:00',
-                                        dow: [1, 2, 3, 4, 5]
+                                        dow: [1]
                                     },
                                     {
-                                        title: 'Zweiter Block',
+                                        title: 'Mo2',
                                         start: '10:15',
                                         end: '11:45',
-                                        dow: [1,2,3,4,5]
+                                        dow: [1]
+                                    },
+                                    {
+                                        title: 'Di1',
+                                        start: '08:30',    
+                                        end: '10:00',
+                                        dow: [2]
+                                    },
+                                    {
+                                        title: 'Di2',
+                                        start: '10:15',
+                                        end: '11:45',
+                                        dow: [2]
+                                    },
+                                    {
+                                        title: 'Mi1',
+                                        start: '08:30',    
+                                        end: '10:00',
+                                        dow: [3]
+                                    },
+                                    {
+                                        title: 'Mi2',
+                                        start: '10:15',
+                                        end: '11:45',
+                                        dow: [3]
+                                    },
+                                    {
+                                        title: 'Do1',
+                                        start: '08:30',    
+                                        end: '10:00',
+                                        dow: [4]
+                                    },
+                                    {
+                                        title: 'Do2',
+                                        start: '10:15',
+                                        end: '11:45',
+                                        dow: [4]
+                                    },
+                                    {
+                                        title: 'Fr1',
+                                        start: '08:30',    
+                                        end: '10:00',
+                                        dow: [5]
+                                    },
+                                    {
+                                        title: 'Fr2',
+                                        start: '10:15',
+                                        end: '11:45',
+                                        dow: [5]                                        
                                     }
-                                ],
+                                ]*/,
                                 eventClick: function(event, element) {
                                     var start = moment(event.start).format("DD-MM-YYYY HH:mm");
-                                    event.title = start;                                    
+                                    event.title = start;
+                                    //@time = start;                          
+                                    var scriptTime;
+                                    //@ViewData["time"] = start;
+                                    //var color = @NewModel.FindReservationByDate(time);
+                                    //event.color = color;
                                     $('#calendar').fullCalendar('updateEvent', event);
                                 }
+                                    
+
                             })
                     });
     </script>    
@@ -66,6 +126,7 @@
 
 <h4>Gewünschten Termin anklicken, um verfügbare Räume anzuzeigen</h4>
 
+<a href="/reservation/loadevents"> testlink </a>
 <br />
 <br />
 
