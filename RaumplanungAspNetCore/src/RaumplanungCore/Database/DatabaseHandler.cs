@@ -76,36 +76,30 @@ namespace Raumplanung.Database
             return bloecke;
         }
 
-        private List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int blockNr)
+        public List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block)
         {
-            var rooms = GetAllRooms();
-            var dateTime = new DateTime(date.Year , date.Month , date.Day);
             var freeRooms = new List<Room>();
-            
-            //alle Reservation des Tages
-            var reservations = _reservationContext.Reservations.ToList().Where(r => r.Date == dateTime);
+            var dateTime = new DateTime(date.Year, date.Month, date.Day);
+            var rooms = GetAllRooms();
+            var reservations = _reservationContext.Reservations.ToList().Where(r => r.Date == dateTime && r.Block == block);
+            if (!reservations.Any())
+                return rooms;
 
-            if (reservations == null || reservations.Count() == 0)
+            foreach (var room in rooms)
             {
-                //An diesem Tag gibt es keine Resrvierungen , also sind alle Räume frei
-              
-                return GetAllRooms();
-            }
-
-            //alle Reservationen des Blocks
-            var block = reservations.ToList().Where(r => r.Block == blockNr);
-
-            foreach (var r in rooms)
-            {
-                if (block.Count(rr => rr.RoomId == r.RoomId) > 0)
+                if (reservations.ToList().Where(r => r.RoomId == room.RoomId).Count() == 0)
                 {
-                    //dieses Raum wurde nicht reserviert
-                    freeRooms.Add(r);
+                    freeRooms.Add(room);
                 }
-            }      
+            }
             return freeRooms;
-
         }
+
+        public bool ExchangeReservation(string fromTeacher, int fromRoom, string toTeacher, int toRoom)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public List<Reservation> GetAllReservations()
         {
@@ -121,7 +115,7 @@ namespace Raumplanung.Database
                                                where t.Date.Equals(dateTime)
                                                select t;
 
-            return new List<Reservation>(reservations);
+            return new List<Reservation>(reservations = reservations.OrderBy(r => r.RoomId));
         }
 
         public List<Reservation> GetReservationsFromTeacher(string teacherId)
@@ -142,6 +136,11 @@ namespace Raumplanung.Database
                 return null;
 
             return new List<Reservation>(t.First().Reservations);
+        }
+
+        public List<Reservation> GetReservationsWithDateAndBlock(DateTime date, int blockNr)
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -188,5 +187,7 @@ namespace Raumplanung.Database
         {
             return _reservationContext.Reservations.Find(reservationId);
         }
+
+      
     }
 }
