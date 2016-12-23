@@ -76,9 +76,8 @@ namespace Raumplanung.Database
             return bloecke;
         }
 
-        List<Room> IDatabaseHandler.GetFreeRoomsOnDateAndBlock(DateTime date, int block)
+        public List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block)
         {
-            
             var freeRooms = new List<Room>();
             var dateTime = new DateTime(date.Year, date.Month, date.Day);
             var rooms = GetAllRooms();
@@ -92,9 +91,15 @@ namespace Raumplanung.Database
                 {
                     freeRooms.Add(room);
                 }
-            }             
+            }
             return freeRooms;
         }
+
+        public bool ExchangeReservation(string fromTeacher, int fromRoom, string toTeacher, int toRoom)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public List<Reservation> GetAllReservations()
         {
@@ -110,7 +115,7 @@ namespace Raumplanung.Database
                                                where t.Date.Equals(dateTime)
                                                select t;
 
-            return new List<Reservation>(reservations);
+            return new List<Reservation>(reservations = reservations.OrderBy(r => r.RoomId));
         }
 
         public List<Reservation> GetReservationsFromTeacher(string teacherId)
@@ -131,6 +136,11 @@ namespace Raumplanung.Database
                 return null;
 
             return new List<Reservation>(t.First().Reservations);
+        }
+
+        public List<Reservation> GetReservationsWithDateAndBlock(DateTime date, int blockNr)
+        {
+            throw new NotImplementedException();
         }
 
 

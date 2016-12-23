@@ -33,9 +33,6 @@ namespace RaumplanungCore.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-
-            List<Block> blocks = _databaseHandler.GetFreeRoomsOnDate(new DateTime(2016, 12,20));
-            //List<Reservation> reservations = _databaseHandler.GetAllReservations();
             //HIER:var userId = User.Identity.GetUserId(); oder ähnliches
             List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher("0b5b8029-45f1-4314-aa08-b23f25f6af03");
             int count;
@@ -105,7 +102,11 @@ namespace RaumplanungCore.Controllers
         {
             DateTime start = DateTime.Parse(starts);
             int blockId = calculateBlock(starts);
-
+            /*
+             * TO-DO
+             * GetReservationsOnDateAndBlock()
+             * SortierteListe nach RaumNR
+             */
             List<Reservation> reservations = _databaseHandler.GetReservationsWithDate(start);
             List<Reservation> reservationsInBlock = new List<Reservation>();
             foreach (var reservation in reservations)
@@ -153,14 +154,14 @@ namespace RaumplanungCore.Controllers
 
         private string FindReservationByDate(DateTime date, int blockNr)
         {
-            List<Block> bloecke = _databaseHandler.GetFreeRoomsOnDate(date);
-            if (bloecke[blockNr].FreeRooms.Count == 0)
+            List<Room> block = _databaseHandler.GetFreeRoomsOnDateAndBlock(date , blockNr);
+            if (block.Count == 0)
             {
                 return "red";
             }
-            if (bloecke[blockNr].FreeRooms.Count < _databaseHandler.GetAllRooms().Count)
+            if (block.Count < _databaseHandler.GetAllRooms().Count)
             {
-                return "yellow";
+                return "orange";
             }
             else
             {
