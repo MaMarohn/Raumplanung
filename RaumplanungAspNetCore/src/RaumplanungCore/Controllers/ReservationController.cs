@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Console;
 using Raumplanung.Database;
@@ -14,6 +15,8 @@ using RaumplanungCore.ViewModels;
 
 namespace RaumplanungCore.Controllers
 {
+    [Authorize]
+    [Authorize(Policy = "ConfirmedEmailOnly")]
     public class ReservationController : Controller
     {
         private readonly DatabaseHandler _databaseHandler;

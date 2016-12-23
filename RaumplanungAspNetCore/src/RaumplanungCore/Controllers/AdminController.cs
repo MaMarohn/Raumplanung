@@ -11,13 +11,13 @@ using RaumplanungCore.Services;
 namespace RaumplanungCore.Controllers
 {
     [Authorize(Roles = "Administrator")]
+    [Authorize(Policy = "ConfirmedEmailOnly")]
     public class AdminController : Controller
     {
         // GET: /<controller>/
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            EmailSender email=new EmailSender();
-            await email.SendEmailAsync("Jonas","jonasmair@gmx.de", "Test", "Testmessage");
+            
             return View();
         }
     }
