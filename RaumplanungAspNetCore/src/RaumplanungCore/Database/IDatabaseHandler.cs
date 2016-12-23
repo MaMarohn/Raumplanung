@@ -20,6 +20,7 @@ namespace Raumplanung.Database
         Teacher GetTeacher(string teacherId);
         Room GetRoom(int roomId);
         Reservation GetReservation(int reservationId);
-        Block GetFreeRoomsOnDate(DateTime date, int blockNr);
+        //List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int blockNr);
+        List<Block> GetFreeRoomsOnDate(DateTime date);
     }
 }

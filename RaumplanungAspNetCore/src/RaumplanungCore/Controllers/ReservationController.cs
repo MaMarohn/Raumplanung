@@ -25,9 +25,9 @@ namespace RaumplanungCore.Controllers
         public IActionResult Index()
         {
 
-            _databaseHandler.GetFreeRoomsOnDate(new DateTime(), 1);
+            _databaseHandler.GetFreeRoomsOnDateAndBlock(new DateTime(), 1);
 
-
+            List<Block> blocks = _databaseHandler.GetFreeRoomsOnDate(new DateTime(2016, 12,20));
             //List<Reservation> reservations = _databaseHandler.GetAllReservations();
             //HIER:var userId = User.Identity.GetUserId(); oder ähnliches
             List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher("0b5b8029-45f1-4314-aa08-b23f25f6af03");
