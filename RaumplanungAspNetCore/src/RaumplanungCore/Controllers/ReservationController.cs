@@ -20,6 +20,10 @@ namespace RaumplanungCore.Controllers
     public class ReservationController : Controller
     {
         private readonly DatabaseHandler _databaseHandler;
+        int amountOfBlocks = 7;
+        string[] dayStrings = { "Mo", "Di", "Mi", "Do", "Fr" };
+        string[] blockStartArray = { "08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30" };
+        string[] blockEndArray = { "10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00" };
 
         public ReservationController(ReservationContext context)
         {
@@ -82,10 +86,7 @@ namespace RaumplanungCore.Controllers
         private List<CalendarEvent> GetEvents(DateTime start, DateTime end)
         {            
             List<CalendarEvent> eventList = new List<CalendarEvent>();                  
-            int amountOfBlocks = 7;
-            string[] dayStrings = {"Mo", "Di", "Mi", "Do", "Fr"};
-            string[] blockStartArray = {"08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30"};
-            string[] blockEndArray = {"10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00"};            
+                 
             for (int j = 0; j < dayStrings.Length; j++)
             {
                 int[] days = {j+1};
@@ -99,17 +100,54 @@ namespace RaumplanungCore.Controllers
             return eventList;            
         }
 
-        [HttpGet("reservation/OnClick/{start}")]
-        public IActionResult OnClick(DateTime start)
+        [HttpGet("reservation/OnClick/{starts}")]
+        public IActionResult OnClick(string starts)
         {
-            List<Block> bloecke = _databaseHandler.GetFreeRoomsOnDate(start);
-            int blockId = calculateBlock(start);
-            //List<Reservation> reservations = bloecke[blockId].FreeRooms
-            return View("block");
+            DateTime start = DateTime.Parse(starts);
+            int blockId = calculateBlock(starts);
+
+            List<Reservation> reservations = _databaseHandler.GetReservationsWithDate(start);
+            List<Reservation> reservationsInBlock = new List<Reservation>();
+            foreach (var reservation in reservations)
+            {
+                if (reservation.Block == blockId)
+                {
+                    reservationsInBlock.Add(reservation);
+                }
+            }
+            List<RaumbelegungModel> raumbelegung = new List<RaumbelegungModel>();
+            foreach (var room in _databaseHandler.GetAllRooms())
+            {
+                bool found = false;
+                foreach (var reservation in reservationsInBlock)
+                {                
+                    if (reservation.RoomId == room.RoomId)
+                    {
+                        raumbelegung.Add(new RaumbelegungModel(room, true, reservation.TeacherId, start, blockId));
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    raumbelegung.Add(new RaumbelegungModel(room, false, null, start, blockId));
+                }
+            }
+            
+            return View("block", raumbelegung);
         }
 
-        private int calculateBlock(DateTime start)
+        private int calculateBlock(string start)
         {
+            string onlyTime = start.Split(' ')[1];
+            int blockId = 1;
+            foreach (var startTime in blockStartArray)
+            {
+                if (onlyTime.Equals(startTime))
+                {
+                    return blockId;
+                }
+                blockId++;
+            }
             return 1;
         }
 

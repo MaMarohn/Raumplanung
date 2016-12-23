@@ -99,7 +99,7 @@
                                 eventClick: function(event) {
                                     var start = moment(event.start).format("DD-MM-YYYY HH:mm");
                                     event.title = start;
-                                    window.open("/reservation/onclick/" + start);
+                                    window.open("/reservation/onclick/" + start.toString());
                                 }
                                 
 
