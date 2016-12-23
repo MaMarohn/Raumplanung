@@ -34,68 +34,7 @@
                                         timeFormat: 'h:mm'
                                     }
                                 },                                
-                                events: "/reservation/loadevents/" /*[
-                                    {
-                                        title: 'Mo1',
-                                        start: '08:30',    
-                                        end: '10:00',
-                                        dow: [1]
-                                    },
-                                    {
-                                        title: 'Mo2',
-                                        start: '10:15',
-                                        end: '11:45',
-                                        dow: [1]
-                                    },
-                                    {
-                                        title: 'Di1',
-                                        start: '08:30',    
-                                        end: '10:00',
-                                        dow: [2]
-                                    },
-                                    {
-                                        title: 'Di2',
-                                        start: '10:15',
-                                        end: '11:45',
-                                        dow: [2]
-                                    },
-                                    {
-                                        title: 'Mi1',
-                                        start: '08:30',    
-                                        end: '10:00',
-                                        dow: [3]
-                                    },
-                                    {
-                                        title: 'Mi2',
-                                        start: '10:15',
-                                        end: '11:45',
-                                        dow: [3]
-                                    },
-                                    {
-                                        title: 'Do1',
-                                        start: '08:30',    
-                                        end: '10:00',
-                                        dow: [4]
-                                    },
-                                    {
-                                        title: 'Do2',
-                                        start: '10:15',
-                                        end: '11:45',
-                                        dow: [4]
-                                    },
-                                    {
-                                        title: 'Fr1',
-                                        start: '08:30',    
-                                        end: '10:00',
-                                        dow: [5]
-                                    },
-                                    {
-                                        title: 'Fr2',
-                                        start: '10:15',
-                                        end: '11:45',
-                                        dow: [5]                                        
-                                    }
-                                ]*/,
+                                events: "/reservation/loadevents/",
                                 eventClick: function(event) {
                                     var start = moment(event.start).format("DD-MM-YYYY HH:mm");
                                     event.title = start;
@@ -121,7 +60,6 @@
 
 <h4>Gewünschten Termin anklicken, um verfügbare Räume anzuzeigen</h4>
 
-<a href="/reservation/onclick/1"> testlink </a>
 <br />
 <br />
 

@@ -8,19 +8,19 @@ namespace RaumplanungCore.ViewModels
 {
     public class RaumbelegungModel
     {
-        public Room room { get; set; }
-        public bool reserved { get; set; }
-        public string teacherId { get; set; }
-        public DateTime date { get; set; }
-        public int block { get; set; }
+        public Room Room { get; set; }
+        public bool Reserved { get; set; }
+        public Teacher Teacher { get; set; }
+        public DateTime Date { get; set; }
+        public int Block { get; set; }
 
-        public RaumbelegungModel(Room r, bool res, string t, DateTime d, int b)
+        public RaumbelegungModel(Room r, bool res, Teacher t, DateTime d, int b)
         {
-            room = r;
-            reserved = res;
-            teacherId = t;
-            date = d;
-            block = b;
+            Room = r;
+            Reserved = res;
+            Teacher = t;
+            Date = d;
+            Block = b;
         }
 
     }
