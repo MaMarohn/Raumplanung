@@ -76,35 +76,24 @@ namespace Raumplanung.Database
             return bloecke;
         }
 
-        private List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int blockNr)
+        List<Room> IDatabaseHandler.GetFreeRoomsOnDateAndBlock(DateTime date, int block)
         {
-            var rooms = GetAllRooms();
-            var dateTime = new DateTime(date.Year , date.Month , date.Day);
-            var freeRooms = new List<Room>();
             
-            //alle Reservation des Tages
-            var reservations = _reservationContext.Reservations.ToList().Where(r => r.Date == dateTime);
+            var freeRooms = new List<Room>();
+            var dateTime = new DateTime(date.Year, date.Month, date.Day);
+            var rooms = GetAllRooms();
+            var reservations = _reservationContext.Reservations.ToList().Where(r => r.Date == dateTime && r.Block == block);
+            if (!reservations.Any())
+                return rooms;
 
-            if (reservations == null || reservations.Count() == 0)
+            foreach (var room in rooms)
             {
-                //An diesem Tag gibt es keine Resrvierungen , also sind alle Räume frei
-              
-                return GetAllRooms();
-            }
-
-            //alle Reservationen des Blocks
-            var block = reservations.ToList().Where(r => r.Block == blockNr);
-
-            foreach (var r in rooms)
-            {
-                if (block.Count(rr => rr.RoomId == r.RoomId) > 0)
+                if (reservations.ToList().Where(r => r.RoomId == room.RoomId).Count() == 0)
                 {
-                    //dieses Raum wurde nicht reserviert
-                    freeRooms.Add(r);
+                    freeRooms.Add(room);
                 }
-            }      
+            }             
             return freeRooms;
-
         }
 
         public List<Reservation> GetAllReservations()
@@ -188,5 +177,7 @@ namespace Raumplanung.Database
         {
             return _reservationContext.Reservations.Find(reservationId);
         }
+
+      
     }
 }

@@ -24,5 +24,6 @@ namespace Raumplanung.Database
         Reservation GetReservation(int reservationId);
         //List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int blockNr);
         List<Block> GetFreeRoomsOnDate(DateTime date);
+        List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block);
     }
 }
