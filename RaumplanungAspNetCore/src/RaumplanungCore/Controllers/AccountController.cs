@@ -123,11 +123,11 @@ namespace RaumplanungCore.Controllers
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    await _emailSender.SendEmailAsync(user.UserName,model.Email, "Confirm your account",
+                        $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
                     if (model.Admin)
                     {
                         await _userManager.AddToRoleAsync(user, "Administrator");
@@ -281,7 +281,7 @@ namespace RaumplanungCore.Controllers
             {
                 ViewData["email"]=model.Email;
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null )
+                if (user == null || !(user.EmailConfirmed))
                 {
                     ViewData["email"] = model.Email;
                     // Don't reveal that the user does not exist or is not confirmed
@@ -295,7 +295,7 @@ namespace RaumplanungCore.Controllers
                 
                 await _emailSender.SendEmailAsync(user.UserName,model.Email, "Reset Password",
                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
-                ViewData["email"] = model.Email+"should be successfull"+user.UserName+_emailSender.ToString();
+                ViewData["email"] = model.Email;
                 return View("ForgotPasswordConfirmation");
             }
 
