@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 /*
  * For unit testing
  */
-[assembly: InternalsVisibleTo("Database_Test")]
+[assembly: InternalsVisibleTo("DatabaseTest")]
 namespace Raumplanung.Database
 {
     class DatabaseHandler : IDatabaseHandler
@@ -106,8 +106,6 @@ namespace Raumplanung.Database
             return freeRooms;
 
         }
-
-      
 
         public List<Reservation> GetAllReservations()
         {

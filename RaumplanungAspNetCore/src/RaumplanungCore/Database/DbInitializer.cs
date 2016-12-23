@@ -16,8 +16,8 @@ namespace RaumplanungCore.Database
         {
             context.Database.EnsureCreated();
 
-            const int countRoom = 12;
-            if (context.Rooms.Count() < 12)
+            const int countRoom = 20;
+            if (context.Rooms.Count() < countRoom)
             {
                 //Datenbank wird neu gefüllt
                 foreach (var entity in context.Rooms)
@@ -27,7 +27,7 @@ namespace RaumplanungCore.Database
                 var rooms = new Room[countRoom];
                 for (var c = 0; c < countRoom; c++)
                 {
-                    rooms[c] = new Room {Name = "Room" + c};
+                    rooms[c] = new Room {Name = "Raum D" + c};
                 }
 
                 foreach (Room s in rooms)
@@ -37,9 +37,8 @@ namespace RaumplanungCore.Database
                 context.SaveChanges();
             }
 
-            const int countTeacher = 100;
-            //Console.WriteLine(context.Rooms.Count());
-            if (context.Teachers.Count() < countTeacher - 1)
+            const int countTeacher = 150;
+            if (context.Teachers.Count() < countTeacher)
             {
                 //Datenbank wird neu gefüllt
                 foreach (var entity in context.Teachers)
@@ -49,7 +48,7 @@ namespace RaumplanungCore.Database
                 var teachers = new Teacher[countTeacher];
                 for (var c = 0; c < countTeacher; c++)
                 {
-                    teachers[c] = new Teacher {UserName = "Teacher" + c};
+                    teachers[c] = new Teacher { UserName = "Lehrer " + c };
                 }
 
                 foreach (Teacher s in teachers)
@@ -59,42 +58,62 @@ namespace RaumplanungCore.Database
             }
             context.SaveChanges();
 
-            const int countReservation = 10;
-            if (context.Reservations.Count() < countReservation)
+            var countT = context.Teachers.Count();
+            if (context.Reservations.Count() < countT)
             {
                 //Datenbank wird neu gefüllt
                 foreach (var entity in context.Reservations)
                     context.Reservations.Remove(entity);
                 context.SaveChanges();
 
-                List<Teacher> teachers = new List<Teacher>(context.Teachers);
-                List<Room> rooms = new List<Room>(context.Rooms);
+                
+                var teachers = new List<Teacher>(context.Teachers);
+                var rooms = new List<Room>(context.Rooms);
+                Random random = new Random();
 
-                for (int c = 0; c < rooms.Count; c++)
+                for (int day = 23; day <= 31; day++)
                 {
-                    Teacher t = teachers[c];
-                    Room r = rooms[c];
+                    for (int blockNr = 1; blockNr <= 8; blockNr++)
+                    {                                          
+                        rooms.Shuffle();
+                        teachers.Shuffle();
+                        for (int x = 0; x < random.Next(rooms.Count) ; x++) {
+                            var r = new Reservation
+                            {
+                                TeacherId = teachers[x].Id,
+                                RoomId = rooms[x].RoomId,
+                                Date = new DateTime(2016, 12, day),
+                                Block = blockNr
+                            };
 
-                    Reservation reservation = new Reservation();
-                    reservation.Date = new DateTime(2016,12,20);
-                    reservation.Teacher = t;
-                    reservation.Room = r;
-                    
-                    t.Reservations.Add(reservation);
-                    r.Reservations.Add(reservation);
 
-                    context.Entry(t).State = EntityState.Modified;
-                    context.Entry(r).State = EntityState.Modified;
+                            teachers[x].Reservations.Add(r);
+                            rooms[x].Reservations.Add(r);
 
-                    context.Reservations.Add(reservation);
-
+                            context.Reservations.Add(r);
+                        }
+                    }
                     context.SaveChanges();
-                }
+                }               
             }
-
             context.Rooms.Include(r => r.Reservations);
-
+            context.Teachers.Include(r => r.Reservations);
             context.SaveChanges();
+        }
+
+
+        private static readonly Random rng = new Random();
+        private static void Shuffle<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
 
     }
