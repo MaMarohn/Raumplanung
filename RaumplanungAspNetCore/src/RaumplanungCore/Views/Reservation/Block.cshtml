@@ -4,8 +4,20 @@
 @{
     ViewData["Title"] = "Reservierungen";
 }
-@model IEnumerable<RaumplanungCore.ViewModels.RaumbelegungModel>
 
+@using Microsoft.AspNet.Identity
+@model IEnumerable<RaumplanungCore.ViewModels.RaumbelegungModel>
+@inject Microsoft.AspNetCore.Identity.UserManager<Teacher> TeacherManager
+
+
+@{
+    Reservation reservation = new Reservation();
+}
+
+@{
+    string[] reservationString = new string[Model.Count()];
+    int index = 0;
+}
 <h1> Reservierungen in diesem Block </h1>
     <table>
         <tr>
@@ -18,18 +30,25 @@
         @foreach (var belegung in Model)
         {
         <tr>
-            <td width="100px"> @belegung.room.Name </td>
-            <td width="150px"> @belegung.date </td>
-            <td width="50px"> @belegung.block </td>
-            @if (belegung.reserved)
+            <td width="100px"> @belegung.Room.Name </td>
+            <td width="150px"> @belegung.Date </td>
+            <td width="50px"> @belegung.Block </td>
+            @if (belegung.Reserved)
             {
-                <td width="350px"> @belegung.teacherId</td>
-                <td width="50px"> Tausch vorschlagen </td>
+                <td width="350px"> @belegung.Teacher.Anrede @belegung.Teacher.UserName</td>
+                <td width="50px"> <a asp-controller="Reservation" asp-action="Tauschen" asp-route-id="@belegung.Teacher.Id">Tausch vorschlagen </a ></td>
             }
             else
             {
-                <td width="50px"> - </td>
-                <td width="50px"> Reservieren </td>
+                <td width="50px"> - </td>                
+                string userId = TeacherManager.FindByNameAsync(User.Identity.Name).Result.Id;
+                int block = belegung.Block;
+                DateTime date = belegung.Date;
+                int roomId = belegung.Room.RoomId;
+                reservationString[index] = date + ";" + block + ";" + userId + ";" + roomId;
+
+                <td width="50px"> <a asp-controller="Reservation" asp-action="Reservieren" asp-route-id="@reservationString[index]"> Reservieren </a> </td>
+                index++;
             }
         </tr>
         }

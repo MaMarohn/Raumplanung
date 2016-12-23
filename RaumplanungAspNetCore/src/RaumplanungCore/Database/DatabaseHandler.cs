@@ -170,6 +170,7 @@ namespace Raumplanung.Database
                 TeacherId = teacherId,
                 RoomId = roomId
             });
+            _reservationContext.SaveChanges();
             return true;
         }
 

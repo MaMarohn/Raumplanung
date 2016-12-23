@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Console;
@@ -10,6 +9,8 @@ using Raumplanung.Database;
 using RaumplanungCore.Database;
 using RaumplanungCore.Models;
 using RaumplanungCore.ViewModels;
+using RaumplanungCore.Models.Roles;
+using Microsoft.AspNetCore.Identity;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,21 +21,25 @@ namespace RaumplanungCore.Controllers
     public class ReservationController : Controller
     {
         private readonly DatabaseHandler _databaseHandler;
+        private readonly UserManager<Teacher> _userManager;
         int amountOfBlocks = 7;
         string[] dayStrings = { "Mo", "Di", "Mi", "Do", "Fr" };
         string[] blockStartArray = { "08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30" };
         string[] blockEndArray = { "10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00" };
 
-        public ReservationController(ReservationContext context)
+        public ReservationController(ReservationContext context, UserManager<Teacher> userManager)
         {
             _databaseHandler = new DatabaseHandler(context);
+            _userManager = userManager;
         }
         
         // GET: /<controller>/
         public IActionResult Index()
         {
             //HIER:var userId = User.Identity.GetUserId(); oder ähnliches
-            List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher("0b5b8029-45f1-4314-aa08-b23f25f6af03");
+            //List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher("0b5b8029-45f1-4314-aa08-b23f25f6af03");
+            string teacherId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
+            List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);//_userManager.FindByNameAsync(User.Identity.Name).Result.Id);
             int count;
             if (reservations != null)
             {
@@ -124,7 +129,8 @@ namespace RaumplanungCore.Controllers
                 {                
                     if (reservation.RoomId == room.RoomId)
                     {
-                        raumbelegung.Add(new RaumbelegungModel(room, true, reservation.TeacherId, start, blockId));
+                        Teacher teacher = _databaseHandler.GetTeacher(reservation.TeacherId);
+                        raumbelegung.Add(new RaumbelegungModel(room, true, teacher, start, blockId));
                         found = true;
                     }
                 }
@@ -137,6 +143,24 @@ namespace RaumplanungCore.Controllers
             return View("block", raumbelegung);
         }
 
+        public IActionResult Tauschen(string teacherId)
+        {
+            return View();
+        }
+
+
+        [HttpGet("reservation/Reservieren/{id}")]
+       public IActionResult Reservieren(string id)
+        {
+            string[] splitted = id.Split(';');
+            DateTime date = DateTime.Parse(splitted[0]);
+            int block = Convert.ToInt32(splitted[1]);
+            string teacherId = splitted[2];
+            int roomId = Convert.ToInt32(splitted[3]);
+            bool succes =_databaseHandler.AddReservation(date, block, teacherId, roomId);
+            return View("New");
+        }
+        
         private int calculateBlock(string start)
         {
             string onlyTime = start.Split(' ')[1];
