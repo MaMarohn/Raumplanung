@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging.Console;
 using Raumplanung.Database;
 using RaumplanungCore.Database;
 using RaumplanungCore.Models;
@@ -66,50 +67,64 @@ namespace RaumplanungCore.Controllers
             return View();
         }
 
-        [HttpGet("reservation/LoadEvents")]
-        public IActionResult LoadEvents()
+        //[HttpGet("reservation/LoadEvents/{start, end}")]
+        public IActionResult LoadEvents(DateTime start, DateTime end)
         {
-            var eventList = GetEvents();
+            var eventList = GetEvents(start, end);
             var rows = eventList.ToArray();
             
             return Json(rows);
         }
 
-        private List<CalendarEvent> GetEvents()
-        {
+        private List<CalendarEvent> GetEvents(DateTime start, DateTime end)
+        {            
             List<CalendarEvent> eventList = new List<CalendarEvent>();                  
-            int amountOfBlocks = 3;
+            int amountOfBlocks = 7;
             string[] dayStrings = {"Mo", "Di", "Mi", "Do", "Fr"};
-            string[] blockStartArray = {"08:30", "10:15", "12:00"};
-            string[] blockEndArray = {"10:00", "11:45", "13:30"};
+            string[] blockStartArray = {"08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30"};
+            string[] blockEndArray = {"10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00"};            
             for (int j = 0; j < dayStrings.Length; j++)
             {
                 int[] days = {j+1};
                 for (int i = 0; i < amountOfBlocks ; i++)
                 {
-                    CalendarEvent dailyEvent = new CalendarEvent((dayStrings[j] + (i + 1)), blockStartArray[i], blockEndArray[i], days, "green");
+                    CalendarEvent dailyEvent = new CalendarEvent((dayStrings[j] + (i + 1)), blockStartArray[i], blockEndArray[i], days, FindReservationByDate(start, i));
                     eventList.Add(dailyEvent);
                 }
+                start = start.AddDays(1);
             }                        
             return eventList;            
         }
 
-        private string FindReservationByDate(DateTime date)
+        [HttpGet("reservation/OnClick/{start}")]
+        public IActionResult OnClick(DateTime start)
         {
-            List<Models.Reservation> reservations = _databaseHandler.GetReservationsWithDate(date);
-            if (reservations.Count == 0)
+            List<Block> bloecke = _databaseHandler.GetFreeRoomsOnDate(start);
+            int blockId = calculateBlock(start);
+            //List<Reservation> reservations = bloecke[blockId].FreeRooms
+            return View("block");
+        }
+
+        private int calculateBlock(DateTime start)
+        {
+            return 1;
+        }
+
+        private string FindReservationByDate(DateTime date, int blockNr)
+        {
+            List<Block> bloecke = _databaseHandler.GetFreeRoomsOnDate(date);
+            if (bloecke[blockNr].FreeRooms.Count == 0)
             {
-                return "green";
+                return "red";
             }
-            if (reservations.Count < _databaseHandler.GetAllRooms().Count)
+            if (bloecke[blockNr].FreeRooms.Count < _databaseHandler.GetAllRooms().Count)
             {
                 return "yellow";
             }
             else
             {
-                return "red";
+                return "green";
             }
-
         }
     }
 }
