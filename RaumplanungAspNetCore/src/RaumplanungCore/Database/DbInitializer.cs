@@ -91,6 +91,9 @@ namespace RaumplanungCore.Database
                     context.SaveChanges();
                 }
             }
+
+            context.Rooms.Include(r => r.Reservations);
+
             context.SaveChanges();
         }
 

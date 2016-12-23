@@ -28,20 +28,86 @@ namespace Raumplanung.Database
             return new List<Room>(_reservationContext.Rooms);
         }
 
-        public List<Room> GetAllFreeRoomsOnDate(DateTime date, int block)
+        public List<Block> GetFreeRoomsOnDate(DateTime date)
         {
-            /*var firstName = "John";
-            var id = 12;
-            var sql = @"Update [User] SET FirstName = {0} WHERE Id = {1}";
-            ctx.Database.ExecuteSqlCommand(sql, firstName, id);*/
+            const int countBloecke = 8;
+            var bloecke = new List<Block>(); // Wir haben genau 8 bloecke
+            var dateTime = new DateTime(date.Year, date.Month, date.Day);
+            var rooms = GetAllRooms();
+            var reservations = _reservationContext.Reservations.ToList().Where(r => r.Date == dateTime);
+            if (!reservations.Any())
+            {
+                for(int i = 0; i < countBloecke; i++)
+                {
+                    bloecke.Add(new Block()
+                    {
+                        FreeRooms = rooms,
+                        BlockId = i+1                      
+                    });
+                }
+                return bloecke;
+            }
 
-            //var sql = "Select Reser From Reservation WHERE block={0} AND Date={1}";
-            //var result = _reservationContext.Reservations.FromSql(sql, block, date).ToList();
+            for (int blockIndex = 0; blockIndex < countBloecke; blockIndex++)
+            {
+                bloecke.Add(new Block()
+                {
+                    BlockId = blockIndex + 1
+                });
 
-            //To-Do
-            return null;
+                var resAmBlock = reservations.ToList().Where(r => r.Block == blockIndex + 1);
+                if (resAmBlock.Count() == 0)
+                {
+                    //An diesem Block gibt es keine Reservierungen
+                    
+                    bloecke[blockIndex].FreeRooms = rooms;
+                }
+                else
+                {
+                    foreach (var room in rooms)
+                    {
+                        if (resAmBlock.ToList().Where(r => r.RoomId == room.RoomId).Count() == 0)
+                        {
+                            bloecke[blockIndex].FreeRooms.Add(room);
+                        }
+                    }                 
+                }
+            }
+            return bloecke;
+        }
+
+        private List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int blockNr)
+        {
+            var rooms = GetAllRooms();
+            var dateTime = new DateTime(date.Year , date.Month , date.Day);
+            var freeRooms = new List<Room>();
+            
+            //alle Reservation des Tages
+            var reservations = _reservationContext.Reservations.ToList().Where(r => r.Date == dateTime);
+
+            if (reservations == null || reservations.Count() == 0)
+            {
+                //An diesem Tag gibt es keine Resrvierungen , also sind alle Räume frei
+              
+                return GetAllRooms();
+            }
+
+            //alle Reservationen des Blocks
+            var block = reservations.ToList().Where(r => r.Block == blockNr);
+
+            foreach (var r in rooms)
+            {
+                if (block.Count(rr => rr.RoomId == r.RoomId) > 0)
+                {
+                    //dieses Raum wurde nicht reserviert
+                    freeRooms.Add(r);
+                }
+            }      
+            return freeRooms;
 
         }
+
+      
 
         public List<Reservation> GetAllReservations()
         {
@@ -50,12 +116,11 @@ namespace Raumplanung.Database
 
         public List<Reservation> GetReservationsWithDate(DateTime date)
         {
-            /*
-             * To Do date and block
-             */
+
+            var dateTime = new DateTime(date.Year , date.Month , date.Day);
 
             var reservations = from t in _reservationContext.Reservations
-                                               where t.Date.Equals(date)
+                                               where t.Date.Equals(dateTime)
                                                select t;
 
             return new List<Reservation>(reservations);
@@ -63,7 +128,7 @@ namespace Raumplanung.Database
 
         public List<Reservation> GetReservationsFromTeacher(string teacherId)
         {
-            List<Teacher> t = new List<Teacher>(_reservationContext.Teachers.Include(r => r.Reservations).Where(te => te.Id == teacherId));
+            var t = new List<Teacher>(_reservationContext.Teachers.Include(r => r.Reservations).Where(te => te.Id == teacherId));
 
             if (t.Count == 0)
                 return null;
