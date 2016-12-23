@@ -28,18 +28,29 @@ namespace Raumplanung.Database
             return new List<Room>(_reservationContext.Rooms);
         }
 
-        public List<Room> GetAllFreeRoomsOnDate(DateTime date, int block)
+        public Block GetFreeRoomsOnDate(DateTime date, int blockNr)
         {
-            /*var firstName = "John";
-            var id = 12;
-            var sql = @"Update [User] SET FirstName = {0} WHERE Id = {1}";
-            ctx.Database.ExecuteSqlCommand(sql, firstName, id);*/
+            var b = new Block
+            {
+                Date = date,
+                BlockId = blockNr
+            };
 
-            //var sql = "Select Reser From Reservation WHERE block={0} AND Date={1}";
-            //var result = _reservationContext.Reservations.FromSql(sql, block, date).ToList();
+            //alle Reservation des Tages
+            var reservations = _reservationContext.Reservations.ToList().Where(r => r.Date == date);
+            //alle Reservationen des Blocks
+            var block = reservations.ToList().Where(r => r.Block == blockNr);
 
-            //To-Do
-            return null;
+            var rooms = GetAllRooms();
+            foreach (var r in rooms)
+            {
+                /*if (block.ToList().Contains())
+                {
+                    //dieses Raum wurde nicht reserviert
+                    b.FreeRooms.Add(r);
+                }*/
+            }      
+            return b;
 
         }
 

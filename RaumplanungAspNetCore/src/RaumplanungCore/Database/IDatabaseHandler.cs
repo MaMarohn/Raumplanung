@@ -10,7 +10,6 @@ namespace Raumplanung.Database
     interface IDatabaseHandler
     {
         List<Room> GetAllRooms();
-        List<Room> GetAllFreeRoomsOnDate(DateTime date, int block);
         List<Reservation> GetAllReservations();
         List<Reservation> GetReservationsWithDate(DateTime date);
         List<Reservation> GetReservationsFromTeacher(string teacherId);
@@ -21,5 +20,6 @@ namespace Raumplanung.Database
         Teacher GetTeacher(string teacherId);
         Room GetRoom(int roomId);
         Reservation GetReservation(int reservationId);
+        Block GetFreeRoomsOnDate(DateTime date, int blockNr);
     }
 }
