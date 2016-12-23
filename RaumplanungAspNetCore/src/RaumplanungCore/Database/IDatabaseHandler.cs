@@ -10,11 +10,13 @@ namespace Raumplanung.Database
     interface IDatabaseHandler
     {
         List<Room> GetAllRooms();
+        List<Teacher> GetAllTeachers();
         List<Reservation> GetAllReservations();
+
         List<Reservation> GetReservationsWithDate(DateTime date);
         List<Reservation> GetReservationsFromTeacher(string teacherId);
         List<Reservation> GetReservationsFromRoom(int roomId);
-        List<Teacher> GetAllTeachers();
+        
         bool DeleteReservation(int reservationId);
         bool AddReservation(DateTime date, int block, string teacherId, int roomId);
         Teacher GetTeacher(string teacherId);

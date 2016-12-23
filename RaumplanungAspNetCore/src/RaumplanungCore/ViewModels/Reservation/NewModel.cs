@@ -21,5 +21,23 @@ namespace RaumplanungCore.ViewModels.Reservation
             //_databaseHandler;
             return true;
         }
+
+        public string FindReservationByDate(DateTime date)
+        {
+            List<Models.Reservation> reservations = _databaseHandler.GetReservationsWithDate(date);
+            if (reservations.Count == 0)
+            {
+                return "green";
+            }
+            if (reservations.Count < _databaseHandler.GetAllRooms().Count)
+            {
+                return "yellow";
+            }
+            else
+            {
+                return "red";
+            }
+            
+        }
     }
 }
