@@ -18,6 +18,7 @@ namespace RaumplanungCore.Models
     {
         public ICollection<Reservation> Reservations { get; set; }
         public string Vorname { get; set; }
+        public string Nachname { get; set; }
         public string Anrede { get; set; }
 
         public Teacher()

@@ -63,7 +63,9 @@ namespace RaumplanungCore
                 options.Cookies.ApplicationCookie.LogoutPath = "/Account/LogOff";
 
                 // User settings
+                   // options.ClaimsIdentity.UserNameClaimType = "";
                 options.User.RequireUniqueEmail = true;
+
             })
         .AddEntityFrameworkStores<ReservationContext>()
         .AddDefaultTokenProviders(); 

@@ -150,9 +150,11 @@ namespace RaumplanungCore.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                //if(model.Email.Contains("@lioba.de")&&model.Email.Length==13)
+                if(true)//model.Email.Contains("@lioba.de")&&model.Email.Length==13)
                 {
-                    var user = new Teacher {UserName = model.Name, Email = model.Email,Vorname = model.Vorname,Anrede = model.Anrede};
+                    ViewData["Emailok"] = "true";
+                    var user = new Teacher {Nachname = model.Nachname, Email = model.Email,Vorname = model.Vorname,Anrede = model.Anrede};
+                    user.UserName = user.Id;
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
@@ -161,7 +163,7 @@ namespace RaumplanungCore.Controllers
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackUrl = Url.Action("ConfirmEmail", "Account", new {userId = user.Id, code = code},
                             protocol: HttpContext.Request.Scheme);
-                        await _emailSender.SendEmailAsync(user.UserName, model.Email, "Confirm your account",
+                        await _emailSender.SendEmailAsync(user.Vorname+" "+user.Nachname, model.Email, "Confirm your account",
                             $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
                         if (model.Admin)
                         {
@@ -172,8 +174,11 @@ namespace RaumplanungCore.Controllers
                         return RedirectToAction("Waitforemailconfirm", "Account");
                     }
                     AddErrors(result);
+                }else
+                {
+                    ViewData["Emailok"] = "false";
                 }
-               // ViewData["Emailok"] = "false";
+               
             }
 
             // If we got this far, something failed, redisplay form
@@ -335,7 +340,7 @@ namespace RaumplanungCore.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                 
-                await _emailSender.SendEmailAsync(user.UserName,model.Email, "Reset Password",
+                await _emailSender.SendEmailAsync(user.Vorname+" "+user.Nachname,model.Email, "Reset Password",
                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
                 ViewData["email"] = model.Email;
                 return View("ForgotPasswordConfirmation");

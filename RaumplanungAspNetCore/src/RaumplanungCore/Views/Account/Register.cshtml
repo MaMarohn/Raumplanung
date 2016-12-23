@@ -1,14 +1,13 @@
 ﻿@using System.Threading.Tasks
-@using RaumplanungCore.Models.AccountViewModels
-@model RaumplanungCore.Models.AccountViewModels.RegisterViewModel
+@model RegisterViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Registrieren";
 }
 
 <h2>@ViewData["Title"].</h2>
 
 <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-    <h4>Create a new account.</h4>
+    <h4>Neuen Account anlegen.</h4>
     <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
@@ -29,15 +28,15 @@
                 <option value="Frau">Frau</option>
                 <option value="Herr">Herr</option>
             </select>
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <span asp-validation-for="Anrede" class="text-danger"></span>
         </div>
     </div>
 
     <div class="form-group">
-        <label asp-for="Name" class="col-md-2 control-label">Name:</label>
+        <label asp-for="Nachname" class="col-md-2 control-label">Nachname:</label>
         <div class="col-md-10">
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <input asp-for="Nachname" class="form-control" />
+            <span asp-validation-for="Nachname" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group">
@@ -49,14 +48,14 @@
     </div>
     
     <div class="form-group">
-        <label asp-for="Password" class="col-md-2 control-label">Password:</label>
+        <label asp-for="Password" class="col-md-2 control-label">Passwort:</label>
         <div class="col-md-10">
             <input asp-for="Password" class="form-control" />
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="ConfirmPassword" class="col-md-2 control-label">Confirm Password:</label>
+        <label asp-for="ConfirmPassword" class="col-md-2 control-label">Passwort bestätigen:</label>
         <div class="col-md-10">
             <input asp-for="ConfirmPassword" class="form-control" />
             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
@@ -72,7 +71,7 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">Register</button>
+            <button type="submit" class="btn btn-default">Registrieren</button>
         </div>
     </div>
     
