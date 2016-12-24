@@ -99,19 +99,19 @@ namespace RaumplanungCore.Controllers
                     }
                     if (result.IsLockedOut)
                     {
-                        _logger.LogWarning(2, "User account locked out.");
+                        _logger.LogWarning(2, "Benutzeraccount ist gesperrt.");
                         return View("Lockout");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        ModelState.AddModelError(string.Empty, "Ungültiger Loginversuch.");
                         return View(model);
                     }
 
 
 
                 }
-                ModelState.AddModelError(string.Empty, "Specified User doesn't exist.");
+                ModelState.AddModelError(string.Empty, "Benutzeraccount existiert nicht.");
                 return View(model);
 
             }
@@ -163,8 +163,8 @@ namespace RaumplanungCore.Controllers
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackUrl = Url.Action("ConfirmEmail", "Account", new {userId = user.Id, code = code},
                             protocol: HttpContext.Request.Scheme);
-                        await _emailSender.SendEmailAsync(user.Vorname+" "+user.Nachname, model.Email, "Confirm your account",
-                            $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                        await _emailSender.SendEmailAsync(user.Vorname+" "+user.Nachname, model.Email, "Accountbestätigung Raumplanung",
+                            $"Bitte bestätige deinen Account, indem du diesen Link klickst: <a href='{callbackUrl}'>link</a>");
                         if (model.Admin)
                         {
                             await _userManager.AddToRoleAsync(user, "Administrator");
@@ -230,7 +230,7 @@ namespace RaumplanungCore.Controllers
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
             {
-                _logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
+                _logger.LogInformation(5, "Benutzer eingeloggt über {Name}.", info.LoginProvider);
                 return RedirectToLocal(returnUrl);
             }
             if (result.RequiresTwoFactor)
@@ -274,7 +274,7 @@ namespace RaumplanungCore.Controllers
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
+                        _logger.LogInformation(6, "Benutzeraccount erstellt mit {Name}.", info.LoginProvider);
                         return RedirectToLocal(returnUrl);
                     }
                 }
@@ -341,7 +341,7 @@ namespace RaumplanungCore.Controllers
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                 
                 await _emailSender.SendEmailAsync(user.Vorname+" "+user.Nachname,model.Email, "Reset Password",
-                   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+                   $"Bitte setze dein Passwort zurück, indem du hier klickst: <a href='{callbackUrl}'>link</a>");
                 ViewData["email"] = model.Email;
                 return View("ForgotPasswordConfirmation");
             }
@@ -444,7 +444,7 @@ namespace RaumplanungCore.Controllers
                 return View("Error");
             }
 
-            var message = "Your security code is: " + code;
+            var message = "Dein Sicherheitscode ist: " + code;
             if (model.SelectedProvider == "Email")
             {
                 await _emailSender.SendEmailAsync(await _userManager.GetUserNameAsync(user),await _userManager.GetEmailAsync(user), "Security Code", message);
@@ -494,12 +494,12 @@ namespace RaumplanungCore.Controllers
             }
             if (result.IsLockedOut)
             {
-                _logger.LogWarning(7, "User account locked out.");
+                _logger.LogWarning(7, "Benutzeraccount gesperrt");
                 return View("Lockout");
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid code.");
+                ModelState.AddModelError(string.Empty, "Falscher Code.");
                 return View(model);
             }
         }
