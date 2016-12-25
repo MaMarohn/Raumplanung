@@ -19,7 +19,7 @@ namespace RaumplanungCore.Models.AccountViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Erinnern?")]
         public bool RememberMe { get; set; }
     }
 }
