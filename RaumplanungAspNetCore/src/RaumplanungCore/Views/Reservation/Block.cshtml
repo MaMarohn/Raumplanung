@@ -32,7 +32,8 @@
         <tr>
             <td width="100px"> @belegung.Room.Name </td>
             <td width="150px"> @belegung.Date </td>
-            <td width="50px"> @belegung.Block </td>
+            
+            <td width="50px">  @belegung.BlockIncremented() </td>
             @if (belegung.Reserved)
             {
                 <td width="350px"> @belegung.Teacher.Anrede @belegung.Teacher.UserName</td>

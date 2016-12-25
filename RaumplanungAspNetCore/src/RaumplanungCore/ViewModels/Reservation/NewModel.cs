@@ -24,7 +24,7 @@ namespace RaumplanungCore.ViewModels.Reservation
 
         public string FindReservationByDate(DateTime date)
         {
-            List<Models.Reservation> reservations = _databaseHandler.GetReservationsWithDate(date);
+            List<Models.Reservation> reservations = _databaseHandler.GetReservationsOnDate(date);
             if (reservations.Count == 0)
             {
                 return "green";

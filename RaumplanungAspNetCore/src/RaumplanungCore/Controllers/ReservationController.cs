@@ -22,10 +22,10 @@ namespace RaumplanungCore.Controllers
     {
         private readonly DatabaseHandler _databaseHandler;
         private readonly UserManager<Teacher> _userManager;
-        int amountOfBlocks = 7;
-        string[] dayStrings = { "Mo", "Di", "Mi", "Do", "Fr" };
-        string[] blockStartArray = { "08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30" };
-        string[] blockEndArray = { "10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00" };
+        const int AmountOfBlocks = 7;
+        readonly string[] _dayStrings = { "Mo", "Di", "Mi", "Do", "Fr" };
+        readonly string[] _blockStartArray = { "08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30" };
+        readonly string[] _blockEndArray = { "10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00" };
 
         public ReservationController(ReservationContext context, UserManager<Teacher> userManager)
         {
@@ -36,10 +36,8 @@ namespace RaumplanungCore.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            //HIER:var userId = User.Identity.GetUserId(); oder ähnliches
-            //List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher("0b5b8029-45f1-4314-aa08-b23f25f6af03");
             string teacherId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
-            List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);//_userManager.FindByNameAsync(User.Identity.Name).Result.Id);
+            List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);
             int count;
             if (reservations != null)
             {
@@ -89,12 +87,12 @@ namespace RaumplanungCore.Controllers
         {            
             List<CalendarEvent> eventList = new List<CalendarEvent>();                  
                  
-            for (int j = 0; j < dayStrings.Length; j++)
+            for (int j = 0; j < _dayStrings.Length; j++)
             {
                 int[] days = {j+1};
-                for (int i = 0; i < amountOfBlocks ; i++)
+                for (int i = 0; i < AmountOfBlocks ; i++)
                 {
-                    CalendarEvent dailyEvent = new CalendarEvent((dayStrings[j] + (i + 1)), blockStartArray[i], blockEndArray[i], days, FindReservationByDate(start, i));
+                    CalendarEvent dailyEvent = new CalendarEvent((_dayStrings[j] + (i + 1)), _blockStartArray[i], _blockEndArray[i], days, FindReservationByDate(start, i));
                     eventList.Add(dailyEvent);
                 }
                 start = start.AddDays(1);
@@ -104,42 +102,19 @@ namespace RaumplanungCore.Controllers
 
         [HttpGet("reservation/OnClick/{starts}")]
         public IActionResult OnClick(string starts)
-        {
+        { 
             DateTime start = DateTime.Parse(starts);
-            int blockId = calculateBlock(starts);
-            /*
-             * TO-DO
-             * GetReservationsOnDateAndBlock()
-             * SortierteListe nach RaumNR
-             */
-            List<Reservation> reservations = _databaseHandler.GetReservationsWithDate(start);
-            List<Reservation> reservationsInBlock = new List<Reservation>();
-            foreach (var reservation in reservations)
-            {
-                if (reservation.Block == blockId)
-                {
-                    reservationsInBlock.Add(reservation);
-                }
-            }
+            int blockId = CalculateBlock(starts);
+            List<Reservation> reservationsInBlock = _databaseHandler.GetReservationsOnDateInBlock(start, blockId);
             List<RaumbelegungModel> raumbelegung = new List<RaumbelegungModel>();
+
             foreach (var room in _databaseHandler.GetAllRooms())
             {
-                bool found = false;
-                foreach (var reservation in reservationsInBlock)
-                {                
-                    if (reservation.RoomId == room.RoomId)
-                    {
-                        Teacher teacher = _databaseHandler.GetTeacher(reservation.TeacherId);
-                        raumbelegung.Add(new RaumbelegungModel(room, true, teacher, start, blockId));
-                        found = true;
-                    }
-                }
-                if (!found)
-                {
-                    raumbelegung.Add(new RaumbelegungModel(room, false, null, start, blockId));
-                }
-            }
-            
+                Reservation rr;
+                raumbelegung.Add((rr = reservationsInBlock.Find(r => r.RoomId == room.RoomId)) != null
+                    ? new RaumbelegungModel(room, true, _databaseHandler.GetTeacher(rr.TeacherId), start, blockId)
+                    : new RaumbelegungModel(room, false, null, start, blockId));
+            }                     
             return View("block", raumbelegung);
         }
 
@@ -161,11 +136,12 @@ namespace RaumplanungCore.Controllers
             return View("New");
         }
         
-        private int calculateBlock(string start)
+        private int CalculateBlock(string start)
         {
             string onlyTime = start.Split(' ')[1];
-            int blockId = 1;
-            foreach (var startTime in blockStartArray)
+            //int blockId = 1;
+            int blockId = 0;
+            foreach (var startTime in _blockStartArray)
             {
                 if (onlyTime.Equals(startTime))
                 {

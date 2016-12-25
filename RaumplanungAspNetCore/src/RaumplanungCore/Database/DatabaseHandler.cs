@@ -25,12 +25,12 @@ namespace Raumplanung.Database
 
         public List<Room> GetAllRooms()
         {
-            return new List<Room>(_reservationContext.Rooms);
+            return new List<Room>(_reservationContext.Rooms.OrderBy(r => r.Name));
         }
 
         public List<Block> GetFreeRoomsOnDate(DateTime date)
         {
-            const int countBloecke = 8;
+            const int countBloecke = 7;
             var bloecke = new List<Block>(); // Wir haben genau 8 bloecke
             var dateTime = new DateTime(date.Year, date.Month, date.Day);
             var rooms = GetAllRooms();
@@ -42,7 +42,7 @@ namespace Raumplanung.Database
                     bloecke.Add(new Block()
                     {
                         FreeRooms = rooms,
-                        BlockId = i+1                      
+                        BlockId = i                      
                     });
                 }
                 return bloecke;
@@ -52,10 +52,10 @@ namespace Raumplanung.Database
             {
                 bloecke.Add(new Block()
                 {
-                    BlockId = blockIndex + 1
+                    BlockId = blockIndex
                 });
 
-                var resAmBlock = reservations.ToList().Where(r => r.Block == blockIndex + 1);
+                var resAmBlock = reservations.ToList().Where(r => r.Block == blockIndex);
                 if (resAmBlock.Count() == 0)
                 {
                     //An diesem Block gibt es keine Reservierungen
@@ -74,6 +74,15 @@ namespace Raumplanung.Database
                 }
             }
             return bloecke;
+        }
+
+        public bool CheckIfReservationsExistsOnDateInBlock(DateTime date, int block, int roomId)
+        {
+            var dateTime = new DateTime(date.Year, date.Month, date.Day);
+            var reservations = _reservationContext.Reservations.ToList()
+                .Where(r => r.Date == dateTime && r.Block == block && r.RoomId == roomId);
+
+            return reservations.Any();
         }
 
         public List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block)
@@ -95,18 +104,12 @@ namespace Raumplanung.Database
             return freeRooms;
         }
 
-        public bool ExchangeReservation(string fromTeacher, int fromRoom, string toTeacher, int toRoom)
-        {
-            throw new NotImplementedException();
-        }
-
-
         public List<Reservation> GetAllReservations()
         {
             return new List<Reservation>(_reservationContext.Reservations);
         }
 
-        public List<Reservation> GetReservationsWithDate(DateTime date)
+        public List<Reservation> GetReservationsOnDate(DateTime date)
         {
 
             var dateTime = new DateTime(date.Year , date.Month , date.Day);
@@ -132,15 +135,44 @@ namespace Raumplanung.Database
         {
             List<Room> t = new List<Room>(_reservationContext.Rooms.Include(r => r.Reservations).Where(te => te.RoomId == roomId));
 
-            if (t.Count == 0)
-                return null;
-
-            return new List<Reservation>(t.First().Reservations);
+            return t.Count == 0 ? null : new List<Reservation>(t.First().Reservations);
         }
 
-        public List<Reservation> GetReservationsWithDateAndBlock(DateTime date, int blockNr)
+
+        public List<Reservation> GetReservationsOnDateInBlock(DateTime date, int blockNr)
         {
-            throw new NotImplementedException();
+            var dateTime = new DateTime(date.Year, date.Month, date.Day);
+            var reservations = _reservationContext.Reservations.ToList()
+                .Where(r => r.Date == dateTime && r.Block == blockNr);
+            return new List<Reservation>(reservations);
+        }
+
+        public bool ExchangeReservation(string pTeacherFrom, int pReservationFrom , string pTeacherTo , int pReservationTo)
+        {
+            //not tested
+            if (_reservationContext.Teachers.Find(pTeacherFrom) == null ||
+                _reservationContext.Teachers.Find(pTeacherTo) == null)
+            {
+                //Teachers couldnt be found
+                return false;
+            }
+
+            Reservation reservationFrom = _reservationContext.Reservations.Find(pReservationFrom);
+            Reservation reservationTo = _reservationContext.Reservations.Find(pReservationTo);
+
+            if ( reservationFrom == null || reservationTo == null)
+            {
+                //Reservations couldnt be found
+                return false;
+            }
+
+            reservationFrom.TeacherId = pTeacherTo;
+            reservationTo.TeacherId = pTeacherFrom;
+            _reservationContext.Entry(reservationFrom).State = EntityState.Modified;
+            _reservationContext.Entry(reservationTo).State = EntityState.Modified;
+            _reservationContext.SaveChanges();
+
+            return true;
         }
 
 
@@ -163,13 +195,22 @@ namespace Raumplanung.Database
 
         public bool AddReservation(DateTime date, int block, string teacherId, int roomId)
         {
+
+            DateTime dateTime = new DateTime(date.Year, date.Month, date.Day);
+
+            if (CheckIfReservationsExistsOnDateInBlock(date , block , roomId))
+            {
+                return false;
+            }
+
             _reservationContext.Reservations.Add(new Reservation
             {
-                Date = date,
+                Date = dateTime,
                 Block = block,
                 TeacherId = teacherId,
                 RoomId = roomId
             });
+
             _reservationContext.SaveChanges();
             return true;
         }
@@ -192,3 +233,4 @@ namespace Raumplanung.Database
       
     }
 }
+
