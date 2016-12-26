@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
-
-namespace RaumplanungCore.Models
+﻿namespace RaumplanungCore.Models
 {
     /*public class ApplicationDbContext :IdentityDbContext<ApplicationUser>
     {
