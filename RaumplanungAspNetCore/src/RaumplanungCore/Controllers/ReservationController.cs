@@ -42,6 +42,10 @@ namespace RaumplanungCore.Controllers
             if (reservations != null)
             {
                 count = reservations.Count;
+                foreach(Reservation r in reservations)
+                {
+                    r.Room = _databaseHandler.GetRoom(r.RoomId);
+                }
             }
             else
             {
@@ -60,12 +64,13 @@ namespace RaumplanungCore.Controllers
             return View();
         }
 
-        [HttpGet("reservation/delete/{reservationId}")]
+        //[HttpGet("reservation/delete/{reservationId}")]
+        [HttpGet()]
+
         public IActionResult Delete(int reservationId)
         {
             _databaseHandler.DeleteReservation(reservationId);
-            List<Room> rooms = _databaseHandler.GetAllRooms();
-            return View("Index", rooms);
+            return Index();
         }
 
         [HttpGet("reservation/New")]
