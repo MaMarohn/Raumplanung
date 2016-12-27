@@ -16,6 +16,7 @@ using RaumplanungCore.Services;
 namespace RaumplanungCore.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "ConfirmedEmailOnly")]
     public class AccountController : Controller
     {
         private readonly UserManager<Teacher> _userManager;
@@ -316,6 +317,23 @@ namespace RaumplanungCore.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult ManageAccount()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ChangePw()
+        {
+            var user = GetCurrentUserAsync().Result;
+            var code = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+            return View("ResetPassword",new ResetPasswordViewModel{Code= code});
+        }
+
+
+
 
         //
         // POST: /Account/ForgotPassword
