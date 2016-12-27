@@ -35,7 +35,7 @@
             <td width="50px">  @belegung.BlockIncremented() </td>
             @if (belegung.Reserved)
             {
-                <td width="350px"> @belegung.Teacher.Anrede @belegung.Teacher.UserName</td>
+                <td width="350px"> @belegung.Teacher.Anrede @belegung.Teacher.Vorname @belegung.Teacher.Nachname</td>
                 <td width="50px"> <a asp-controller="Reservation" asp-action="Tauschen" asp-route-id="@belegung.Teacher.Id">Tausch vorschlagen </a ></td>
             }
             else
