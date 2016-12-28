@@ -26,9 +26,11 @@
     <input type="hidden" asp-for="Reservationid" value="@Model.Reservationid"/>
     <input type="hidden" asp-for="FromTeacherid" value="@Model.FromTeacherid" />
     <input type="hidden" asp-for="ToTeacherid" value="@Model.ToTeacherid" />
-    <div class="form-group">
-        <label asp-for="OfferReservation" class="col-md-2 control-label">Anderen Termin anbieten:</label>
-        <div class="col-lg-12">
+    <textarea asp-for="message" placeholder="Nachricht an den Tauschpartner" class="col-md-10" rows="5"></textarea><br/><br/><p></p>
+    <div class="form-group" >
+        
+        <div class="col-md-10">
+            <label asp-for="OfferReservation" class="control-label">Anderen Termin anbieten:</label>
             <select asp-for="OfferReservation" class="form-control-static">
                 <option value="-1">Keinen</option>
                 @foreach (Reservation r in Database.GetReservationsFromTeacher(TeacherManager.GetUserAsync(User).Result.Id))

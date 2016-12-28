@@ -74,8 +74,8 @@ namespace RaumplanungCore.Controllers
             TauschViewModel t = new TauschViewModel
             {
                 Reservation = _databaseHandler.GetReservation(reservationId),
-                FromTeacherid = _userManager.GetUserAsync(User).Result.Id, // glaube es muss andersrum mit from und toteacher
-                ToTeacherid = _databaseHandler.GetReservation(reservationId).TeacherId,
+                ToTeacherid = _userManager.GetUserAsync(User).Result.Id, // glaube es muss andersrum mit from und toteacher // jup hab ich mich vertan, is umgedreht
+                FromTeacherid = _databaseHandler.GetReservation(reservationId).TeacherId,
                 Reservationid = reservationId
             };
             return View(t);
@@ -87,7 +87,9 @@ namespace RaumplanungCore.Controllers
             int id2 = t.OfferReservation;
             string t1 = t.FromTeacherid;
             string t2 = t.ToTeacherid;
-            //DATABASELOGIC
+            _databaseHandler.AddReservationSuggestion(t.FromTeacherid, t.Reservationid, t.ToTeacherid,
+                t.OfferReservation, t.message);
+            
             return Index();
         }
 
