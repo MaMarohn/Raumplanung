@@ -21,9 +21,7 @@ namespace RaumplanungCore.Controllers
         private readonly DatabaseHandler _databaseHandler;
         private readonly UserManager<Teacher> _userManager;
         const int AmountOfBlocks = 7;
-        readonly string[] _dayStrings = { "Mo", "Di", "Mi", "Do", "Fr" };
-        readonly string[] _blockStartArray = { "08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30" };
-        readonly string[] _blockEndArray = { "10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00" };
+        
 
         public ReservationController(ReservationContext context, UserManager<Teacher> userManager)
         {
@@ -118,12 +116,12 @@ namespace RaumplanungCore.Controllers
         {            
             List<CalendarEvent> eventList = new List<CalendarEvent>();                  
                  
-            for (int j = 0; j < _dayStrings.Length; j++)
+            for (int j = 0; j < Data.DayStrings.Length; j++)
             {
                 int[] days = {j+1};
                 for (int i = 0; i < AmountOfBlocks ; i++)
                 {
-                    CalendarEvent dailyEvent = new CalendarEvent((_dayStrings[j] + (i + 1)), _blockStartArray[i], _blockEndArray[i], days, FindReservationByDate(start, i));
+                    CalendarEvent dailyEvent = new CalendarEvent((Data.DayStrings[j] + (i + 1)), Data.BlockStartArray[i], Data.BlockEndArray[i], days, FindReservationByDate(start, i));
                     eventList.Add(dailyEvent);
                 }
                 start = start.AddDays(1);
@@ -169,7 +167,7 @@ namespace RaumplanungCore.Controllers
             string onlyTime = start.Split(' ')[1];
             //int blockId = 1;
             int blockId = 0;
-            foreach (var startTime in _blockStartArray)
+            foreach (var startTime in Data.BlockStartArray)
             {
                 if (onlyTime.Equals(startTime))
                 {
