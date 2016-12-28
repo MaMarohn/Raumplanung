@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ namespace RaumplanungCore.Models
 {
     public class ExchangeReservation
     {
-
+        [Key]
         public int EchangeReservationId { set; get; }
         public string TeacherFrom { set; get; }
         public string TeacherTo { set; get; }
