@@ -11,6 +11,7 @@ namespace RaumplanungCore.Models
     public class Teacher :IdentityUser
     {
         public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<ExchangeReservation> ExchangeReservations { get; set; }
         public string Vorname { get; set; }
         public string Nachname { get; set; }
         public string Anrede { get; set; }
@@ -19,6 +20,8 @@ namespace RaumplanungCore.Models
         {
            if(Reservations == null)
                 Reservations = new List<Reservation>();
+            if (ExchangeReservations == null)
+                ExchangeReservations = new List<ExchangeReservation>();
         }
     }
 }

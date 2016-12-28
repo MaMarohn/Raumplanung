@@ -7,7 +7,7 @@ namespace RaumplanungCore.Database
 {
     public class ReservationContext : IdentityDbContext<Teacher>
     {
-        public ReservationContext(DbContextOptions<ReservationContext> options) : base(options)
+        public ReservationContext(DbContextOptions options) : base(options)
         {
             
         }
@@ -16,5 +16,6 @@ namespace RaumplanungCore.Database
         public DbSet<Room> Rooms { set; get; }
         public DbSet<Teacher> Teachers { set; get; }
         public DbSet<Reservation> Reservations { set; get; }
+        public DbSet<ExchangeReservation> ExchangeReservations { set; get; }
     }
 }

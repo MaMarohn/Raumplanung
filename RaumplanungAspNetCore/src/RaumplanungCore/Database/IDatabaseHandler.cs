@@ -26,5 +26,7 @@ namespace Raumplanung.Database
 
         bool ExchangeReservation(string fromTeacher,int fromRoom , string toTeacher , int toRoom);
         bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationTo);
+        List<ExchangeReservation> GetAExchangeReservations();
+        
     }
 }

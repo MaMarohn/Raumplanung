@@ -85,6 +85,41 @@ namespace Raumplanung.Database
             return reservations.Any();
         }
 
+        public bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationTo)
+        {
+            //not tested
+
+            if (_reservationContext.Teachers.Find(teacherFrom) == null ||
+                _reservationContext.Teachers.Find(teacherTo) == null)
+            {
+                //Teachers couldnt be found
+                return false;
+            }
+
+            Reservation reservationF = _reservationContext.Reservations.Find(reservationFrom);
+            Reservation reservationT = _reservationContext.Reservations.Find(reservationTo);
+
+            if (reservationF == null || reservationT == null)
+            {
+                //Reservations couldnt be found
+                return false;
+            }
+
+            ExchangeReservation exchangeReservation = new ExchangeReservation
+            {
+                ReservationFrom = reservationF,
+                ReservationTo = reservationT,
+                TeacherFrom = teacherFrom,
+                TeacherTo = teacherTo
+            };
+            return true;
+        }
+
+        public List<ExchangeReservation> GetAExchangeReservations()
+        {
+            return new List<ExchangeReservation>(_reservationContext.ExchangeReservations);
+        }
+
         public List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block)
         {
             var freeRooms = new List<Room>();
@@ -166,6 +201,7 @@ namespace Raumplanung.Database
                 return false;
             }
 
+            //Es wird getauscht
             reservationFrom.TeacherId = pTeacherTo;
             reservationTo.TeacherId = pTeacherFrom;
             _reservationContext.Entry(reservationFrom).State = EntityState.Modified;
