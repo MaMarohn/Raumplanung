@@ -61,10 +61,30 @@ namespace RaumplanungCore.Database
             }
             context.SaveChanges();
 
-            if (!context.Courses.Any())
-            {           
+            if (context.Courses.Count() < 5)
+            {
+
+                foreach (var entity in context.Reservations)
+                    context.Reservations.Remove(entity);
+                foreach (var entity in context.Courses)
+                    context.Courses.Remove(entity);
+
+                context.SaveChanges();
+
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 2, 15), 0,
                     databaseHandler.GetAllTeachers()[0].Id , databaseHandler.GetAllRooms()[0].RoomId , "Informatik");
+
+                databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 3, 15), 1,
+                    databaseHandler.GetAllTeachers()[1].Id, databaseHandler.GetAllRooms()[1].RoomId, "Mathe");
+
+                databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 4, 15), 2,
+                    databaseHandler.GetAllTeachers()[2].Id, databaseHandler.GetAllRooms()[2].RoomId, "Deutsch");
+
+                databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 4, 15), 3,
+                    databaseHandler.GetAllTeachers()[3].Id, databaseHandler.GetAllRooms()[3].RoomId, "Bio");
+
+                databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 4, 15), 4,
+                    databaseHandler.GetAllTeachers()[4].Id, databaseHandler.GetAllRooms()[4].RoomId, "Erdkunde");
             }
 
         

@@ -189,12 +189,12 @@ namespace Raumplanung.Database
                 (c => c.Block == blockId && c.StartDate == GetCorrectDatetime(date)));
         }
 
-        public List<CourseExceptions> GetAllCourseExceptionsesFromCourse(int courseId)
+       /* public List<CourseExceptions> GetAllCourseExceptionsesFromCourse(int courseId)
         {
-           /* return new List<CourseExceptions>(_reservationContext.CourseExceptionses.ToList().Where
-                (c => c.CourseId == courseId));*/
-            return null;
-        }
+           return new List<CourseExceptions>(_reservationContext.CourseExceptionses.ToList().Where
+                (c => c.CourseId == courseId));
+            
+        }*/
 
         public List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block)
         {
