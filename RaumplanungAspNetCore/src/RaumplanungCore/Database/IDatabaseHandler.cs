@@ -25,5 +25,6 @@ namespace Raumplanung.Database
         bool CheckIfReservationsExistsOnDateInBlock(DateTime date, int block, int roomId);
 
         bool ExchangeReservation(string fromTeacher,int fromRoom , string toTeacher , int toRoom);
+        bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationTo);
     }
 }

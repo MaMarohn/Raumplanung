@@ -58,7 +58,7 @@ namespace RaumplanungCore.Database
             }
             context.SaveChanges();
 
-            /*var countT = context.Teachers.Count();
+            var countT = context.Teachers.Count();
             if (context.Reservations.Count() < countT)
             {
                 //Datenbank wird neu gefüllt
@@ -95,7 +95,7 @@ namespace RaumplanungCore.Database
                     }
                     context.SaveChanges();
                 }               
-            }*/
+            }
             context.Rooms.Include(r => r.Reservations);
             context.Teachers.Include(r => r.Reservations);
             context.SaveChanges();
