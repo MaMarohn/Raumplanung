@@ -97,7 +97,8 @@ namespace RaumplanungCore.Controllers
         public IActionResult Anfragen()
         {
             AnfragenViewModel anfragenViewModel=new AnfragenViewModel();
-            //datenbanklisten getten
+            _databaseHandler.GetExchangeReservationByTeacherFromId(_userManager.GetUserId(User));
+            _databaseHandler.GetExchangeReservationByTeacherToId(_userManager.GetUserId(User));
             return View(anfragenViewModel);
         }
 
