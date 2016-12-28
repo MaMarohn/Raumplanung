@@ -165,15 +165,16 @@ namespace Raumplanung.Database
             DateTime dateEnd = dateTimeEnd;
             while (dateStart <= dateEnd)
             {
-                dateStart = dateStart.AddDays(7);
+                
                 _reservationContext.Add(new Reservation
                 {
                     Block = course.Block,
                     TeacherId = course.TeacherId,
                     RoomId = course.RoomId,
-                    Date = dateStart
+                    Date = dateStart,
+                    CourseId = course.CourseId
                 });
-
+                dateStart = dateStart.AddDays(7);
                 _reservationContext.SaveChanges();
             }
 
