@@ -1,8 +1,10 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using System.Threading.Tasks
 @using Microsoft.EntityFrameworkCore.Storage
 @using Raumplanung.Database
+@using RaumplanungCore.ViewModels
 @model RaumplanungCore.ViewModels.Reservation.TauschViewModel
 @inject UserManager<Teacher> TeacherManager
 @inject DatabaseHandler Database;
@@ -13,10 +15,12 @@
 
 <h2>@ViewData["Title"]</h2>
 
-Tauschanfrage stellen für folgenden Termin:<br/>
-Tag:@Model.Reservation.Date.Value.Day.@Model.Reservation.Date.Value.Month.@Model.Reservation.Date.Value.Year<br/>
-Block:@(Model.Reservation.Block+1)<br/>
-Momentan Reserviert von:@TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Vorname @TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Nachname
+<p>
+    Tauschanfrage stellen für folgenden Termin: <br />
+    Tag: @Model.Reservation.Date.Value.ToString("dd.MM.yyyy") <br />
+    Block:@(Model.Reservation.Block + 1) <br />
+    Momentan Reserviert von: @TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Vorname @TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Nachname
+</p>
 
 <form asp-controller="Reservation" asp-action="Tauschen" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
     <input type="hidden" asp-for="Reservationid" value="@Model.Reservationid"/>
@@ -29,7 +33,7 @@ Momentan Reserviert von:@TeacherManager.FindByIdAsync(Model.FromTeacherid).Resul
                 <option value="-1">Keinen</option>
                 @foreach (Reservation r in Database.GetReservationsFromTeacher(TeacherManager.GetUserAsync(User).Result.Id))
                 {
-                    <option value="@r.ReservationId">@r.Date Block:@(r.Block + 1) @Database.GetRoom(r.RoomId).Name</option>
+                    <option value="@r.ReservationId">@r.Date.Value.ToString("dd.MM.yyyy"), @Data.BlockStartArray[r.Block] Uhr, Block @(r.Block + 1), @Database.GetRoom(r.RoomId).Name</option>
                 }
             </select>
             <span asp-validation-for="OfferReservation" class="text-danger"></span>
