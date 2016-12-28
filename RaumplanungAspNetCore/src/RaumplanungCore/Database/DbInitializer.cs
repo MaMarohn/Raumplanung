@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Raumplanung.Database;
 using RaumplanungCore.Models;
 
 /*
@@ -15,6 +16,8 @@ namespace RaumplanungCore.Database
         public static void Initialize(ReservationContext context)
         {
             context.Database.EnsureCreated();
+
+            DatabaseHandler databaseHandler = new DatabaseHandler(context);
 
             const int countRoom = 20;
             if (context.Rooms.Count() < countRoom)
@@ -48,7 +51,7 @@ namespace RaumplanungCore.Database
                 var teachers = new Teacher[countTeacher];
                 for (var c = 0; c < countTeacher; c++)
                 {
-                    teachers[c] = new Teacher { UserName = "Lehrer " + c };
+                    teachers[c] = new Teacher {UserName = "Lehrer " + c};
                 }
 
                 foreach (Teacher s in teachers)
@@ -58,7 +61,14 @@ namespace RaumplanungCore.Database
             }
             context.SaveChanges();
 
-            var countT = context.Teachers.Count();
+            if (!context.Courses.Any())
+            {           
+                databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 2, 15), 0,
+                    databaseHandler.GetAllTeachers()[0].Id , databaseHandler.GetAllRooms()[0].RoomId , "Informatik");
+            }
+
+        
+            /*var countT = context.Teachers.Count();
             if (context.Reservations.Count() < countT)
             {
                 //Datenbank wird neu gefüllt
@@ -95,7 +105,7 @@ namespace RaumplanungCore.Database
                     }
                     context.SaveChanges();
                 }               
-            }
+            }*/
             context.Rooms.Include(r => r.Reservations);
             context.Teachers.Include(r => r.Reservations);
             context.SaveChanges();
@@ -118,3 +128,4 @@ namespace RaumplanungCore.Database
 
     }
 }
+

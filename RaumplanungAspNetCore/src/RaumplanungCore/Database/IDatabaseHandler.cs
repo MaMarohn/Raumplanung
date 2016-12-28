@@ -26,7 +26,16 @@ namespace Raumplanung.Database
 
         bool ExchangeReservation(string fromTeacher,int fromRoom , string toTeacher , int toRoom);
         bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationTo);
-        List<ExchangeReservation> GetAExchangeReservations();
-        
+        List<ExchangeReservation> GetAllExchangeReservations();
+        List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id);
+        List<ExchangeReservation> GetExchangeReservationByTeacherToId(string id);
+
+        bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse);
+        //Course GetCourseFromTeacher(string teacherId);
+        List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId);
+        List<Course> GetAllCourses();
+        List<CourseExceptions> GetAllCourseExceptionsesFromCourse(int courseId);
+        List<Course> GetAllCoursesInBlock(int blockNr);
+
     }
 }

@@ -16,6 +16,7 @@ namespace Raumplanung.Database
     public class DatabaseHandler : IDatabaseHandler
     {
         private readonly ReservationContext _reservationContext;
+        private const int Week = 7;
 
         public DatabaseHandler(ReservationContext _reservation)
         {
@@ -112,12 +113,83 @@ namespace Raumplanung.Database
                 TeacherFrom = teacherFrom,
                 TeacherTo = teacherTo
             };
+
+            _reservationContext.ExchangeReservations.Add(exchangeReservation);
+            _reservationContext.SaveChanges();
+
             return true;
         }
 
-        public List<ExchangeReservation> GetAExchangeReservations()
+        public List<ExchangeReservation> GetAllExchangeReservations()
         {
             return new List<ExchangeReservation>(_reservationContext.ExchangeReservations);
+        }
+
+        public List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id)
+        {
+            return new List<ExchangeReservation>(_reservationContext.ExchangeReservations.ToList().Where(r => r.TeacherFrom == id));
+        }
+
+        public List<ExchangeReservation> GetExchangeReservationByTeacherToId(string id)
+        {
+            return new List<ExchangeReservation>(_reservationContext.ExchangeReservations.ToList().Where(r => r.TeacherTo == id));
+        }
+
+        public List<ExchangeReservation> GetExchangeReservationByTeacherId(string id)
+        {
+            return new List<ExchangeReservation>(_reservationContext.ExchangeReservations.ToList().Where(rr => rr.TeacherFrom == id));
+        }
+
+
+        public bool AddCourse(DateTime startDate,DateTime endTime, int block, string teacherId , int room , string nameOfCourse)
+        {
+            DateTime dateTimeStart = GetCorrectDatetime(startDate);
+            DateTime dateTimeEnd = GetCorrectDatetime(endTime);
+
+            Course course = new Course
+            {
+                StartDate = dateTimeStart,
+                EndDate = dateTimeEnd,
+                Block = block,
+                RoomId = room,
+                Name = nameOfCourse,
+                TeacherId = teacherId                
+            };
+            _reservationContext.Courses.Add(course);
+
+            DateTime dateStart = dateTimeStart;
+            DateTime dateEnd = dateTimeEnd;
+            while (dateStart <= dateEnd)
+            {
+                dateStart = dateStart.AddDays(7);
+                _reservationContext.Add(new Reservation
+                {
+                    Block = course.Block,
+                    TeacherId = course.TeacherId,
+                    RoomId = course.RoomId,
+                    Date = dateStart
+                });
+
+                _reservationContext.SaveChanges();
+            }
+
+            _reservationContext.SaveChanges();
+
+            return true;
+        }
+
+
+        public List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId)
+        {
+            return new List<Course>(_reservationContext.Courses.ToList().Where
+                (c => c.Block == blockId && c.StartDate == GetCorrectDatetime(date)));
+        }
+
+        public List<CourseExceptions> GetAllCourseExceptionsesFromCourse(int courseId)
+        {
+           /* return new List<CourseExceptions>(_reservationContext.CourseExceptionses.ToList().Where
+                (c => c.CourseId == courseId));*/
+            return null;
         }
 
         public List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block)
@@ -180,6 +252,50 @@ namespace Raumplanung.Database
             var reservations = _reservationContext.Reservations.ToList()
                 .Where(r => r.Date == dateTime && r.Block == blockNr);
             return new List<Reservation>(reservations);
+        }
+
+        private List<Course> CheckWhichCourseTakesPlace(DateTime date , int blockNr)
+        {
+            date = GetCorrectDatetime(date);
+            List<Course> courses = GetAllCoursesInBlock(blockNr);
+            List<Course> coursesThatTakesPlace = new List<Course>();
+
+            foreach (var course in courses)
+            {
+                DateTime startdate = new DateTime
+                    (course.StartDate.Year , course.StartDate.Month , course.StartDate.Day);
+                bool b = CheckIfCourseTakesPlaceOnDate(date, startdate);
+                if (b)
+                {
+                    coursesThatTakesPlace.Add(course);
+                }
+            }
+
+            return coursesThatTakesPlace;
+        }
+
+        private Boolean CheckIfCourseTakesPlaceOnDate(DateTime pdate, DateTime pcourseTime)
+        {
+            DateTime dateTime = GetCorrectDatetime(pdate);
+            DateTime courseTime = GetCorrectDatetime(pcourseTime);
+
+            while (dateTime <= courseTime)
+            {
+                if (dateTime == courseTime)
+                    return true;
+                courseTime.AddDays(Week);
+            }
+            return false;
+        }
+
+        public List<Course> GetAllCoursesInBlock(int blockNr)
+        {
+            return new List<Course>(_reservationContext.Courses.ToList().Where(r => r.Block == blockNr));
+        }
+
+        public List<Course> GetAllCourses()
+        {
+            return new List<Course>(_reservationContext.Courses);
         }
 
         public bool ExchangeReservation(string pTeacherFrom, int pReservationFrom , string pTeacherTo , int pReservationTo)
@@ -266,6 +382,10 @@ namespace Raumplanung.Database
             return _reservationContext.Reservations.Find(reservationId);
         }
 
+        private DateTime GetCorrectDatetime(DateTime time)
+        {
+            return new DateTime(time.Year , time.Month , time.Day);
+        } 
       
     }
 }

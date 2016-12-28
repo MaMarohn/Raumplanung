@@ -17,5 +17,7 @@ namespace RaumplanungCore.Database
         public DbSet<Teacher> Teachers { set; get; }
         public DbSet<Reservation> Reservations { set; get; }
         public DbSet<ExchangeReservation> ExchangeReservations { set; get; }
+        public DbSet<Course> Courses { set; get; }
+        //public DbSet<CourseExceptions> CourseExceptionses { set; get; }
     }
 }

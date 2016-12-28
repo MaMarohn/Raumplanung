@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Raumplanung.Database;
 using RaumplanungCore.Database;
 using Xunit;
@@ -20,7 +21,7 @@ namespace DatabaseTest
 
 
 
-            var mockSet = new Mock<DbSet<Blog>>();
+            
             //http://dotnetliberty.com/index.php/2016/02/22/moq-on-net-core/
         }
 
