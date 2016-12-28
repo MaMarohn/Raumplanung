@@ -3,11 +3,6 @@
 *@
 @using RaumplanungCore.ViewModels.Reservation
 @model IEnumerable<Room>
-@inject NewModel NewModel
-
-@{
-    DateTime time = DateTime.Now;
-}
 
 @section scripts
 {
@@ -36,7 +31,7 @@
                                 eventClick: function(event) {
                                     var start = moment(event.start).format("DD-MM-YYYY HH:mm");
                                     event.title = start;
-                                    window.open("/reservation/onclick/" + start.toString());
+                                    window.open("/reservation/onclick/" + start.toString(), "_self");                                    
                                 }
                                 
 
@@ -57,6 +52,7 @@
 <br />
 
 <h4>Gewünschten Termin anklicken, um verfügbare Räume anzuzeigen</h4>
+<h4>Legende: <span style="color: green"> Grün </span> = alle Räume frei, <span style="color: orange"> Orange </span> = Räume teilweise belegt, <span style="color: red"> Rot </span> = alles belegt</h4>
 
 <br />
 <br />
