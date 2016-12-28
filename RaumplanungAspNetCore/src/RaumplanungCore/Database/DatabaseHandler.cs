@@ -116,6 +116,8 @@ namespace Raumplanung.Database
                 Message = message,
                 Seen = false
             };
+            _reservationContext.ExchangeReservations.Add(exchangeReservation);
+            _reservationContext.SaveChanges();
             return true;
         }
 

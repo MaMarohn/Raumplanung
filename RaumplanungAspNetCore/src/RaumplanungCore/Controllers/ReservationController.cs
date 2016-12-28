@@ -96,7 +96,9 @@ namespace RaumplanungCore.Controllers
         [HttpGet]
         public IActionResult Anfragen()
         {
-            return View();
+            AnfragenViewModel anfragenViewModel=new AnfragenViewModel();
+            //datenbanklisten getten
+            return View(anfragenViewModel);
         }
 
         [HttpGet("reservation/New")]
