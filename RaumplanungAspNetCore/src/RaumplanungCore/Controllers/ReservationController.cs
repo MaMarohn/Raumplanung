@@ -34,6 +34,7 @@ namespace RaumplanungCore.Controllers
         {
             string teacherId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
             List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);
+            List<Course> courses = _databaseHandler.GetAllCourses(); // TODO: abändern auf GetCoursesFromTeacher()
             int count;
             if (reservations != null)
             {
@@ -47,9 +48,9 @@ namespace RaumplanungCore.Controllers
             {
                 //sonst gibts null exception
                 reservations = new List<Reservation>();
-            }
-
-            return View("Index", reservations);
+            }          
+           
+            return View("Index", new ReservationAndCourse(reservations, courses));
         }
 
         // GET: /<controller>/Detail/reservationId

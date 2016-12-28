@@ -8,7 +8,7 @@
 @using RaumplanungCore.ViewModels.Reservation
 @model IEnumerable<RaumplanungCore.ViewModels.RaumbelegungModel>
 @inject Microsoft.AspNetCore.Identity.UserManager<Teacher> TeacherManager
-@inject NewModel DatabaseHelper
+@inject DatabaseHelperViewModel DatabaseHelperView
 
 
 
@@ -60,7 +60,7 @@
                 int roomId = belegung.Room.RoomId;
                 reservationString[index] = date + ";" + block + ";" + userId + ";" + roomId;
 
-                bool alreadyReservedAtDateAndBlock = DatabaseHelper.teacherHasAlreadyReservationAtDateAndBlock(userId, date, block);
+                bool alreadyReservedAtDateAndBlock = DatabaseHelperView.TeacherHasAlreadyReservationAtDateAndBlock(userId, date, block);
                 if (alreadyReservedAtDateAndBlock)
                 {
                     <td width="250px"> Bereits an diesem Termin reserviert </td>

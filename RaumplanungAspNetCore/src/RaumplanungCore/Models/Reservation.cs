@@ -14,7 +14,7 @@ namespace RaumplanungCore.Models
 
         public int RoomId { get; set; }
         public Room Room { get; set; }
-        public int CourseId { get; set; }
+        public int? CourseId { get; set; }
 
     }
 }
