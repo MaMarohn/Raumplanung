@@ -2,6 +2,9 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Threading.Tasks
+@using RaumplanungCore.Controllers
+@using RaumplanungCore.ViewModels
 @model IEnumerable<RaumplanungCore.Models.Reservation>
 
 @{
@@ -16,16 +19,22 @@
     <table>
         <tr>
             <th> Raum </th>
-
-            <th> Datum </th>
+            <th> Block </th>
+            <th> Datum </th>   
+            <th> Uhrzeit </th>         
             <th> Bearbeiten </th>
         </tr>
         @foreach (var reservation in Model)
         {
             <tr>
                 <td width="100"> @reservation.Room.Name </td>
-                <td width="150"> @reservation.Date </td>
-                <td width="150"> <a asp-controller="Reservation" asp-action="Detail" asp-route-reservationId="@reservation.ReservationId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-reservationId="@reservation.ReservationId">Delete</a></td>
+                <td width="70"> @(reservation.Block + 1) </td>
+                @{
+                    string dateFormatString = reservation.Date.Value.ToString("dd.MM.yyyy");                    
+                }
+                <td width="100"> @dateFormatString </td>
+                <td width="100"> @Data.BlockStartArray[reservation.Block] Uhr </td>
+                <td width="150"> <a asp-controller="Reservation" asp-action="Detail" asp-route-reservationId="@reservation.ReservationId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-reservationId="@reservation.ReservationId">Entfernen</a></td>
             </tr>
         }
     </table>

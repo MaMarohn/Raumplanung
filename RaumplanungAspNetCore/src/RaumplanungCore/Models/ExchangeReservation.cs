@@ -13,10 +13,11 @@ namespace RaumplanungCore.Models
         public string TeacherFrom { set; get; }
         public string TeacherTo { set; get; }
         public Reservation ReservationFrom { set; get; }
-        public Reservation ReservationTo { set; get; }
-        public bool? ExchangeStatus { set; get; }
-        public bool? ExchangeAccepted { set; get; }
+        public Reservation ReservationOffer { set; get; }
+        public bool ExchangeStatus { set; get; }
+        public bool ExchangeAccepted { set; get; }
         public string Message { set; get; }
+        public bool Seen { set; get; }
         
 
     }

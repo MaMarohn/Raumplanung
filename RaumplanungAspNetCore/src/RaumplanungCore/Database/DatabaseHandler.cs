@@ -86,7 +86,7 @@ namespace Raumplanung.Database
             return reservations.Any();
         }
 
-        public bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationTo)
+        public bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationoffer,string message)
         {
             //not tested
 
@@ -98,7 +98,7 @@ namespace Raumplanung.Database
             }
 
             Reservation reservationF = _reservationContext.Reservations.Find(reservationFrom);
-            Reservation reservationT = _reservationContext.Reservations.Find(reservationTo);
+            Reservation reservationT = _reservationContext.Reservations.Find(reservationoffer);
 
             if (reservationF == null || reservationT == null)
             {
@@ -109,9 +109,13 @@ namespace Raumplanung.Database
             ExchangeReservation exchangeReservation = new ExchangeReservation
             {
                 ReservationFrom = reservationF,
-                ReservationTo = reservationT,
+                ReservationOffer = reservationT,
                 TeacherFrom = teacherFrom,
-                TeacherTo = teacherTo
+                TeacherTo = teacherTo,
+                ExchangeAccepted = false,
+                ExchangeStatus = false,
+                Message = message,
+                Seen = false
             };
 
             _reservationContext.ExchangeReservations.Add(exchangeReservation);

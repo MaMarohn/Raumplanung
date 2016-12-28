@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Raumplanung.Database;
 using RaumplanungCore.Database;
 
+
 namespace RaumplanungCore.ViewModels.Reservation
 {
     public class NewModel
@@ -14,28 +15,18 @@ namespace RaumplanungCore.ViewModels.Reservation
             _databaseHandler = new DatabaseHandler(context);
         }
 
-        public bool AllRoomsAvailable()
+        public bool teacherHasAlreadyReservationAtDateAndBlock(string teacherId, DateTime dateTime, int block)
         {
-            //_databaseHandler;
-            return true;
+            List<Models.Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);
+            foreach (var reservation in reservations)
+            {
+                if ((reservation.Date.Value.Month == dateTime.Month && reservation.Date.Value.Day == dateTime.Day && reservation.Date.Value.Year == dateTime.Year) && reservation.Block == block)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public string FindReservationByDate(DateTime date)
-        {
-            List<Models.Reservation> reservations = _databaseHandler.GetReservationsOnDate(date);
-            if (reservations.Count == 0)
-            {
-                return "green";
-            }
-            if (reservations.Count < _databaseHandler.GetAllRooms().Count)
-            {
-                return "yellow";
-            }
-            else
-            {
-                return "red";
-            }
-            
-        }
     }
 }

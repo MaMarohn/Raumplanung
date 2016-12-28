@@ -21,9 +21,7 @@ namespace RaumplanungCore.Controllers
         private readonly DatabaseHandler _databaseHandler;
         private readonly UserManager<Teacher> _userManager;
         const int AmountOfBlocks = 7;
-        readonly string[] _dayStrings = { "Mo", "Di", "Mi", "Do", "Fr" };
-        readonly string[] _blockStartArray = { "08:30", "10:15", "12:00", "14:15", "16:00", "17:45", "19:30" };
-        readonly string[] _blockEndArray = { "10:00", "11:45", "13:30", "15:45", "17:30", "19:15", "21:00" };
+        
 
         public ReservationController(ReservationContext context, UserManager<Teacher> userManager)
         {
@@ -76,8 +74,8 @@ namespace RaumplanungCore.Controllers
             TauschViewModel t = new TauschViewModel
             {
                 Reservation = _databaseHandler.GetReservation(reservationId),
-                FromTeacherid = _userManager.GetUserAsync(User).Result.Id,
-                ToTeacherid = _databaseHandler.GetReservation(reservationId).TeacherId,
+                ToTeacherid = _userManager.GetUserAsync(User).Result.Id, // glaube es muss andersrum mit from und toteacher // jup hab ich mich vertan, is umgedreht
+                FromTeacherid = _databaseHandler.GetReservation(reservationId).TeacherId,
                 Reservationid = reservationId
             };
             return View(t);
@@ -89,7 +87,9 @@ namespace RaumplanungCore.Controllers
             int id2 = t.OfferReservation;
             string t1 = t.FromTeacherid;
             string t2 = t.ToTeacherid;
-            //DATABASELOGIC
+            _databaseHandler.AddReservationSuggestion(t.FromTeacherid, t.Reservationid, t.ToTeacherid,
+                t.OfferReservation, t.message);
+            
             return Index();
         }
 
@@ -118,14 +118,17 @@ namespace RaumplanungCore.Controllers
         {            
             List<CalendarEvent> eventList = new List<CalendarEvent>();                  
                  
-            for (int j = 0; j < _dayStrings.Length; j++)
+            for (int j = 0; j < Data.DayStrings.Length; j++)
             {
                 int[] days = {j+1};
+                start = start.Add(new TimeSpan(8, 0, 0));
                 for (int i = 0; i < AmountOfBlocks ; i++)
                 {
-                    CalendarEvent dailyEvent = new CalendarEvent((_dayStrings[j] + (i + 1)), _blockStartArray[i], _blockEndArray[i], days, FindReservationByDate(start, i));
+                    CalendarEvent dailyEvent = new CalendarEvent((Data.DayStrings[j] + (i + 1)), Data.BlockStartArray[i], Data.BlockEndArray[i], days, FindReservationByDate(start, i));
                     eventList.Add(dailyEvent);
+                    start = start.Add(new TimeSpan(2,0,0));
                 }
+                start = start.Add(new TimeSpan(-(AmountOfBlocks*2+8), 0, 0));
                 start = start.AddDays(1);
             }                        
             return eventList;            
@@ -169,7 +172,7 @@ namespace RaumplanungCore.Controllers
             string onlyTime = start.Split(' ')[1];
             //int blockId = 1;
             int blockId = 0;
-            foreach (var startTime in _blockStartArray)
+            foreach (var startTime in Data.BlockStartArray)
             {
                 if (onlyTime.Equals(startTime))
                 {
@@ -183,6 +186,10 @@ namespace RaumplanungCore.Controllers
         private string FindReservationByDate(DateTime date, int blockNr)
         {
             List<Room> block = _databaseHandler.GetFreeRoomsOnDateAndBlock(date , blockNr);
+            if (DateTime.Now >= date && (DateTime.Now >= date || DateTime.Now.Hour >= date.Hour))
+            {
+                return "gray";
+            }
             if (block.Count == 0)
             {
                 return "red";

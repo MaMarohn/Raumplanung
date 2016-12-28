@@ -8,6 +8,7 @@
 @using RaumplanungCore.ViewModels.Reservation
 @model IEnumerable<RaumplanungCore.ViewModels.RaumbelegungModel>
 @inject Microsoft.AspNetCore.Identity.UserManager<Teacher> TeacherManager
+@inject NewModel DatabaseHelper
 
 
 
@@ -19,12 +20,13 @@
     string[] reservationString = new string[Model.Count()];
     int index = 0;
 }
-<h1> Reservierungen in diesem Block </h1>
+<h1> Reservierungen im Block @(Model.ElementAt(0).Block + 1) </h1>
+
+<h3> @Model.ElementAt(0).Date Uhr </h3>
+<br />
     <table>
         <tr>
             <th> Raum </th>
-            <th> Datum </th>
-            <th> Block </th>
             <th> Lehrer </th>
             <th> Belegen/Tauschen</th>
         </tr>
@@ -32,12 +34,10 @@
         {
         <tr>
             <td width="100px"> @belegung.Room.Name </td>
-            <td width="150px"> @belegung.Date </td>
             
-            <td width="50px">  @belegung.BlockIncremented() </td>
             @if (belegung.Reserved)
             {
-                <td width="350px"> @belegung.Teacher.Anrede @belegung.Teacher.Vorname @belegung.Teacher.Nachname</td>
+                <td width="250px"> @belegung.Teacher.Anrede @belegung.Teacher.Vorname @belegung.Teacher.Nachname</td>
                 <td width="50px">                     
                     @if (TeacherManager.GetUserAsync(User).Result.Id != belegung.Teacher.Id)
                 {
@@ -53,14 +53,25 @@
             }
             else
             {
-                <td width="50px"> - </td>                
+                <td width="50px"> - </td>
                 string userId = TeacherManager.FindByNameAsync(User.Identity.Name).Result.Id;
                 int block = belegung.Block;
                 DateTime date = belegung.Date;
                 int roomId = belegung.Room.RoomId;
                 reservationString[index] = date + ";" + block + ";" + userId + ";" + roomId;
 
-                <td width="50px"> <a asp-controller="Reservation" asp-action="Reservieren" asp-route-id="@reservationString[index]"> Reservieren </a> </td>
+                bool alreadyReservedAtDateAndBlock = DatabaseHelper.teacherHasAlreadyReservationAtDateAndBlock(userId, date, block);
+                if (alreadyReservedAtDateAndBlock)
+                {
+                    <td width="250px"> Bereits an diesem Termin reserviert </td>
+                }
+                else
+                {
+                    <td width="50px"> <a asp-controller="Reservation" asp-action="Reservieren" asp-route-id="@reservationString[index]"> Reservieren </a> </td>
+                }
+
+
+
                 index++;
             }
         </tr>

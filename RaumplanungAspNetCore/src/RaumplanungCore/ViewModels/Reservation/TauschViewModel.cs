@@ -14,6 +14,7 @@ namespace RaumplanungCore.ViewModels.Reservation
         public Models.Reservation Reservation { get; set; }
         [Required]
         public int Reservationid { get; set; } 
+        public string message { get; set; }
 
     }
 }
