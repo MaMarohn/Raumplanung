@@ -1,0 +1,44 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.EntityFrameworkCore.Storage
+@using Raumplanung.Database
+@model RaumplanungCore.ViewModels.Reservation.TauschViewModel
+@inject UserManager<Teacher> TeacherManager
+@inject DatabaseHandler Database;
+
+@{
+    ViewData["Title"] = "Tauschen";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+Tauschanfrage stellen für folgenden Termin:<br/>
+Tag:@Model.Reservation.Date.Value.Day.@Model.Reservation.Date.Value.Month.@Model.Reservation.Date.Value.Year<br/>
+Block:@(Model.Reservation.Block+1)<br/>
+Momentan Reserviert von:@TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Vorname @TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Nachname
+
+<form asp-controller="Reservation" asp-action="Tauschen" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+    <input type="hidden" asp-for="Reservationid" value="@Model.Reservationid"/>
+    <input type="hidden" asp-for="FromTeacherid" value="@Model.FromTeacherid" />
+    <input type="hidden" asp-for="ToTeacherid" value="@Model.ToTeacherid" />
+    <div class="form-group">
+        <label asp-for="OfferReservation" class="col-md-2 control-label">Anderen Termin anbieten:</label>
+        <div class="col-lg-12">
+            <select asp-for="OfferReservation" class="form-control-static">
+                <option value="-1">Keinen</option>
+                @foreach (Reservation r in Database.GetReservationsFromTeacher(TeacherManager.GetUserAsync(User).Result.Id))
+                {
+                    <option value="@r.ReservationId">@r.Date Block:@(r.Block + 1) @Database.GetRoom(r.RoomId).Name</option>
+                }
+            </select>
+            <span asp-validation-for="OfferReservation" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">Anfrage abschicken</button>
+        </div>
+    </div>
+</form>

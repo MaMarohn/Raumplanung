@@ -58,10 +58,12 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Reservation" asp-action="Index">Meine Reservierungen</a></li>
-                    }
-                    @if (User.IsInRole("Administrator"))
-                    {
-                        <li><a asp-area="" asp-controller="Admin" asp-action="Index">Admin-Seite</a></li>
+                        <li><a asp-area="" asp-controller="Reservation" asp-action="Anfragen">Tauschanfragen</a></li>
+
+                        if (User.IsInRole("Administrator"))
+                        {
+                             <li><a asp-area="" asp-controller="Admin" asp-action="Index">Admin-Seite</a></li>
+                         }
                     }
 
                 </ul>

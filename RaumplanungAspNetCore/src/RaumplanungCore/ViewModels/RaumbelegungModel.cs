@@ -10,20 +10,22 @@ namespace RaumplanungCore.ViewModels
         public Teacher Teacher { get; set; }
         public DateTime Date { get; set; }
         public int Block { get; set; }
+        public int Reservationid { get; set; }
 
         public int BlockIncremented()
         {
             return Block + 1;
         }
 
-        public RaumbelegungModel(Room r, bool res, Teacher t, DateTime d, int b)
+        public RaumbelegungModel(Room r, bool res, Teacher t, DateTime d, int b,int reservationid)
         {
             Room = r;
             Reserved = res;
             Teacher = t;
             Date = d;
             Block = b;
-            
+            Reservationid = reservationid;
+
         }
 
     }

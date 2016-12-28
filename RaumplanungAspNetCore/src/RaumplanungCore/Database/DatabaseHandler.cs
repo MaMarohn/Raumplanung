@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 [assembly: InternalsVisibleTo("DatabaseTest")]
 namespace Raumplanung.Database
 {
-    class DatabaseHandler : IDatabaseHandler
+    public class DatabaseHandler : IDatabaseHandler
     {
         private readonly ReservationContext _reservationContext;
 
