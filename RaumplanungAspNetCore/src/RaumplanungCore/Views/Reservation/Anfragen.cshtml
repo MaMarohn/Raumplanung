@@ -1,4 +1,6 @@
-﻿@*
+﻿@using System.Threading.Tasks
+@using RaumplanungCore.ViewModels
+@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
@@ -7,3 +9,61 @@
 }
 
 <h1> @ViewData["Title"] </h1>
+<div>
+<div class="left" style="margin-left: 10px">
+    <h3>Eingehende Anfragen</h3>
+    <table>
+        <tr>
+            <th> Von </th>
+            <th> Raum </th>
+            <th> Block </th>
+            <th> Datum </th>
+            <th> Uhrzeit </th>
+            <th> Angebot </th>
+            <th> Bearbeiten </th>
+        </tr>
+        
+        
+        <tr>
+            <td width="100"></td>
+            <td width="100"> </td>
+            <td width="100"> </td>
+            <td width="100"> </td>
+            <td width="100"></td>
+            <td width="100"></td>
+            <td width="100"></td>
+        </tr>
+        
+    </table>
+</div>
+<div class="right" style="float:left;margin-left: 10px">
+    <h3>Ausgehende Anfragen</h3>
+    <table>
+        <tr>
+            <th> An </th>
+            <th> Raum </th>
+            <th> Block </th>
+            <th> Datum </th>
+            <th> Uhrzeit </th>
+            <th> Angebot </th>
+            <th> Bearbeiten </th>
+        </tr>
+
+
+        <tr>
+            <td width="100"></td>
+            <td width="100"> </td>
+            <td width="100"> </td>
+            <td width="100"> </td>
+            <td width="100"></td>
+            <td width="100"></td>
+            <td width="100"></td>
+        </tr>
+
+    </table>
+</div>
+</div>
+<br/>
+<br/>
+
+
