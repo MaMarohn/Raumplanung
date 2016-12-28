@@ -6,16 +6,16 @@ using RaumplanungCore.Database;
 
 namespace RaumplanungCore.ViewModels.Reservation
 {
-    public class NewModel
+    public class DatabaseHelperViewModel
     {
         private readonly DatabaseHandler _databaseHandler;
 
-        public NewModel(ReservationContext context)
+        public DatabaseHelperViewModel(ReservationContext context)
         {
             _databaseHandler = new DatabaseHandler(context);
         }
 
-        public bool teacherHasAlreadyReservationAtDateAndBlock(string teacherId, DateTime dateTime, int block)
+        public bool TeacherHasAlreadyReservationAtDateAndBlock(string teacherId, DateTime dateTime, int block)
         {
             List<Models.Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);
             foreach (var reservation in reservations)
@@ -26,6 +26,20 @@ namespace RaumplanungCore.ViewModels.Reservation
                 }
             }
             return false;
+        }
+
+        public string GetCourseNameById(int courseId)
+        {
+            string result = "placeholder";
+            // TODO: Muss später möglich sein: result =  _databaseHandler.GetCourseById(courseId).Name;
+            return result;
+        }
+
+        public string GetRoomNameById(int roomId)
+        {
+            string result = "";
+            result = _databaseHandler.GetRoom(roomId).Name;
+            return result;
         }
 
     }

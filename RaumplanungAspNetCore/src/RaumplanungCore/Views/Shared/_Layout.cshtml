@@ -57,7 +57,7 @@
                 <ul class="nav navbar-nav">
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <li><a asp-area="" asp-controller="Reservation" asp-action="Index">Meine Reservierungen</a></li>
+                        <li><a asp-area="" asp-controller="Reservation" asp-action="Index">Meine Kurse und Reservierungen</a></li>
                         <li><a asp-area="" asp-controller="Reservation" asp-action="Anfragen">Tauschanfragen</a></li>
 
                         if (User.IsInRole("Administrator"))

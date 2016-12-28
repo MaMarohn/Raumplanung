@@ -34,6 +34,7 @@ namespace RaumplanungCore.Controllers
         {
             string teacherId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
             List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);
+            List<Course> courses = _databaseHandler.GetAllCourses(); // TODO: abändern auf GetCoursesFromTeacher()
             int count;
             if (reservations != null)
             {
@@ -47,9 +48,9 @@ namespace RaumplanungCore.Controllers
             {
                 //sonst gibts null exception
                 reservations = new List<Reservation>();
-            }
-
-            return View("Index", reservations);
+            }          
+           
+            return View("Index", new ReservationAndCourse(reservations, courses));
         }
 
         // GET: /<controller>/Detail/reservationId
@@ -125,14 +126,12 @@ namespace RaumplanungCore.Controllers
             for (int j = 0; j < Data.DayStrings.Length; j++)
             {
                 int[] days = {j+1};
-                start = start.Add(new TimeSpan(8, 0, 0));
+                
                 for (int i = 0; i < AmountOfBlocks ; i++)
                 {
                     CalendarEvent dailyEvent = new CalendarEvent((Data.DayStrings[j] + (i + 1)), Data.BlockStartArray[i], Data.BlockEndArray[i], days, FindReservationByDate(start, i));
                     eventList.Add(dailyEvent);
-                    start = start.Add(new TimeSpan(2,0,0));
-                }
-                start = start.Add(new TimeSpan(-(AmountOfBlocks*2+8), 0, 0));
+                    }
                 start = start.AddDays(1);
             }                        
             return eventList;            
@@ -190,7 +189,7 @@ namespace RaumplanungCore.Controllers
         private string FindReservationByDate(DateTime date, int blockNr)
         {
             List<Room> block = _databaseHandler.GetFreeRoomsOnDateAndBlock(date , blockNr);
-            if (DateTime.Now >= date && (DateTime.Now >= date || DateTime.Now.Hour >= date.Hour))
+            if (DateTime.Now >= date && (DateTime.Now >= date || DateTime.Now.Hour >= TimeSpan.Parse(Data.BlockStartArray[blockNr]).Hours))
             {
                 return "gray";
             }

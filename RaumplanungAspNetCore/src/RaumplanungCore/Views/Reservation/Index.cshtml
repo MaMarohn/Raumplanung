@@ -5,43 +5,87 @@
 @using System.Threading.Tasks
 @using RaumplanungCore.Controllers
 @using RaumplanungCore.ViewModels
-@model IEnumerable<RaumplanungCore.Models.Reservation>
+@using RaumplanungCore.ViewModels.Reservation
+@model ReservationAndCourse
+@inject DatabaseHelperViewModel DatabaseHelper
 
 @{
     ViewData["Title"] = "Startseite";
 }
 
-<h1> Meine Reservierungen </h1>
+<h1> Meine Kurse und Reservierungen </h1>
+
+
+<h3>Kurse</h3>
+@if (Model.Courses.ToList().Count > 0)
+{
+    <table>
+        <tr>
+            <th> Name </th>
+            <th> Raum </th>
+            <th> Block </th>
+            <th> Startdatum </th>
+            <th> Enddatum </th>
+            <th> Uhrzeit </th>
+        </tr>
+        @foreach (var course in Model.Courses)
+        {
+            <tr>
+                <td style="width: 100px"> @course.Name </td>
+                <td style="width: 100px"> @DatabaseHelper.GetRoomNameById(course.RoomId) </td> 
+                <td style="width: 50px"> @(course.Block+1)</td>
+                <td style="width: 100px"> @course.StartDate.ToString("dd.MM.yyyy")</td>
+                <td style="width: 100px"> @course.EndDate.ToString("dd.MM.yyyy")</td>                
+                <td> @Data.BlockStartArray[course.Block] Uhr</td>
+            </tr>
+            
+        }
+    </table>
+}
+else
+{
+  <h3> Keine aktiven Kurse vorhanden</h3>
+}
+<br/>
+
+<p> <a asp-controller="Kurs" asp-action="New"> Neuen Kurs erstellen </a></p>
 
 <br/>
-@if (Model.ToList().Count > 0)
+
+<h3>Reservierungen</h3>
+<br/>
+@if (Model.Reservations.ToList().Count > 0)
 {
     <table>
         <tr>
             <th> Raum </th>
             <th> Block </th>
             <th> Datum </th>   
-            <th> Uhrzeit </th>         
-            <th> Bearbeiten </th>
+            <th> Uhrzeit </th>                  
+            <th> Löschen </th>
         </tr>
-        @foreach (var reservation in Model)
+        @foreach (var reservation in Model.Reservations)
         {
-            <tr>
-                <td width="100"> @reservation.Room.Name </td>
-                <td width="70"> @(reservation.Block + 1) </td>
-                @{
-                    string dateFormatString = reservation.Date.Value.ToString("dd.MM.yyyy");                    
-                }
-                <td width="100"> @dateFormatString </td>
-                <td width="100"> @Data.BlockStartArray[reservation.Block] Uhr </td>
-                <td width="150"> <a asp-controller="Reservation" asp-action="Detail" asp-route-reservationId="@reservation.ReservationId">Details</a> | <a asp-controller="Reservation" asp-action="Delete" asp-route-reservationId="@reservation.ReservationId">Entfernen</a></td>
-            </tr>
+            if (reservation.CourseId == null)
+            {
+                <tr>
+                    <td width="100"> @reservation.Room.Name </td>
+                    <td width="70"> @(reservation.Block + 1) </td>
+                    @{
+                        string dateFormatString = reservation.Date.Value.ToString("dd.MM.yyyy");
+                    }
+                    <td width="100"> @dateFormatString </td>
+                    <td width="100"> @Data.BlockStartArray[reservation.Block] Uhr </td>
+
+                    <td width="150"> <a asp-controller="Reservation" asp-action="Delete" asp-route-reservationId="@reservation.ReservationId">Entfernen</a></td>
+                </tr>
+            }
         }
     </table>
 }
 else
 {
-    <h3> Es sind keine Reservierungen vorhanden! </h3>
+    <h3> Es sind keine Reservierungen oder aktiven Kurse vorhanden! </h3>
 }
 
 <br/>

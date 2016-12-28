@@ -34,7 +34,7 @@ namespace RaumplanungCore
         {
             //services.AddMvcCore(); // ?
            
-            services.AddScoped<NewModel, NewModel>();
+            services.AddScoped<DatabaseHelperViewModel, DatabaseHelperViewModel>();
             services.AddScoped<DatabaseHandler,DatabaseHandler>();
             
             
