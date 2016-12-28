@@ -5,8 +5,10 @@
     ViewData["Title"] = "Reservierungen";
 }
 
+@using RaumplanungCore.ViewModels.Reservation
 @model IEnumerable<RaumplanungCore.ViewModels.RaumbelegungModel>
 @inject Microsoft.AspNetCore.Identity.UserManager<Teacher> TeacherManager
+
 
 
 @{
@@ -36,7 +38,18 @@
             @if (belegung.Reserved)
             {
                 <td width="350px"> @belegung.Teacher.Anrede @belegung.Teacher.Vorname @belegung.Teacher.Nachname</td>
-                <td width="50px"> <a asp-controller="Reservation" asp-action="Tauschen" asp-route-id="@belegung.Teacher.Id">Tausch vorschlagen </a ></td>
+                <td width="50px">                     
+                    @if (TeacherManager.GetUserAsync(User).Result.Id != belegung.Teacher.Id)
+                {
+                    
+                        <a asp-controller="Reservation" asp-action="Tauschen" asp-route-reservationId="@belegung.Reservationid">Tausch vorschlagen </a>
+                       
+                        }
+                        else
+                        {
+                        <label>---------------</label>
+                        }
+</td>
             }
             else
             {

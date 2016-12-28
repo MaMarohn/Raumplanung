@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Raumplanung.Database;
@@ -7,6 +8,7 @@ using RaumplanungCore.Database;
 using RaumplanungCore.Models;
 using RaumplanungCore.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using RaumplanungCore.ViewModels.Reservation;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -61,12 +63,40 @@ namespace RaumplanungCore.Controllers
         }
 
         //[HttpGet("reservation/delete/{reservationId}")]
-        [HttpGet()]
-
+        [HttpGet]
         public IActionResult Delete(int reservationId)
         {
             _databaseHandler.DeleteReservation(reservationId);
             return Index();
+        }
+
+        [HttpGet]
+        public IActionResult Tauschen(int reservationId)
+        {
+            TauschViewModel t = new TauschViewModel
+            {
+                Reservation = _databaseHandler.GetReservation(reservationId),
+                FromTeacherid = _userManager.GetUserAsync(User).Result.Id,
+                ToTeacherid = _databaseHandler.GetReservation(reservationId).TeacherId,
+                Reservationid = reservationId
+            };
+            return View(t);
+        }
+        [HttpPost]
+        public IActionResult Tauschen(TauschViewModel t)
+        {
+            int id = t.Reservationid;
+            int id2 = t.OfferReservation;
+            string t1 = t.FromTeacherid;
+            string t2 = t.ToTeacherid;
+            //DATABASELOGIC
+            return Index();
+        }
+
+        [HttpGet]
+        public IActionResult Anfragen()
+        {
+            return View();
         }
 
         [HttpGet("reservation/New")]
@@ -113,16 +143,13 @@ namespace RaumplanungCore.Controllers
             {
                 Reservation rr;
                 raumbelegung.Add((rr = reservationsInBlock.Find(r => r.RoomId == room.RoomId)) != null
-                    ? new RaumbelegungModel(room, true, _databaseHandler.GetTeacher(rr.TeacherId), start, blockId)
-                    : new RaumbelegungModel(room, false, null, start, blockId));
+                    ? new RaumbelegungModel(room, true, _databaseHandler.GetTeacher(rr.TeacherId), start, blockId,rr.ReservationId)
+                    : new RaumbelegungModel(room, false, null, start, blockId,-1));
             }                     
             return View("block", raumbelegung);
         }
 
-        public IActionResult Tauschen(string teacherId)
-        {
-            return View();
-        }
+       
 
 
         [HttpGet("reservation/Reservieren/{id}")]

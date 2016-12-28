@@ -8,6 +8,7 @@ using RaumplanungCore.Database;
 using Microsoft.EntityFrameworkCore;
 using RaumplanungCore.ViewModels.Reservation;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Raumplanung.Database;
 using RaumplanungCore.Models;
 using RaumplanungCore.Models.Roles;
 using RaumplanungCore.Services;
@@ -34,6 +35,9 @@ namespace RaumplanungCore
             //services.AddMvcCore(); // ?
            
             services.AddScoped<NewModel, NewModel>();
+            services.AddScoped<DatabaseHandler,DatabaseHandler>();
+            
+            
             
             services.AddEntityFramework()
                 .AddDbContext<ReservationContext>(
