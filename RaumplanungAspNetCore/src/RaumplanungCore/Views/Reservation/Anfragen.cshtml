@@ -1,69 +1,115 @@
 ﻿@using System.Threading.Tasks
+@using Raumplanung.Database
 @using RaumplanungCore.ViewModels
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-
+@model RaumplanungCore.ViewModels.Reservation.AnfragenViewModel
+@inject UserManager<Teacher> TeacherManager
+@inject DatabaseHandler DatabaseHandler
 @{
     ViewData["Title"] = "Tauschanfragen";
 }
 
 <h1> @ViewData["Title"] </h1>
 <div>
-<div class="left" style="margin-left: 10px">
-    <h3>Eingehende Anfragen</h3>
-    <table>
-        <tr>
-            <th> Von </th>
-            <th> Raum </th>
-            <th> Block </th>
-            <th> Datum </th>
-            <th> Uhrzeit </th>
-            <th> Angebot </th>
-            <th> Bearbeiten </th>
-        </tr>
-        
-        
-        <tr>
-            <td width="100"></td>
-            <td width="100"> </td>
-            <td width="100"> </td>
-            <td width="100"> </td>
-            <td width="100"></td>
-            <td width="100"></td>
-            <td width="100">Annehmen/Ablehnen</td>
-        </tr>
-        
-    </table>
-</div>
-<div class="right" style="float:left;margin-left: 10px">
-    <h3>Ausgehende Anfragen</h3>
-    <table>
-        <tr>
-            <th> An </th>
-            <th> Raum </th>
-            <th> Block </th>
-            <th> Datum </th>
-            <th> Uhrzeit </th>
-            <th> Angebot </th>
-            <th> Status </th>
-            <th> Bearbeiten </th>
-        </tr>
+    <p>
+    <div class="left" style="margin-left: 10px">
+        <h3>Eingehende Anfragen</h3>
+
+        <table>
+            <tr>
+                <th width="100"> Von </th>
+                <th width="100"> Raum </th>
+                <th width="100"> Block </th>
+                <th width="100"> Datum </th>
+                <th width="100"> Uhrzeit </th>
+                <th width="100"> Nachricht </th>
+                <th width="100"> Angebot </th>
+                <th width="100"> Bearbeiten </th>
+            </tr>
 
 
-        <tr>
-            <td width="100"></td>
-            <td width="100"> </td>
-            <td width="100"> </td>
-            <td width="100"> </td>
-            <td width="100"></td>
-            <td width="100"></td>
-            <td width="100">Bearbeitet/Unbearbeitet</td>
-            <td width="100">Lösche/Bestätigen(je nach status)</td>
-        </tr>
+            @foreach (var er in Model.IncomingExchangeReservations)
+            {
 
-    </table>
-</div>
+                var reservationfrom = DatabaseHandler.GetReservation(er.ReservationFromId);
+
+                <tr>
+                    <td width="100">@TeacherManager.FindByIdAsync(er.TeacherTo).Result.Vorname @TeacherManager.FindByIdAsync(er.TeacherTo).Result.Nachname</td>
+                    <td width="100">@DatabaseHandler.GetRoom(reservationfrom.RoomId).Name</td>
+                    <td width="100">@(reservationfrom.Block + 1)</td>
+                    <td width="100">@reservationfrom.Date.Value.ToString("dd.MM.yyyy")</td>
+                    <td width="100">@Data.BlockStartArray[reservationfrom.Block]</td>
+                    <td width="100">@er.Message</td>
+                    @if (er.ReservationOfferId != -1)
+                    {
+                        <td width="100"><a asp-controller="Reservation" asp-action="Detail" target="_blank" asp-route-reservationId="@er.ReservationOfferId">Angebot</a></td>
+                    }
+                    else
+                    {
+                        <td width="100">Nichts</td>
+                    }
+                    <td width="100">Annehmen/Ablehnen</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="right" style="float: left; margin-left: 10px">
+        <h3>Ausgehende Anfragen</h3>
+        <table>
+            <tr>
+                <th width="100"> An </th>
+                <th width="100"> Raum </th>
+                <th width="100"> Block </th>
+                <th width="100"> Datum </th>
+                <th width="100"> Uhrzeit </th>
+                <th width="100"> Nachricht </th>
+                <th width="100"> Angebot </th>
+                <th width="100"> Status </th>
+                <th width="100"> Bearbeiten </th>
+            </tr>
+
+            @foreach (var er in Model.OutgoingExchangeReservations)
+            {
+
+                var reservationfrom = DatabaseHandler.GetReservation(er.ReservationFromId);
+
+                <tr>
+                    <td width="100">@TeacherManager.FindByIdAsync(er.TeacherFrom).Result.Vorname @TeacherManager.FindByIdAsync(er.TeacherFrom).Result.Nachname</td>
+                    <td width="100">@DatabaseHandler.GetRoom(reservationfrom.RoomId).Name</td>
+                    <td width="100">@(reservationfrom.Block + 1)</td>
+                    <td width="100">@reservationfrom.Date.Value.ToString("dd.MM.yyyy")</td>
+                    <td width="100">@Data.BlockStartArray[reservationfrom.Block]</td>
+                    <td widht="100">@er.Message</td>
+                    @if (er.ReservationOfferId != -1)
+                    {
+                        <td width="100"><a asp-controller="Reservation" asp-action="Detail" target="_blank" asp-route-reservationId="@er.ReservationOfferId">Angebot</a></td>
+                    }
+                    else
+                    {
+                        <td width="100">Nichts</td>
+                    }
+                    @if (er.ExchangeStatus == true)
+                    {
+                        <td width="100">Bearbeitet</td>
+                        <td width="100">Bestätigen</td>
+                    }
+                    else
+                    {
+                        <td width="100">Unbearbeitet</td>
+                        <td width="100">Löschen</td>
+                    }
+
+                    
+                </tr>
+            }
+
+
+        </table>
+
+    </div>
+</p>
 </div>
 <br/>
 <br/>

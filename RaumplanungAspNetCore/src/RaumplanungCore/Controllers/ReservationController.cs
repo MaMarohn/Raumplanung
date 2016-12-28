@@ -87,6 +87,7 @@ namespace RaumplanungCore.Controllers
             int id2 = t.OfferReservation;
             string t1 = t.FromTeacherid;
             string t2 = t.ToTeacherid;
+           
             _databaseHandler.AddReservationSuggestion(t.FromTeacherid, t.Reservationid, t.ToTeacherid,
                 t.OfferReservation, t.message);
             
@@ -97,8 +98,8 @@ namespace RaumplanungCore.Controllers
         public IActionResult Anfragen()
         {
             AnfragenViewModel anfragenViewModel=new AnfragenViewModel();
-            _databaseHandler.GetExchangeReservationByTeacherFromId(_userManager.GetUserId(User));
-            _databaseHandler.GetExchangeReservationByTeacherToId(_userManager.GetUserId(User));
+            anfragenViewModel.IncomingExchangeReservations=_databaseHandler.GetExchangeReservationByTeacherFromId(_userManager.GetUserId(User));
+            anfragenViewModel.OutgoingExchangeReservations=_databaseHandler.GetExchangeReservationByTeacherToId(_userManager.GetUserId(User));
             return View(anfragenViewModel);
         }
 

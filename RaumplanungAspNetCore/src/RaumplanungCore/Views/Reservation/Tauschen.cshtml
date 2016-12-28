@@ -18,7 +18,9 @@
 <p>
     Tauschanfrage stellen für folgenden Termin: <br />
     Tag: @Model.Reservation.Date.Value.ToString("dd.MM.yyyy") <br />
+    Raum: @Database.GetRoom(Model.Reservation.RoomId).Name<br/>
     Block:@(Model.Reservation.Block + 1) <br />
+    Zeit:@Data.BlockStartArray[Model.Reservation.Block]<br/>
     Momentan Reserviert von: @TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Vorname @TeacherManager.FindByIdAsync(Model.FromTeacherid).Result.Nachname
 </p>
 

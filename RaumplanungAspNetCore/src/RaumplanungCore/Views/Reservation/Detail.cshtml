@@ -1,10 +1,26 @@
-﻿@*
+﻿@using System.Threading.Tasks
+@using Raumplanung.Database
+@using RaumplanungCore.ViewModels
+@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
     ViewData["Title"] = "Detail";
 }
+@inject DatabaseHandler DatabaseHandler
+@inject UserManager<Teacher> TeacherManager
 
 <h1> @ViewData["Title"] </h1>
 
-<p> @ViewData["ReservationId"]</p>
+
+
+
+@{
+    var reservation = DatabaseHandler.GetReservation((int) ViewData["ReservationId"]);
+}
+
+Tag:@reservation.Date.Value.ToString("dd.MM.yyyy") <br />
+    Raum: @DatabaseHandler.GetRoom(reservation.RoomId).Name<br />
+    Block:@(reservation.Block + 1) <br />
+    Zeit:@Data.BlockStartArray[reservation.Block]<br />
+    Momentan Reserviert von: @TeacherManager.FindByIdAsync(reservation.TeacherId).Result.Vorname @TeacherManager.FindByIdAsync(reservation.TeacherId).Result.Nachname

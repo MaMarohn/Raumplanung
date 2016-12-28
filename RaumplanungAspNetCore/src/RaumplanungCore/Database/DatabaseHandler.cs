@@ -97,19 +97,11 @@ namespace Raumplanung.Database
                 return false;
             }
 
-            Reservation reservationF = _reservationContext.Reservations.Find(reservationFrom);
-            Reservation reservationT = _reservationContext.Reservations.Find(reservationoffer);
-
-            if (reservationF == null || reservationT == null)
-            {
-                //Reservations couldnt be found
-                return false;
-            }
-
+            
             ExchangeReservation exchangeReservation = new ExchangeReservation
             {
-                ReservationFrom = reservationF,
-                ReservationOffer = reservationT,
+                ReservationFromId = reservationFrom,
+                ReservationOfferId = reservationoffer,
                 TeacherFrom = teacherFrom,
                 TeacherTo = teacherTo,
                 ExchangeAccepted = false,
