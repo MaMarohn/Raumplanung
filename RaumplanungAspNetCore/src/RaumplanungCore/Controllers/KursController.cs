@@ -97,7 +97,7 @@ namespace RaumplanungCore.Controllers
             DateTime startDate = DateTime.Parse(splittedStrings[0]);
             DateTime stopDate = DateTime.Parse(splittedStrings[1]);
 
-            if (startDate < stopDate)
+            if (startDate > stopDate)
             {
                 ViewData["DateError"] = "Das Startdatum muss vor dem Enddatum liegen!";
                 return View("NewCourse");

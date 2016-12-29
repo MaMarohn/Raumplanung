@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Wochentage für den Kurs auswählen";
+}
+
+
+@section scripts
+{
+    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css"/>
+    <script src="/fullCalendar/lib/moment.min.js"></script>
+    <script src="/fullCalendar/fullcalendar.js"></script>
+    <script src="/fullCalendar/locale/de.js"></script>
+
+    <script>
+    var trigger = false;
+    var selectable = true;
+    var startSubmit;
+    var stopSubmit;
+    $(document)
+        .ready(function() {
+            $('#calendar')
+                .fullCalendar({
+                    defaultView: 'agendaWeek',
+                    weekends: false,
+                    editable: false,
+                    timezone: 'local',
+                    locale: 'de',
+                    titleFormat: '[Tag und Blockauswahl]',
+                    views: {
+                        week: {
+                            timeFormat: 'HH:mm',
+                            title: '[Test]'
+                        }
+                    },
+                    events: "/reservation/loadevents/"
+                })
+            });
+      </script>
+}
+<h1> Neuen Kurs anlegen </h1>
+
+<p> Wählen Sie die Blöcke an den Tagen aus, an denen der Kurs stattfinden soll </p>
+<br/>
+<br />
+<div id="calendar" style="width: 55em" > </div>
