@@ -1,0 +1,60 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Neuer Kurs";
+}
+
+@section scripts
+{
+    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css" />
+    <script src="/fullCalendar/lib/moment.min.js"></script>
+    <script src="/fullCalendar/fullcalendar.js"></script>
+    <script src="/fullCalendar/locale/de.js"></script>
+
+    <script>
+        var trigger = false;
+        $(document)
+                    .ready(function() {
+                        $('#calendar')
+                            .fullCalendar({
+                                defaultView: 'month',
+                                weekends: false,
+                                editable: false,
+                                timezone: 'local',
+                                locale: 'de',
+                                views: {
+                                    month: {
+                                        timeFormat: 'HH:mm'
+                                    }
+                                },
+                                events: "/reservation/loadevents/",
+                                eventClick: function(event) {
+                                    var startDatum = moment(event.start).format("DD.MM.YYYY");
+                                    var startBlock = moment(event.start).format("HH:mm");
+                                    if (!trigger) {
+                                        document.getElementById("startDate").innerHTML = startDatum;
+                                        document.getElementById("timeAndBlock").innerHTML = startBlock + " Uhr";
+                                        document.getElementById("info").innerHTML = "Wählen Sie ein Enddatum aus";
+                                        trigger = true;
+                                    } else {
+                                        document.getElementById("stopDate").innerHTML = startDatum;
+                                    }
+                                 
+                                }
+                            })
+                    });
+    </script>
+}
+
+<h1> Neuen Kurs anlegen </h1>
+
+<br/>
+<p id="info"> Wählen Sie ein Startdatum und einen Block für Ihren Kurs aus.</p>
+<p> Startdatum: <span id="startDate"></span> </p>
+<p> Uhrzeit: <span id="timeAndBlock"> </span> </p>
+<p> Enddatum: <span id="stopDate">  </span> </p>
+<a> </a>
+
+<div id="calendar" style="width: 60em"> </div>
+<br/>
