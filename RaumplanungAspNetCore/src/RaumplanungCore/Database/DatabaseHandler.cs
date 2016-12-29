@@ -258,7 +258,7 @@ namespace Raumplanung.Database
             return new List<Reservation>(reservations);
         }
 
-        private List<Course> CheckWhichCourseTakesPlace(DateTime date , int blockNr)
+        /*private List<Course> CheckWhichCourseTakesPlace(DateTime date , int blockNr)
         {
             date = GetCorrectDatetime(date);
             List<Course> courses = GetAllCoursesInBlock(blockNr);
@@ -290,6 +290,14 @@ namespace Raumplanung.Database
                 courseTime.AddDays(Week);
             }
             return false;
+        }*/
+
+        public bool DeleteExchangeReservationByObject(ExchangeReservation exchangeReservation)
+        {
+            if (exchangeReservation == null) return false;
+            _reservationContext.ExchangeReservations.Remove(exchangeReservation);
+            _reservationContext.SaveChanges();
+            return true;
         }
 
         public List<Course> GetAllCoursesInBlock(int blockNr)
@@ -300,6 +308,40 @@ namespace Raumplanung.Database
         public List<Course> GetAllCourses()
         {
             return new List<Course>(_reservationContext.Courses);
+        }
+
+        public bool DeleteCourse(int id)
+        {
+            Course course = _reservationContext.Courses.Find(id);
+            if (course == null) return false;
+            _reservationContext.Courses.Remove(course);
+            _reservationContext.SaveChanges();
+            return true;
+        }
+
+        public Course GetCourseById(int id)
+        {
+            return _reservationContext.Courses.Find(id);
+        }
+
+        public List<Course> GetCoursesFromTeacher(string teacherId)
+        {
+            return new List<Course>(_reservationContext.Courses.ToList().Where(
+                c => c.TeacherId == teacherId));
+        }
+
+        public ExchangeReservation GetExchangeReservationById(int id)
+        {
+            return _reservationContext.ExchangeReservations.Find(id);
+        }
+
+        public bool DeleteExchangeReservationById(int id)
+        {
+            ExchangeReservation exchangeReservation = GetExchangeReservationById(id);
+            if (exchangeReservation == null) return false;
+            _reservationContext.ExchangeReservations.Remove(exchangeReservation);
+            _reservationContext.SaveChanges();
+            return true;
         }
 
         public bool ExchangeReservation(string pTeacherFrom, int pReservationFrom , string pTeacherTo , int pReservationTo)
@@ -371,6 +413,13 @@ namespace Raumplanung.Database
             return true;
         }
 
+        public bool AddRoom(string name)
+        {
+            if (_reservationContext.Rooms.Count(r => r.Name == name) != 0) return false;
+            _reservationContext.Rooms.Add(new Room {Name = name});
+            return true;
+        }
+
         public Teacher GetTeacher(string teacherId)
         {
             return _reservationContext.Teachers.Find(teacherId);
@@ -393,4 +442,6 @@ namespace Raumplanung.Database
       
     }
 }
+
+
 
