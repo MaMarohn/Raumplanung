@@ -5,6 +5,11 @@
     ViewData["Title"] = "Wochentage für den Kurs auswählen";
 }
 
+@model RaumplanungCore.ViewModels.Kurs.KursViewModel
+
+@{
+    string date = Model.start.ToString("yyyy-MM-dd");
+}
 
 @section scripts
 {
@@ -22,10 +27,12 @@
         .ready(function() {
             $('#calendar')
                 .fullCalendar({
-                    defaultView: 'basicWeek',
+                    defaultView: 'agendaWeek',
+                    defaultDate: '@date',
                     weekends: false,
                     editable: false,
                     timezone: 'local',
+                    header: false,
                     locale: 'de',
                     titleFormat: '[Tag und Blockauswahl]',
                     views: {
@@ -34,12 +41,13 @@
                             title: '[Test]'                            
                         },
                         basicWeek: {
-                            duration: { weeks: 1 }
+                            duration: { weeks: 2 }
                         }
                     },
                     events: "/reservation/loadevents/"
                 })
-            });
+        });
+    
       </script>
 }
 <h1> Neuen Kurs anlegen </h1>
