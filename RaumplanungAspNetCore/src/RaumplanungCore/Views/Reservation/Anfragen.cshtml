@@ -34,7 +34,8 @@
             {
 
                 var reservationfrom = DatabaseHandler.GetReservation(er.ReservationFromId);
-
+                if(!er.ExchangeStatus)
+                { 
                 <tr>
                     <td width="100">@TeacherManager.FindByIdAsync(er.TeacherTo).Result.Vorname @TeacherManager.FindByIdAsync(er.TeacherTo).Result.Nachname</td>
                     <td width="100">@DatabaseHandler.GetRoom(reservationfrom.RoomId).Name</td>
@@ -52,6 +53,7 @@
                     }
                     <td width="100"><a asp-controller="Reservation" asp-action="EditIncoming" asp-route-exchangeid="@er.EchangeReservationId" asp-route-accept="true">Annehmen</a> <a asp-controller="Reservation" asp-action="EditIncoming" asp-route-exchangeid="@er.EchangeReservationId" asp-route-accept="false">Ablehnen</a></td>
                 </tr>
+            }
             }
         </table>
     </div>
@@ -91,9 +93,17 @@
                 {
                     <td width="100">Nichts</td>
                 }
-                @if (er.ExchangeAccepted)
+                @if (er.ExchangeStatus)
                 {
-                    <td width="100">Bearbeitet</td>
+                    if (er.ExchangeAccepted)
+                    {
+                        <td width="100">Angenommen</td>
+                    }
+                    else
+                    {
+                        <td width="100">Abgelehnt</td>
+                    }
+
                     <td width="100"><a asp-controller="Reservation" asp-action="EditOutgoing" asp-route-exchangeid="@er.EchangeReservationId">Bestätigen</a></td>
                     
                  }
