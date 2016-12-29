@@ -14,7 +14,6 @@ namespace RaumplanungCore.Models
         public int Block { set; get; }
         public string TeacherId { set; get; }
         public int RoomId { set; get; }
-        public ICollection<CourseExceptions> CourseExceptions { get; set; }
 
     }
 }

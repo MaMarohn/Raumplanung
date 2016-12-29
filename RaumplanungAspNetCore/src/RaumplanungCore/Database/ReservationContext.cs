@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RaumplanungCore.Models;
 using RaumplanungCore.Models.Roles;
+using static Microsoft.EntityFrameworkCore.Storage.Internal.InMemoryTransactionManager;
 
 namespace RaumplanungCore.Database
 {
@@ -18,6 +19,5 @@ namespace RaumplanungCore.Database
         public DbSet<Reservation> Reservations { set; get; }
         public DbSet<ExchangeReservation> ExchangeReservations { set; get; }
         public DbSet<Course> Courses { set; get; }
-        //public DbSet<CourseExceptions> CourseExceptionses { set; get; }
     }
 }

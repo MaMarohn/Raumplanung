@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using RaumplanungCore.Models;
 
+[assembly: InternalsVisibleTo("DatabaseTest")]
 namespace Raumplanung.Database
 {
-    interface IDatabaseHandler
+    public interface IDatabaseHandler
     {
         List<Room> GetAllRooms();
         List<Teacher> GetAllTeachers();
@@ -17,6 +19,7 @@ namespace Raumplanung.Database
         
         bool DeleteReservation(int reservationId);
         bool AddReservation(DateTime date, int block, string teacherId, int roomId);
+        bool AddRoom(string name);
         Teacher GetTeacher(string teacherId);
         Room GetRoom(int roomId);
         Reservation GetReservation(int reservationId);
@@ -33,7 +36,12 @@ namespace Raumplanung.Database
         bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse);
         List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId);
         List<Course> GetAllCourses();
-        //List<CourseExceptions> GetAllCourseExceptionsesFromCourse(int courseId);
+        bool DeleteCourse(int id);
+        Course GetCourseById(int id);
+        List<Course> GetCoursesFromTeacher(string teacherId);
+        ExchangeReservation GetExchangeReservationById(int id);
+        bool DeleteExchangeReservationById(int id);
+        bool DeleteExchangeReservationByObject(ExchangeReservation exchangeReservation);
         List<Course> GetAllCoursesInBlock(int blockNr);
         bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationoffer, string message);
 
