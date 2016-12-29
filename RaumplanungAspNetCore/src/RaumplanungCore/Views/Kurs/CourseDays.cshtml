@@ -22,7 +22,7 @@
         .ready(function() {
             $('#calendar')
                 .fullCalendar({
-                    defaultView: 'agendaWeek',
+                    defaultView: 'basicWeek',
                     weekends: false,
                     editable: false,
                     timezone: 'local',
@@ -31,7 +31,10 @@
                     views: {
                         week: {
                             timeFormat: 'HH:mm',
-                            title: '[Test]'
+                            title: '[Test]'                            
+                        },
+                        basicWeek: {
+                            duration: { weeks: 1 }
                         }
                     },
                     events: "/reservation/loadevents/"
