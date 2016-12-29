@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raumplanung.Database;
 using RaumplanungCore.Database;
 using RaumplanungCore.Models;
+using RaumplanungCore.ViewModels;
 using RaumplanungCore.ViewModels.Kurs;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -88,7 +89,7 @@ namespace RaumplanungCore.Controllers
 
 
 
-    
+
 
         [HttpGet("kurs/check/{startStop}")]
         public IActionResult Check(string startStop)
@@ -111,8 +112,34 @@ namespace RaumplanungCore.Controllers
                 };
                 return View("CourseDays", result);
             }
-            
-            
         }
+
+        public IActionResult LoadEvents(DateTime start, DateTime end)
+        {
+            var eventList = GetEvents(start, end);
+            var rows = eventList.ToArray();
+
+            return Json(rows);
+        }
+
+        private List<CalendarEvent> GetEvents(DateTime start, DateTime end)
+        {
+            List<CalendarEvent> eventList = new List<CalendarEvent>();
+
+            for (int j = 0; j < Data.DayStrings.Length; j++)
+            {
+                int[] days = { j + 1 };
+
+                for (int i = 0; i < Data.AmountOfBlocks; i++)
+                {
+                    CalendarEvent dailyEvent = new CalendarEvent((Data.DayStrings[j] + (i + 1)), Data.BlockStartArray[i], Data.BlockEndArray[i], days, "blue");
+                    eventList.Add(dailyEvent);
+                }
+                start = start.AddDays(1);
+            }
+            return eventList;
+        }
+
+
     }
 }

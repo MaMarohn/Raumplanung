@@ -22,9 +22,7 @@ namespace RaumplanungCore.Controllers
     {
         private readonly DatabaseHandler _databaseHandler;
         private readonly UserManager<Teacher> _userManager;
-        private readonly ReservationContext _reservationContext;
-        const int AmountOfBlocks = 7;
-        
+        private readonly ReservationContext _reservationContext;                
 
         public ReservationController(ReservationContext context, UserManager<Teacher> userManager)
         {
@@ -167,7 +165,7 @@ namespace RaumplanungCore.Controllers
             {
                 int[] days = {j+1};
                 
-                for (int i = 0; i < AmountOfBlocks ; i++)
+                for (int i = 0; i < Data.AmountOfBlocks ; i++)
                 {
                     CalendarEvent dailyEvent = new CalendarEvent((Data.DayStrings[j] + (i + 1)), Data.BlockStartArray[i], Data.BlockEndArray[i], days, FindReservationByDate(start, i));
                     eventList.Add(dailyEvent);

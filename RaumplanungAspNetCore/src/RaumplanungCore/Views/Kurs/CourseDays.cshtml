@@ -9,6 +9,9 @@
 
 @{
     string date = Model.start.ToString("yyyy-MM-dd");
+    List<DateTime> daysWithBlocks = new List<DateTime>();
+    daysWithBlocks.Add(DateTime.Now);
+
 }
 
 @section scripts
@@ -36,14 +39,23 @@
                     locale: 'de',
                     titleFormat: '[Tag und Blockauswahl]',
                     views: {
-                        week: {
-                            
-                            timeFormat: 'HH:mm',
-                            title: '[Test]'                            
-                        },
+                        week: {                            
+                            timeFormat: 'HH:mm'                                                       
+                        }
                     },
-                    events: "/reservation/loadevents/"
-                })
+                    events: "/kurs/loadevents/",
+                    eventClick: function (event) {
+                        var start = moment(event.start).format("DD-MM-YYYY HH:mm");
+                        if (event.color.localeCompare('blue') === 0) {
+                            event.color = 'green';
+                            
+                        } else {
+                            event.color = 'blue';
+                        }
+                        $('#calendar').fullCalendar('rerenderEvents');
+                    }
+                    
+                    })
         });
     
       </script>
