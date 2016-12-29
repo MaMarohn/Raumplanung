@@ -89,4 +89,30 @@ namespace RaumplanungCore.Controllers
 
 
     }
+
+        [HttpGet("kurs/check/{startStop}")]
+        public IActionResult Check(string startStop)
+        {
+            string[] splittedStrings = startStop.Split(';');
+            DateTime startDate = DateTime.Parse(splittedStrings[0]);
+            DateTime stopDate = DateTime.Parse(splittedStrings[1]);
+
+            if (startDate < stopDate)
+            {
+                ViewData["DateError"] = "Das Startdatum muss vor dem Enddatum liegen!";
+                return View("NewCourse");
+            }
+            else
+            {
+                KursViewModel result = new KursViewModel
+                {
+                    start = startDate,
+                    end = stopDate
+                };
+                return View("CourseDays", result);
+            }
+            
+            
+        }
+    }
 }

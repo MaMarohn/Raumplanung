@@ -14,6 +14,9 @@
 
     <script>
         var trigger = false;
+        var selectable = true;
+        var startSubmit;
+        var stopSubmit;
         $(document)
                     .ready(function() {
                         $('#calendar')
@@ -27,34 +30,53 @@
                                     month: {
                                         timeFormat: 'HH:mm'
                                     }
-                                },
-                                events: "/reservation/loadevents/",
-                                eventClick: function(event) {
-                                    var startDatum = moment(event.start).format("DD.MM.YYYY");
-                                    var startBlock = moment(event.start).format("HH:mm");
-                                    if (!trigger) {
-                                        document.getElementById("startDate").innerHTML = startDatum;
-                                        document.getElementById("timeAndBlock").innerHTML = startBlock + " Uhr";
-                                        document.getElementById("info").innerHTML = "Wählen Sie ein Enddatum aus";
-                                        trigger = true;
-                                    } else {
-                                        document.getElementById("stopDate").innerHTML = startDatum;
+                                },                                
+                                dayClick: function(date) {
+                                    var startDatum = moment(date).format("DD.MM.YYYY");
+                                    if (selectable) {
+                                        if (!trigger) {
+                                            document.getElementById("startDate").innerHTML = startDatum;
+                                            startSubmit = startDatum;
+                                            document.getElementById("info").innerHTML = "Wählen Sie ein Enddatum aus";
+                                            trigger = true;
+                                        } else {
+                                            document.getElementById("stopDate").innerHTML = startDatum;
+                                            stopSubmit = startDatum;
+                                            trigger = false;
+                                            selectable = false;
+                                        }
                                     }
+                                    
                                  
                                 }
                             })
                     });
+        function onSubmitClick() {
+            window.open("/kurs/check/" + startSubmit + ";" + stopSubmit, "_self");
+        }
+
+        function resetFields() {
+            document.getElementById("startDate").innerHTML = "";
+            document.getElementById("stopDate").innerHTML = "";
+            document.getElementById("stopDate").innerHTML = "";
+            document.getElementById("info").innerHTML = "Wählen Sie ein Startdatum aus";
+            selectable = true;
+        }
     </script>
 }
 
 <h1> Neuen Kurs anlegen </h1>
 
 <br/>
-<p id="info"> Wählen Sie ein Startdatum und einen Block für Ihren Kurs aus.</p>
+<p id="info"> Wählen Sie ein Startdatum aus </p>
 <p> Startdatum: <span id="startDate"></span> </p>
-<p> Uhrzeit: <span id="timeAndBlock"> </span> </p>
 <p> Enddatum: <span id="stopDate">  </span> </p>
-<a> </a>
+<button type="button" onclick="onSubmitClick()" style="width: 12em"> Termine bestätigen </button>
+<button type="button" onclick="resetFields()" style="width: 12em" > Termine zurücksetzen</button>
+<br />
+<br/>
+<p id="error"> @ViewData["DateError"]</p>
 
+<br/>
 <div id="calendar" style="width: 60em"> </div>
 <br/>
