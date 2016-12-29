@@ -1,0 +1,68 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Wochentage für den Kurs auswählen";
+}
+
+@model RaumplanungCore.ViewModels.Kurs.KursViewModel
+
+@{
+    string date = Model.start.ToString("yyyy-MM-dd");
+    List<DateTime> daysWithBlocks = new List<DateTime>();
+    daysWithBlocks.Add(DateTime.Now);
+
+}
+
+@section scripts
+{
+    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css"/>
+    <script src="/fullCalendar/lib/moment.min.js"></script>
+    <script src="/fullCalendar/fullcalendar.js"></script>
+    <script src="/fullCalendar/locale/de.js"></script>
+
+    <script>
+    var trigger = false;
+    var selectable = true;
+    var startSubmit;
+    var stopSubmit;
+    $(document)
+        .ready(function() {
+            $('#calendar')
+                .fullCalendar({
+                    defaultView: 'agendaWeek',
+                    defaultDate: '@date',
+                    weekends: false,
+                    editable: false,
+                    timezone: 'local',
+                    header: false,
+                    locale: 'de',
+                    titleFormat: '[Tag und Blockauswahl]',
+                    views: {
+                        week: {                            
+                            timeFormat: 'HH:mm'                                                       
+                        }
+                    },
+                    events: "/kurs/loadevents/",
+                    eventClick: function (event) {
+                        var start = moment(event.start).format("DD-MM-YYYY HH:mm");
+                        if (event.color.localeCompare('blue') === 0) {
+                            event.color = 'green';
+                            
+                        } else {
+                            event.color = 'blue';
+                        }
+                        $('#calendar').fullCalendar('rerenderEvents');
+                    }
+                    
+                    })
+        });
+    
+      </script>
+}
+<h1> Neuen Kurs anlegen </h1>
+
+<p> Wählen Sie die Blöcke an den Tagen aus, an denen der Kurs stattfinden soll </p>
+<br/>
+<br />
+<div id="calendar" style="width: 55em" > </div>
