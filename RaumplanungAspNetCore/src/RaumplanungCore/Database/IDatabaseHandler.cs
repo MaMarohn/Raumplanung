@@ -29,12 +29,12 @@ namespace Raumplanung.Database
 
         bool ExchangeReservation(string fromTeacher,int fromRoom , string toTeacher , int toRoom);
         
-        List<ExchangeReservation> GetAllExchangeReservations();
+        //List<ExchangeReservation> GetAllExchangeReservations();
         List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id);
         List<ExchangeReservation> GetExchangeReservationByTeacherToId(string id);
 
         bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse);
-        List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId);
+       // List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId);
         List<Course> GetAllCourses();
         bool DeleteCourse(int id);
         Course GetCourseById(int id);
@@ -42,7 +42,7 @@ namespace Raumplanung.Database
         ExchangeReservation GetExchangeReservationById(int id);
         bool DeleteExchangeReservationById(int id);
         bool DeleteExchangeReservationByObject(ExchangeReservation exchangeReservation);
-        List<Course> GetAllCoursesInBlock(int blockNr);
+        //List<Course> GetAllCoursesInBlock(int blockNr);
         bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationoffer, string message);
 
     }

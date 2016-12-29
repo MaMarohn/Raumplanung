@@ -88,7 +88,6 @@ namespace Raumplanung.Database
 
         public bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationoffer,string message)
         {
-            //not tested
 
             if (_reservationContext.Teachers.Find(teacherFrom) == null ||
                 _reservationContext.Teachers.Find(teacherTo) == null)
@@ -116,10 +115,9 @@ namespace Raumplanung.Database
             return true;
         }
 
-        public List<ExchangeReservation> GetAllExchangeReservations()
-        {
+        /*
             return new List<ExchangeReservation>(_reservationContext.ExchangeReservations);
-        }
+        }*/
 
         public List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id)
         {
@@ -186,11 +184,11 @@ namespace Raumplanung.Database
         }
 
 
-        public List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId)
+        /*public List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId)
         {
             return new List<Course>(_reservationContext.Courses.ToList().Where
                 (c => c.Block == blockId && c.StartDate == GetCorrectDatetime(date)));
-        }
+        }*/
 
        /* public List<CourseExceptions> GetAllCourseExceptionsesFromCourse(int courseId)
         {
@@ -303,10 +301,10 @@ namespace Raumplanung.Database
             return true;
         }
 
-        public List<Course> GetAllCoursesInBlock(int blockNr)
+        /*public List<Course> GetAllCoursesInBlock(int blockNr)
         {
             return new List<Course>(_reservationContext.Courses.ToList().Where(r => r.Block == blockNr));
-        }
+        }*/
 
         public List<Course> GetAllCourses()
         {
@@ -315,7 +313,6 @@ namespace Raumplanung.Database
 
         public bool DeleteCourse(int id)
         {
-            // to do course add
             Course course = _reservationContext.Courses.Find(id);
             if (course == null) return false;
 
@@ -323,9 +320,7 @@ namespace Raumplanung.Database
             {
                 if (c.CourseId == id)
                     _reservationContext.Reservations.Remove(c);
-            }
-
-            
+            }         
             _reservationContext.Courses.Remove(course);
             _reservationContext.SaveChanges();
             return true;
