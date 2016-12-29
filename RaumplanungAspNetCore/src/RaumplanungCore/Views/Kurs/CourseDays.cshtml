@@ -23,6 +23,7 @@
             $('#calendar')
                 .fullCalendar({
                     defaultView: 'basicWeek',
+                    header: false,
                     weekends: false,
                     editable: false,
                     timezone: 'local',
@@ -30,10 +31,13 @@
                     titleFormat: '[Tag und Blockauswahl]',
                     views: {
                         week: {
+                            
                             timeFormat: 'HH:mm',
                             title: '[Test]'                            
                         },
                         basicWeek: {
+                            
+                            type:'timeline',
                             duration: { weeks: 1 }
                         }
                     },

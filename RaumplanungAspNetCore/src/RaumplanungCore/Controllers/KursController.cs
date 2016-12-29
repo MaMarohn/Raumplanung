@@ -37,12 +37,12 @@ namespace RaumplanungCore.Controllers
         [HttpPost]
         public IActionResult ShowRooms(KursViewModel kursViewModel)
         {
-            List<List<Room>> FreeRoomsPerDay=new List<List<Room>>(); 
+            List<List<Room>> freeRoomsPerDay=new List<List<Room>>(); 
             List<Room> Rooms = _databaseHandler.GetAllRooms();
             for (int i = 0; i < kursViewModel.Days.Count; i++)
             {
                 
-                FreeRoomsPerDay.Add(Rooms);//liste mit allen räumen füllen
+                freeRoomsPerDay.Add(Rooms);//liste mit allen räumen füllen
             }
             DateTime dateStart = kursViewModel.start;
             DateTime dateEnd = kursViewModel.end;
@@ -65,14 +65,14 @@ namespace RaumplanungCore.Controllers
                     int i = kursViewModel.Days.BinarySearch(day); //momentaner index
                    
                         List<Room> okayRooms=new List<Room>();
-                        foreach (var room in FreeRoomsPerDay[i])  // jeder raum von den räumen des tages
+                        foreach (var room in freeRoomsPerDay[i])  // jeder raum von den räumen des tages
                         {
                             if (availableRooms.Contains(room))   //wenn der raum in beiden existiert, wird er behalten
                             {
                                 okayRooms.Add(room);
                             }
                         }
-                        FreeRoomsPerDay[i] = okayRooms;
+                        freeRoomsPerDay[i] = okayRooms;
                     
                 }
                
@@ -80,7 +80,7 @@ namespace RaumplanungCore.Controllers
                
             }
 
-            kursViewModel.Rooms = FreeRoomsPerDay;
+            kursViewModel.Rooms = freeRoomsPerDay;
             
 
             return View(kursViewModel);
