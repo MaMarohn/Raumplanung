@@ -367,9 +367,14 @@ namespace Raumplanung.Database
             }
 
             Reservation reservationFrom = _reservationContext.Reservations.Find(pReservationFrom);
-            Reservation reservationTo = _reservationContext.Reservations.Find(pReservationTo);
+            Reservation reservationTo = null;
+            if (pReservationTo != -1)
+            {
+                reservationTo = _reservationContext.Reservations.Find(pReservationTo);
+            }
+            
 
-            if ( reservationFrom == null || reservationTo == null)
+            if ( reservationFrom == null ||(pReservationTo!=-1 && reservationTo == null))
             {
                 //Reservations couldnt be found
                 return false;
@@ -377,9 +382,13 @@ namespace Raumplanung.Database
 
             //Es wird getauscht
             reservationFrom.TeacherId = pTeacherTo;
-            reservationTo.TeacherId = pTeacherFrom;
-            _reservationContext.Entry(reservationFrom).State = EntityState.Modified;
-            _reservationContext.Entry(reservationTo).State = EntityState.Modified;
+            if (pReservationTo != -1)
+            {
+                reservationTo.TeacherId = pTeacherFrom;
+                _reservationContext.Entry(reservationTo).State = EntityState.Modified;
+            }
+           _reservationContext.Entry(reservationFrom).State = EntityState.Modified;
+           
             _reservationContext.SaveChanges();
 
             return true;

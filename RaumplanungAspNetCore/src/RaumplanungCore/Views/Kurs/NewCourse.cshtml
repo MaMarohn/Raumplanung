@@ -1,0 +1,82 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Neuer Kurs";
+}
+
+@section scripts
+{
+    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css" />
+    <script src="/fullCalendar/lib/moment.min.js"></script>
+    <script src="/fullCalendar/fullcalendar.js"></script>
+    <script src="/fullCalendar/locale/de.js"></script>
+
+    <script>
+        var trigger = false;
+        var selectable = true;
+        var startSubmit;
+        var stopSubmit;
+        $(document)
+                    .ready(function() {
+                        $('#calendar')
+                            .fullCalendar({
+                                defaultView: 'month',
+                                weekends: false,
+                                editable: false,
+                                timezone: 'local',
+                                locale: 'de',
+                                views: {
+                                    month: {
+                                        timeFormat: 'HH:mm'
+                                    }
+                                },                                
+                                dayClick: function(date) {
+                                    var startDatum = moment(date).format("DD.MM.YYYY");
+                                    if (selectable) {
+                                        if (!trigger) {
+                                            document.getElementById("startDate").innerHTML = startDatum;
+                                            startSubmit = startDatum;
+                                            document.getElementById("info").innerHTML = "Wählen Sie ein Enddatum aus";
+                                            trigger = true;
+                                        } else {
+                                            document.getElementById("stopDate").innerHTML = startDatum;
+                                            stopSubmit = startDatum;
+                                            trigger = false;
+                                            selectable = false;
+                                        }
+                                    }
+                                    
+                                 
+                                }
+                            })
+                    });
+        function onSubmitClick() {
+            window.open("/kurs/check/" + startSubmit + ";" + stopSubmit, "_self");
+        }
+
+        function resetFields() {
+            document.getElementById("startDate").innerHTML = "";
+            document.getElementById("stopDate").innerHTML = "";
+            document.getElementById("stopDate").innerHTML = "";
+            document.getElementById("info").innerHTML = "Wählen Sie ein Startdatum aus";
+            selectable = true;
+        }
+    </script>
+}
+
+<h1> Neuen Kurs anlegen </h1>
+
+<br/>
+<p id="info"> Wählen Sie ein Startdatum aus </p>
+<p> Startdatum: <span id="startDate"></span> </p>
+<p> Enddatum: <span id="stopDate">  </span> </p>
+<button type="button" onclick="onSubmitClick()" style="width: 12em"> Termine bestätigen </button>
+<button type="button" onclick="resetFields()" style="width: 12em" > Termine zurücksetzen</button>
+<br />
+<br/>
+<p id="error"> @ViewData["DateError"]</p>
+
+<br/>
+<div id="calendar" style="width: 60em"> </div>
+<br/>

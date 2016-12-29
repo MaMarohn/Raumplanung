@@ -9,6 +9,7 @@ using RaumplanungCore.Database;
 using RaumplanungCore.Models;
 using RaumplanungCore.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RaumplanungCore.ViewModels.Reservation;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,11 +22,13 @@ namespace RaumplanungCore.Controllers
     {
         private readonly DatabaseHandler _databaseHandler;
         private readonly UserManager<Teacher> _userManager;
+        private readonly ReservationContext _reservationContext;
         const int AmountOfBlocks = 7;
         
 
         public ReservationController(ReservationContext context, UserManager<Teacher> userManager)
         {
+            _reservationContext = context;
             _databaseHandler = new DatabaseHandler(context);
             _userManager = userManager;
         }
@@ -108,6 +111,11 @@ namespace RaumplanungCore.Controllers
         //[HttpGet]
         public IActionResult EditOutgoing(int exchangeid)
         {
+            ExchangeReservation exchangeReservation=_databaseHandler.GetExchangeReservationById(exchangeid);
+            if (_userManager.GetUserAsync(User).Result.Id == exchangeReservation.TeacherTo)
+            {
+                _databaseHandler.DeleteExchangeReservationById(exchangeid);
+            }
             //get by id :  ExchangeReservation exchangeReservation=_databaseHandler.
             // check is logged in user is same as touser
                 //delete
@@ -117,9 +125,22 @@ namespace RaumplanungCore.Controllers
         //[HttpGet]
         public IActionResult EditIncoming(int exchangeid,bool accept)
         {
-            //get by id :  ExchangeReservation exchangeReservation=_databaseHandler.
-            // set exchangeaccepted
-            //check if logged in user is same as fromuser
+            
+            ExchangeReservation exchangeReservation=_databaseHandler.GetExchangeReservationById(exchangeid);
+            if (_userManager.GetUserAsync(User).Result.Id == exchangeReservation.TeacherFrom)
+            {
+                exchangeReservation.ExchangeAccepted = accept;
+                if (accept)
+                {
+                    _databaseHandler.ExchangeReservation(exchangeReservation.TeacherFrom,
+                        exchangeReservation.ReservationFromId, exchangeReservation.TeacherTo,
+                        exchangeReservation.ReservationOfferId);
+                }
+            }
+
+            exchangeReservation.ExchangeStatus = true;
+            _reservationContext.Entry(exchangeReservation).State = EntityState.Modified;
+            _reservationContext.SaveChanges();
             return RedirectToAction("Anfragen");
         }
 
