@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -102,6 +103,24 @@ namespace RaumplanungCore.Controllers
             anfragenViewModel.IncomingExchangeReservations=_databaseHandler.GetExchangeReservationByTeacherFromId(_userManager.GetUserId(User));
             anfragenViewModel.OutgoingExchangeReservations=_databaseHandler.GetExchangeReservationByTeacherToId(_userManager.GetUserId(User));
             return View(anfragenViewModel);
+        }
+
+        //[HttpGet]
+        public IActionResult EditOutgoing(int exchangeid)
+        {
+            //get by id :  ExchangeReservation exchangeReservation=_databaseHandler.
+            // check is logged in user is same as touser
+                //delete
+            return RedirectToAction("Anfragen");
+        }
+
+        //[HttpGet]
+        public IActionResult EditIncoming(int exchangeid,bool accept)
+        {
+            //get by id :  ExchangeReservation exchangeReservation=_databaseHandler.
+            // set exchangeaccepted
+            //check if logged in user is same as fromuser
+            return RedirectToAction("Anfragen");
         }
 
         [HttpGet("reservation/New")]

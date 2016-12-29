@@ -50,64 +50,66 @@
                     {
                         <td width="100">Nichts</td>
                     }
-                    <td width="100">Annehmen/Ablehnen</td>
+                    <td width="100"><a asp-controller="Reservation" asp-action="EditIncoming" asp-route-exchangeid="@er.EchangeReservationId" asp-route-accept="true">Annehmen</a> <a asp-controller="Reservation" asp-action="EditIncoming" asp-route-exchangeid="@er.EchangeReservationId" asp-route-accept="false">Ablehnen</a></td>
                 </tr>
             }
         </table>
     </div>
     <div class="right" style="float: left; margin-left: 10px">
         <h3>Ausgehende Anfragen</h3>
-        <table>
-            <tr>
-                <th width="100"> An </th>
-                <th width="100"> Raum </th>
-                <th width="100"> Block </th>
-                <th width="100"> Datum </th>
-                <th width="100"> Uhrzeit </th>
-                <th width="100"> Nachricht </th>
-                <th width="100"> Angebot </th>
-                <th width="100"> Status </th>
-                <th width="100"> Bearbeiten </th>
-            </tr>
 
-            @foreach (var er in Model.OutgoingExchangeReservations)
+    <table>
+        <tr>
+            <th width="100"> An </th>
+            <th width="100"> Raum </th>
+            <th width="100"> Block </th>
+            <th width="100"> Datum </th>
+            <th width="100"> Uhrzeit </th>
+            <th width="100"> Nachricht </th>
+            <th width="100"> Angebot </th>
+            <th width="100"> Status </th>
+            <th width="100"> Bearbeiten </th>
+        </tr>
+
+        @foreach (var er in Model.OutgoingExchangeReservations)
             {
 
                 var reservationfrom = DatabaseHandler.GetReservation(er.ReservationFromId);
 
-                <tr>
-                    <td width="100">@TeacherManager.FindByIdAsync(er.TeacherFrom).Result.Vorname @TeacherManager.FindByIdAsync(er.TeacherFrom).Result.Nachname</td>
-                    <td width="100">@DatabaseHandler.GetRoom(reservationfrom.RoomId).Name</td>
-                    <td width="100">@(reservationfrom.Block + 1)</td>
-                    <td width="100">@reservationfrom.Date.Value.ToString("dd.MM.yyyy")</td>
-                    <td width="100">@Data.BlockStartArray[reservationfrom.Block]</td>
-                    <td widht="100">@er.Message</td>
-                    @if (er.ReservationOfferId != -1)
-                    {
-                        <td width="100"><a asp-controller="Reservation" asp-action="Detail" target="_blank" asp-route-reservationId="@er.ReservationOfferId">Angebot</a></td>
-                    }
-                    else
-                    {
-                        <td width="100">Nichts</td>
-                    }
-                    @if (er.ExchangeStatus == true)
-                    {
-                        <td width="100">Bearbeitet</td>
-                        <td width="100">Bestätigen</td>
-                    }
-                    else
-                    {
-                        <td width="100">Unbearbeitet</td>
-                        <td width="100">Löschen</td>
-                    }
-
+            <tr>
+                <td width="100">@TeacherManager.FindByIdAsync(er.TeacherFrom).Result.Vorname @TeacherManager.FindByIdAsync(er.TeacherFrom).Result.Nachname</td>
+                <td width="100">@DatabaseHandler.GetRoom(reservationfrom.RoomId).Name</td>
+                <td width="100">@(reservationfrom.Block + 1)</td>
+                <td width="100">@reservationfrom.Date.Value.ToString("dd.MM.yyyy")</td>
+                <td width="100">@Data.BlockStartArray[reservationfrom.Block]</td>
+                <td widht="100">@er.Message</td>
+                @if (er.ReservationOfferId != -1)
+                {
+                    <td width="100"><a asp-controller="Reservation" asp-action="Detail" target="_blank" asp-route-reservationId="@er.ReservationOfferId">Angebot</a></td>
+                }
+                else
+                {
+                    <td width="100">Nichts</td>
+                }
+                @if (er.ExchangeAccepted)
+                {
+                    <td width="100">Bearbeitet</td>
+                    <td width="100"><a asp-controller="Reservation" asp-action="EditOutgoing" asp-route-exchangeid="@er.EchangeReservationId">Bestätigen</a></td>
                     
-                </tr>
+                 }
+                 else
+                 {
+                 <td width="100">Unbearbeitet</td>
+                 <td width="100"><a asp-controller="Reservation" asp-action="EditOutgoing" asp-route-exchangeid="@er.EchangeReservationId">Löschen</a></td>
+                 }
+
+
+            </tr>
             }
 
 
         </table>
-
+        
     </div>
 </p>
 </div>
