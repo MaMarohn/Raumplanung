@@ -142,6 +142,16 @@ namespace Raumplanung.Database
             DateTime dateTimeStart = GetCorrectDatetime(startDate);
             DateTime dateTimeEnd = GetCorrectDatetime(endTime);
 
+            //Ueberpruefe ob in jeder Woche dieser Raum frei ist
+            DateTime dateS = dateTimeStart;
+            DateTime dateE = dateTimeEnd;
+            while (dateS <= dateE)
+            {
+                dateS= dateS.AddDays(7);
+                if (CheckIfReservationsExistsOnDateInBlock(dateS, block, room) == true)
+                    return false;
+            }
+
             Course course = new Course
             {
                 StartDate = dateTimeStart,
@@ -305,8 +315,17 @@ namespace Raumplanung.Database
 
         public bool DeleteCourse(int id)
         {
+            // to do course add
             Course course = _reservationContext.Courses.Find(id);
             if (course == null) return false;
+
+            foreach (var c in _reservationContext.Reservations)
+            {
+                if (c.CourseId == id)
+                    _reservationContext.Reservations.Remove(c);
+            }
+
+            
             _reservationContext.Courses.Remove(course);
             _reservationContext.SaveChanges();
             return true;
