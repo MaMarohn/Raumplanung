@@ -88,7 +88,7 @@ namespace RaumplanungCore.Controllers
 
 
 
-    }
+    
 
         [HttpGet("kurs/check/{startStop}")]
         public IActionResult Check(string startStop)
