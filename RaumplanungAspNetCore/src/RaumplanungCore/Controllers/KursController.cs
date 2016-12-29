@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Raumplanung.Database;
+using RaumplanungCore.Database;
+using RaumplanungCore.Models;
+using RaumplanungCore.ViewModels.Kurs;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,7 +15,15 @@ namespace RaumplanungCore.Controllers
 {
     public class KursController : Controller
     {
+        private readonly DatabaseHandler _databaseHandler;
+        private readonly ReservationContext _reservationContext;
         // GET: /<controller>/
+        public KursController(ReservationContext context)
+        {
+            _reservationContext = context;
+            _databaseHandler = new DatabaseHandler(context);
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -20,5 +33,60 @@ namespace RaumplanungCore.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult ShowRooms(KursViewModel kursViewModel)
+        {
+            List<List<Room>> FreeRoomsPerDay=new List<List<Room>>(); 
+            List<Room> Rooms = _databaseHandler.GetAllRooms();
+            for (int i = 0; i < kursViewModel.Days.Count; i++)
+            {
+                
+                FreeRoomsPerDay.Add(Rooms);//liste mit allen räumen füllen
+            }
+            DateTime dateStart = kursViewModel.start;
+            DateTime dateEnd = kursViewModel.end;
+            while (dateStart <= dateEnd)  //für den ganzen zeitraum
+            {
+                foreach(BlockandDay day in kursViewModel.Days)  //für jede tag/block Komponente
+                {
+                    DateTime date = new DateTime();
+                    if (dateStart.DayOfWeek <= day.Day.DayOfWeek)
+                    {
+                        date = dateStart.AddDays(day.Day.DayOfWeek - dateStart.DayOfWeek);
+                    }
+                    else
+                    {
+                        date = dateStart.AddDays(7-(dateStart.DayOfWeek - day.Day.DayOfWeek));
+                    }
+
+                    List<Room> availableRooms = _databaseHandler.GetFreeRoomsOnDateAndBlock(date, day.Block);
+
+                    int i = kursViewModel.Days.BinarySearch(day); //momentaner index
+                   
+                        List<Room> okayRooms=new List<Room>();
+                        foreach (var room in FreeRoomsPerDay[i])  // jeder raum von den räumen des tages
+                        {
+                            if (availableRooms.Contains(room))   //wenn der raum in beiden existiert, wird er behalten
+                            {
+                                okayRooms.Add(room);
+                            }
+                        }
+                        FreeRoomsPerDay[i] = okayRooms;
+                    
+                }
+               
+                dateStart = dateStart.AddDays(7);
+               
+            }
+
+            kursViewModel.Rooms = FreeRoomsPerDay;
+            
+
+            return View(kursViewModel);
+        }
+
+
+
     }
 }
