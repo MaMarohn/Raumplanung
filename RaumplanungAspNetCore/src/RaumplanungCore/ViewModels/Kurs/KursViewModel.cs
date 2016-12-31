@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Server.Kestrel.Filter.Internal;
 using RaumplanungCore.Models;
 
 namespace RaumplanungCore.ViewModels.Kurs
@@ -9,8 +10,9 @@ namespace RaumplanungCore.ViewModels.Kurs
     {
         public DateTime start { get; set; }
         public DateTime end { get; set; }
-        public List<BlockandDay> Days { get; set; }
-        public List<List<Room>> Rooms { get; set; }
+        public List<string> Days { get; set; }
+        public List<DayAndRooms> Roomlist { get; set; }
+
 
 
     }
@@ -19,5 +21,13 @@ namespace RaumplanungCore.ViewModels.Kurs
     {
         public DateTime Day { get; set; }
         public int Block { get; set; }
+    }
+
+    public struct DayAndRooms
+    {
+        public DateTime Date { get; set; }
+        public int block { get; set; }
+        public List<Room> Rooms { get; set; }
+        
     }
 }

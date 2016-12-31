@@ -1,14 +1,21 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using System.Globalization
+@using System.Threading.Tasks
+@using Raumplanung.Database
+@using RaumplanungCore.ViewModels.Kurs
 @model RaumplanungCore.ViewModels.Kurs.KursViewModel
 @{
 }
 
 
-@foreach (var rooms in Model.Rooms)
+@for (var x=0;x<Model.Roomlist.Count;x++)
 {
-    @Model.Rooms.BinarySearch(rooms) <br/>
+    
+    List<Room> rooms = Model.Roomlist[x].Rooms;
+    @Model.Roomlist[x].Date.DayOfWeek
+    <br/>
     foreach (var room in rooms)
     {
         @room.Name <br/>
