@@ -70,11 +70,19 @@ namespace RaumplanungCore.Controllers
                     DateTime date = new DateTime();
                     if (dateStart.DayOfWeek <= day.Date.DayOfWeek)
                     {
-                        date = dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek);
+                        if (!(dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek) > dateEnd))
+                        {
+                            date = dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek);
+                        }
+                        
                     }
                     else
                     {
-                        date = dateStart.AddDays(7+(dateStart.DayOfWeek - day.Date.DayOfWeek));
+                        if (!(dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek))>dateEnd))
+                        {
+                            date = dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek));
+                        }
+                       
                     }
                     List<Room> resultrooms=new List<Room>();
                     List<Room> availableRooms = _databaseHandler.GetFreeRoomsOnDateAndBlock(date, day.block);
@@ -96,7 +104,25 @@ namespace RaumplanungCore.Controllers
             return View(kursViewModel);
         }
 
+        [HttpPost]
+        public IActionResult SubmitCourse(KursViewModel kursViewModel,List<string> rooms)
+        {
+            List<Room> Rooms=_databaseHandler.GetAllRooms();
+            for (int x = 0; x < rooms.Count; x++)
+            {
+                var roomlistobject = kursViewModel.Roomlist[x];
+                roomlistobject.ChosenRoom=Rooms.Find(r => r.Name.Equals(rooms[x]));
+                kursViewModel.Roomlist[x] = roomlistobject;
+            }
+            DateTime d=new DateTime();
+          
+            //kurs erstellen
+            
 
+
+
+            return RedirectToAction("Reservation","Index");
+        }
 
 
 

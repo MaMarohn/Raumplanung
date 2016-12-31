@@ -28,6 +28,16 @@ namespace RaumplanungCore.ViewModels.Kurs
         public DateTime Date { get; set; }
         public int block { get; set; }
         public List<Room> Rooms { get; set; }
+
+        public Room ChosenRoom { get; set; }
         
+    }
+
+    public struct DateandRoom
+    {
+        public int block { get; set; }
+        public int weekday { get; set; }
+        public Room room { get; set; }
+
     }
 }
