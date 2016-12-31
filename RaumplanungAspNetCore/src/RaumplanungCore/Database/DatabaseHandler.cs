@@ -141,14 +141,14 @@ namespace Raumplanung.Database
             DateTime dateTimeEnd = GetCorrectDatetime(endTime);
 
             //Ueberpruefe ob in jeder Woche dieser Raum frei ist
-            DateTime dateS = dateTimeStart;
+            /*DateTime dateS = dateTimeStart;
             DateTime dateE = dateTimeEnd;
             while (dateS <= dateE)
             {
                 dateS= dateS.AddDays(7);
                 if (CheckIfReservationsExistsOnDateInBlock(dateS, block, room) == true)
                     return false;
-            }
+            }*/
 
             Course course = new Course
             {
@@ -433,6 +433,7 @@ namespace Raumplanung.Database
         {
             if (_reservationContext.Rooms.Count(r => r.Name == name) != 0) return false;
             _reservationContext.Rooms.Add(new Room {Name = name});
+            _reservationContext.SaveChanges();
             return true;
         }
 
