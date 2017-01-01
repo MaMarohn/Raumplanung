@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using RaumplanungCore.Models;
+using RaumplanungCore.ViewModels.Kurs;
 
 [assembly: InternalsVisibleTo("DatabaseTest")]
 namespace Raumplanung.Database
@@ -33,7 +34,8 @@ namespace Raumplanung.Database
         List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id);
         List<ExchangeReservation> GetExchangeReservationByTeacherToId(string id);
 
-        bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse);
+        bool AddCourse(List<DateandRoom> dateandRooms, DateTime startDate,DateTime endDate, string courseName, string teacherId);
+        bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse , int dayOfWeek);
        // List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId);
         List<Course> GetAllCourses();
         bool DeleteCourse(int id);
