@@ -72,19 +72,19 @@ namespace RaumplanungCore.Database
                 context.SaveChanges();
 
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 2, 15), 0,
-                    databaseHandler.GetAllTeachers()[0].Id , databaseHandler.GetAllRooms()[0].RoomId , "Informatik");
+                    databaseHandler.GetAllTeachers()[0].Id , databaseHandler.GetAllRooms()[0].RoomId , "Informatik", 1);
 
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 3, 15), 1,
-                    databaseHandler.GetAllTeachers()[1].Id, databaseHandler.GetAllRooms()[1].RoomId, "Mathe");
+                    databaseHandler.GetAllTeachers()[1].Id, databaseHandler.GetAllRooms()[1].RoomId, "Mathe", 2);
 
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 4, 15), 2,
-                    databaseHandler.GetAllTeachers()[2].Id, databaseHandler.GetAllRooms()[2].RoomId, "Deutsch");
+                    databaseHandler.GetAllTeachers()[2].Id, databaseHandler.GetAllRooms()[2].RoomId, "Deutsch", 3);
 
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 4, 15), 3,
-                    databaseHandler.GetAllTeachers()[3].Id, databaseHandler.GetAllRooms()[3].RoomId, "Bio");
+                    databaseHandler.GetAllTeachers()[3].Id, databaseHandler.GetAllRooms()[3].RoomId, "Bio", 4);
 
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 4, 15), 4,
-                    databaseHandler.GetAllTeachers()[4].Id, databaseHandler.GetAllRooms()[4].RoomId, "Erdkunde");
+                    databaseHandler.GetAllTeachers()[4].Id, databaseHandler.GetAllRooms()[4].RoomId, "Erdkunde", 5);
             }
 
         

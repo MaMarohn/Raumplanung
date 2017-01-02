@@ -36,18 +36,13 @@ namespace RaumplanungCore.Controllers
             return View();
         }
 
-
-
-        
-
         [HttpPost]
         public IActionResult ShowRooms(KursViewModel kursViewModel)
         {
-            kursViewModel.Roomlist=new List<DayAndRooms>();
+            kursViewModel.Roomlist = new List<DayAndRooms>();
            
             List<Room> allRooms = _databaseHandler.GetAllRooms();
-            
-           
+                      
             foreach (var day in kursViewModel.Days)
             {
                 DateTime dayformatted = DateTime.ParseExact(day, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
@@ -97,17 +92,14 @@ namespace RaumplanungCore.Controllers
                 dateStart = dateStart.AddDays(7);
                
             }
-
-           
-            
-
-            return View(kursViewModel);
+           return View(kursViewModel);
         }
 
         [HttpPost]
         public IActionResult SubmitCourse(KursViewModel kursViewModel,List<string> rooms)
         {
-            List<Room> Rooms=_databaseHandler.GetAllRooms();
+            List<Room> Rooms = _databaseHandler.GetAllRooms();
+
             for (int x = 0; x < rooms.Count; x++)
             {
                 var roomlistobject = kursViewModel.Roomlist[x];
@@ -175,6 +167,11 @@ namespace RaumplanungCore.Controllers
             return eventList;
         }
 
+        public IActionResult FreeDates(int id)
+        {
+            List<Reservation> reservations = _databaseHandler.GetAllReservations(); // TODO: später: getReservationsFromCourse()
+            return View(reservations);
+        }
 
     }
 }

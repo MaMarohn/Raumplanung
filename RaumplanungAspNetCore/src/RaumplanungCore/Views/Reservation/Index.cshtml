@@ -27,6 +27,7 @@
             <th> Startdatum </th>
             <th> Enddatum </th>
             <th> Uhrzeit </th>
+            <th> Termine freigeben</th>
         </tr>
         @foreach (var course in Model.Courses)
         {
@@ -36,7 +37,8 @@
                 <td style="width: 50px"> @(course.Block+1)</td>
                 <td style="width: 100px"> @course.StartDate.ToString("dd.MM.yyyy")</td>
                 <td style="width: 100px"> @course.EndDate.ToString("dd.MM.yyyy")</td>                
-                <td> @Data.BlockStartArray[course.Block] Uhr</td>
+                <td style="width: 90px"> @Data.BlockStartArray[course.Block] Uhr</td>
+                <td> <a asp-controller="Kurs" asp-action="freeDates" asp-route-id=@course.CourseId> Freigabe</a></td>
             </tr>
             
         }
