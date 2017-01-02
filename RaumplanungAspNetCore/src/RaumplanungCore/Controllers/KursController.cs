@@ -106,7 +106,7 @@ namespace RaumplanungCore.Controllers
                 roomlistobject.ChosenRoom=Rooms.Find(r => r.Name.Equals(rooms[x]));
                 kursViewModel.Roomlist[x] = roomlistobject;
             }
-            DateTime d = new DateTime();
+            
           
             //kurs erstellen
             
