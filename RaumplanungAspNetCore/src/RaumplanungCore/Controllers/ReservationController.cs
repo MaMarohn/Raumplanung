@@ -36,7 +36,7 @@ namespace RaumplanungCore.Controllers
         {
             string teacherId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
             List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);
-            List<Course> courses = _databaseHandler.GetAllCourses(); // TODO: abändern auf GetCoursesFromTeacher()
+            List<Course> courses = _databaseHandler.GetAllCourses();
             int count;
             if (reservations != null)
             {
@@ -55,15 +55,7 @@ namespace RaumplanungCore.Controllers
             return View("Index", new ReservationAndCourse(reservations, courses));
         }
 
-        // GET: /<controller>/Detail/reservationId
-        //[HttpGet("reservation/detail/{reservationId}")]
-        public IActionResult Detail(int reservationId)
-        {
-            ViewData["ReservationId"] = reservationId;
-            return View();
-        }
-
-        //[HttpGet("reservation/delete/{reservationId}")]
+       //[HttpGet("reservation/delete/{reservationId}")]
         [HttpGet]
         public IActionResult Delete(int reservationId)
         {

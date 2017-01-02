@@ -167,6 +167,11 @@ namespace RaumplanungCore.Controllers
             return eventList;
         }
 
+        public IActionResult FreeDates(int id)
+        {
+            List<Reservation> reservations = _databaseHandler.GetAllReservations(); // TODO: später: getReservationsFromCourse()
+            return View(reservations);
+        }
 
     }
 }
