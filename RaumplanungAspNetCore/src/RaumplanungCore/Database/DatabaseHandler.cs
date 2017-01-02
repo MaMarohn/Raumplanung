@@ -277,6 +277,13 @@ namespace Raumplanung.Database
             return new List<Reservation>(reservations);
         }
 
+        public List<Reservation> GetAllReservationsFromCourse(int courseId)
+        {
+            var reservations = _reservationContext.Reservations.ToList()
+                .Where(r => r.CourseId == courseId);
+            return new List<Reservation>(reservations);
+        }
+
         /*private List<Course> CheckWhichCourseTakesPlace(DateTime date , int blockNr)
         {
             date = GetCorrectDatetime(date);

@@ -17,6 +17,7 @@ namespace Raumplanung.Database
         List<Reservation> GetReservationsFromTeacher(string teacherId);
         List<Reservation> GetReservationsFromRoom(int roomId);
         List<Reservation> GetReservationsOnDateInBlock(DateTime date, int blockNr);
+        List<Reservation> GetAllReservationsFromCourse(int courseId);
         
         bool DeleteReservation(int reservationId);
         bool AddReservation(DateTime date, int block, string teacherId, int roomId);
@@ -46,6 +47,6 @@ namespace Raumplanung.Database
         bool DeleteExchangeReservationByObject(ExchangeReservation exchangeReservation);
         //List<Course> GetAllCoursesInBlock(int blockNr);
         bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationoffer, string message);
-
+        
     }
 }
