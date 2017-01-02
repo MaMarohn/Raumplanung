@@ -1,16 +1,55 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using System.Globalization
+@using System.Threading.Tasks
+@using Raumplanung.Database
+@using RaumplanungCore.ViewModels.Kurs
 @model RaumplanungCore.ViewModels.Kurs.KursViewModel
 @{
 }
-
-
-@foreach (var rooms in Model.Rooms)
+<h1>Wählen sie pro Tag einen Raum, indem dieser Kurs dann stattfinden wird.</h1>
+<form onload="onLoad" id="inputform" asp-controller="Kurs" asp-action="SubmitCourse">
+    <input type="hidden" asp-for="start" value="@Model.start"/>
+    <input type="hidden" asp-for="end" value="@Model.end" />
+    <input type="hidden" asp-for="Days" value="@Model.Days" />
+    <input type="hidden" asp-for="Roomlist" value="@Model.Roomlist" />
+</form>
+@for (var x=0;x<Model.Roomlist.Count;x++)
 {
-    @Model.Rooms.BinarySearch(rooms) <br/>
+    
+    List<Room> rooms = Model.Roomlist[x].Rooms;
+    <h3>@Model.Roomlist[x].Date.DayOfWeek</h3>
+    <br/>
     foreach (var room in rooms)
     {
-        @room.Name <br/>
+        <div id="@(x+"_"+room.Name)"><a href="#" onclick="SelectRoom('@(x +"_"+ room.Name)'); return false;">@room.Name</a>
+</div> <br/>
     }
 }
+
+
+
+<script>
+ 
+
+    function onLoad() {
+        for (var x = 0; x < @Model.Roomlist.Count; x++) {
+            var inputform=document.getElementById("inputform");
+            var input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("id", x + "");
+            input.setAttribute("name","Rooms");
+            inputform.appendChild(input);
+        }
+    }
+
+    function SelectRoom(divid) {
+        var id = divid.split("_")[0];
+        var room = divid.split("_")[1];
+        var input=document.getElementById(id);
+        input.setAttribute("value",room);
+
+    }
+
+</script>

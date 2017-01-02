@@ -9,10 +9,19 @@
 
 @{
     string date = Model.start.ToString("yyyy-MM-dd");
-    List<DateTime> daysWithBlocks = new List<DateTime>();
-    daysWithBlocks.Add(DateTime.Now);
-
 }
+
+<form asp-controller="Kurs" asp-action="ShowRooms" method="post">
+    <input type="hidden" asp-for="start" value="@Model.start"/>
+    <input type="hidden" asp-for="end" value="@Model.end" />
+    <div id="inputform">
+        
+    </div>
+    <button type="submit">Tage annehmen</button>
+</form>
+
+
+
 
 @section scripts
 {
@@ -22,44 +31,56 @@
     <script src="/fullCalendar/locale/de.js"></script>
 
     <script>
-    var trigger = false;
-    var selectable = true;
-    var startSubmit;
-    var stopSubmit;
-    $(document)
-        .ready(function() {
-            $('#calendar')
-                .fullCalendar({
-                    defaultView: 'agendaWeek',
-                    defaultDate: '@date',
-                    weekends: false,
-                    editable: false,
-                    timezone: 'local',
-                    header: false,
-                    locale: 'de',
-                    titleFormat: '[Tag und Blockauswahl]',
-                    views: {
-                        week: {                            
-                            timeFormat: 'HH:mm'                                                       
-                        }
-                    },
-                    events: "/kurs/loadevents/",
-                    eventClick: function (event) {
-                        var start = moment(event.start).format("DD-MM-YYYY HH:mm");
-                        if (event.color.localeCompare('blue') === 0) {
-                            event.color = 'green';
-                            
-                        } else {
-                            event.color = 'blue';
-                        }
-                        $('#calendar').fullCalendar('rerenderEvents');
-                    }
-                    
-                    })
-        });
+        var counter = 0;
+        
+        var trigger = false;
+        var selectable = true;
+        var startSubmit;
+        var stopSubmit;
+        $(document)
+            .ready(function() {
+                $('#calendar')
+                    .fullCalendar({
+                        defaultView: 'agendaWeek',
+                        defaultDate: '@date',
+                        weekends: false,
+                        editable: false,
+                        timezone: 'local',
+                        header: false,
+                        locale: 'de',
+                        titleFormat: '[Tag und Blockauswahl]',
+                        views: {
+                            week: {
+                                timeFormat: 'HH:mm'
+                            }
+                        },
+                        events: "/kurs/loadevents/",
+                        eventClick: function (event) {
+                            var form = document.getElementById("inputform");    
+                            var start = moment(event.start).format("DD-MM-YYYY HH:mm");
+                            if (event.color.localeCompare('blue') === 0) {
+                                event.color = 'green';
+                                var input = document.createElement("input");
 
-    
-      </script>
+                                input.setAttribute("name", "Days");
+                                input.setAttribute("type", "hidden");
+                                input.setAttribute("value", start);
+
+
+                                form.appendChild(input);
+                                form.appendChild(document.createTextNode(start));
+
+                            } else {
+                                event.color = 'blue';
+                            }
+                            $('#calendar').fullCalendar('rerenderEvents');
+                        }
+
+                    });
+            });
+
+
+    </script>
 }
 <h1> Neuen Kurs anlegen </h1>
 
