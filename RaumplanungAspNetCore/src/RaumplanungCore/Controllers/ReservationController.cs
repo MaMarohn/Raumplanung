@@ -59,6 +59,7 @@ namespace RaumplanungCore.Controllers
         [HttpGet]
         public IActionResult Delete(int reservationId)
         {
+            Reservation reservation = _databaseHandler.GetReservation(reservationId);
             _databaseHandler.DeleteReservation(reservationId);
             return Index();
         }

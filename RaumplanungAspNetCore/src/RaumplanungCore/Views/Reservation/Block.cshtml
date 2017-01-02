@@ -22,7 +22,7 @@
 }
 <h1> Reservierungen im Block @(Model.ElementAt(0).Block + 1) </h1>
 
-<h3> @Model.ElementAt(0).Date Uhr </h3>
+<h3> @Model.ElementAt(0).Date.ToString("dd.MM.yyyy HH:mm") Uhr </h3>
 <br />
     <table>
         <tr>

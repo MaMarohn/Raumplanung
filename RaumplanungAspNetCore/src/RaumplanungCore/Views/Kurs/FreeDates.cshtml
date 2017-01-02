@@ -6,7 +6,8 @@
 }
 @model IEnumerable<Reservation>
 
-<h1> Löschen Sie einzelne Reservierungen Ihres Kurses, um die Räume für andere zur Reservierung freizugeben </h1>
+<h1> Raumfreigabe </h1>
+<h4>Löschen Sie einzelne Reservierungen Ihres Kurses, um die Räume für andere zur Reservierung freizugeben</h4>
 
 <table>
     <tr>
@@ -17,9 +18,9 @@
     @foreach (var reservation in Model)
     {
         <tr>
-            <td> @reservation.Date.Value.ToString("dd.MM.yyyy") </td>
-            <td> @reservation.Block </td>
-            <td> <a asp-controller="Reservation" asp-action="Delete" asp-route-id=@reservation.ReservationId> Löschen </a></td>
+            <td style="width: 175px"> @reservation.Date.Value.ToString("dd.MM.yyyy") </td>
+            <td style="width: 75px"> @(reservation.Block + 1) </td>
+            <td> <a asp-controller="Reservation" asp-action="Delete" asp-route-reservationId=@reservation.ReservationId> Löschen </a></td>
         </tr>
     }
 </table>
