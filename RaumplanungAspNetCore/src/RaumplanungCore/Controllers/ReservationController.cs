@@ -167,9 +167,9 @@ namespace RaumplanungCore.Controllers
                 
                 for (int i = 0; i < Data.AmountOfBlocks ; i++)
                 {
-                    CalendarEvent dailyEvent = new CalendarEvent((Data.DayStrings[j] + (i + 1)), Data.BlockStartArray[i], Data.BlockEndArray[i], days, FindReservationByDate(start, i));
+                    CalendarEvent dailyEvent = new CalendarEvent((Data.DayStrings[j] + (i + 1)), Data.BlockStartArray[i], Data.BlockEndArray[i], days, GetColorFromDateAndBlock(start, i));
                     eventList.Add(dailyEvent);
-                    }
+                }
                 start = start.AddDays(1);
             }                        
             return eventList;            
@@ -224,7 +224,7 @@ namespace RaumplanungCore.Controllers
             return 1;
         }
 
-        private string FindReservationByDate(DateTime date, int blockNr)
+        private string GetColorFromDateAndBlock(DateTime date, int blockNr)
         {
             List<Room> block = _databaseHandler.GetFreeRoomsOnDateAndBlock(date , blockNr);
             if (DateTime.Now >= date && (DateTime.Now >= date || DateTime.Now.Hour >= TimeSpan.Parse(Data.BlockStartArray[blockNr]).Hours))
