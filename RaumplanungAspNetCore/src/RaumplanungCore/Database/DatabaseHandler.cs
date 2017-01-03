@@ -58,7 +58,7 @@ namespace Raumplanung.Database
                 });
 
                 var resAmBlock = reservations.ToList().Where(r => r.Block == blockIndex);
-                if (resAmBlock.Count() == 0)
+                if (!resAmBlock.Any())
                 {
                     //An diesem Block gibt es keine Reservierungen
                     

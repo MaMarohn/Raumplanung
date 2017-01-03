@@ -19,35 +19,60 @@ namespace RaumplanungCore.Models
         public String GetRoomsAsString()
         {
             String roomsString = "";
-            foreach (var b in BlockAndRoomAndWeekDay)
+            for (int c = 0; c < BlockAndRoomAndWeekDay.Count; c++)
+            {
+                if(c == BlockAndRoomAndWeekDay.Count - 1)
+                    roomsString += BlockAndRoomAndWeekDay[c].Room + "";
+                else
+                {
+                    roomsString += BlockAndRoomAndWeekDay[c].Room + ";";
+                }
+            }
+            /*foreach (var b in BlockAndRoomAndWeekDay)
             {
                 roomsString += b.Room+";";
-            }
+            }*/
             return roomsString;
         }
 
         public String GetBlockAsString()
         {
             String blocksString = "";
-            foreach (var b in BlockAndRoomAndWeekDay)
+            for (int c = 0; c < BlockAndRoomAndWeekDay.Count; c++)
+            {
+                if (c == BlockAndRoomAndWeekDay.Count - 1)
+                    blocksString += BlockAndRoomAndWeekDay[c].Block + "";
+                else
+                {
+                    blocksString += BlockAndRoomAndWeekDay[c].Block + ";";
+                }
+            }
+            /*foreach (var b in BlockAndRoomAndWeekDay)
             {
                 blocksString += b.Block + ";";
-            }
+            }*/
             return blocksString;
         }
 
         public String GetWeekDayAsString()
         {
             String dayString = "";
-            foreach (var b in BlockAndRoomAndWeekDay)
+            for (int c = 0; c < BlockAndRoomAndWeekDay.Count; c++)
+            {
+                if (c == BlockAndRoomAndWeekDay.Count - 1)
+                    dayString += BlockAndRoomAndWeekDay[c].WeekDay + "";
+                else
+                {
+                    dayString += BlockAndRoomAndWeekDay[c].WeekDay + ";";
+                }
+            }
+
+            /*foreach (var b in BlockAndRoomAndWeekDay)
             {
                 dayString += b.WeekDay + ";";
-            }
+            }*/
             return dayString;
         }
-
-
-
     }
 
     //EF Core supportet leider die persistierung von List<int> ... nicht

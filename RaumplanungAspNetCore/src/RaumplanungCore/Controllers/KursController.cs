@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -219,7 +220,30 @@ namespace RaumplanungCore.Controllers
 
         public IActionResult Details(int id)
         {
-            return View();
+            Course course = _databaseHandler.GetCourseById(id);
+            string courseBlocks = course.GetBlockAsString();
+            string courseRooms = course.GetRoomsAsString();
+            string courseDays = course.GetWeekDayAsString();
+
+            string[] blockSplitted = courseBlocks.Split(';');
+            string[] roomSplitted = courseRooms.Split(';');
+            string[] daySplitted = courseDays.Split(';');
+
+            if (blockSplitted.Length != roomSplitted.Length)
+            {
+                return View("gibts nicht");
+            }
+
+            KursDetailViewModel detail = new KursDetailViewModel()
+            {
+                BlockStrings = blockSplitted,
+                RoomStrings = roomSplitted,
+                DayStrings = daySplitted,
+                Course = course,
+                AmountOfAll = blockSplitted.Length
+            };
+            
+            return View(detail);
         }
 
     }

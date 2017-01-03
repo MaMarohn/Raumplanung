@@ -4,8 +4,33 @@
 @{
     ViewData["Title"] = "Details";
 }
-@model RaumplanungCore.ViewModels.Kurs.KursViewModel
+@using System.Threading.Tasks
+@using RaumplanungCore.ViewModels
+@using RaumplanungCore.ViewModels.Kurs;
+@model RaumplanungCore.ViewModels.Kurs.KursDetailViewModel
 
 <h1> Detaillierte Kursinformationen </h1>
+
+<p> Kursname: @Model.Course.Name </p>
+<p> Starttermin: @Model.Course.StartDate </p>
+<p> Endtermin: @Model.Course.EndDate </p>
+<br/>
+<br/>
+<p> Allgemeine Informationen </p>
+<table>
+    <tr>
+        <th> Wochentag </th>
+        <th> Block </th>
+        <th> Uhrzeit </th>
+        <th> Raum </th>
+    </tr>
+    @for (var i = 0; i < Model.AmountOfAll; i++)
+    {
+        <tr> @Model.DayStrings[i] </tr>
+        <tr> @Model.BlockStrings[i] </tr>
+        <tr> @Data.BlockStartArray[Int32.Parse(Model.BlockStrings[i])] Uhr</tr>
+        <tr> @Model.RoomStrings[i]</tr>
+    }
+</table>
 
 
