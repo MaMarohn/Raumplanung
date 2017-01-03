@@ -53,7 +53,7 @@ namespace RaumplanungCore.Models
     //EF Core supportet leider die persistierung von List<int> ... nicht
     public class BlockNrAndRoomAndWeekday
     {
-        public BlockNrAndRoomAndWeekday(int block, int room , int weekDay)
+        public BlockNrAndRoomAndWeekday(int block, int room , int weekDay )
         {
             Block = block;
             Room = room;
@@ -65,5 +65,6 @@ namespace RaumplanungCore.Models
         public int Block { set; get; }
         public int Room { set; get; }
         public int WeekDay { set; get; }
+        public int CourseId { set; get; }
     }
 }

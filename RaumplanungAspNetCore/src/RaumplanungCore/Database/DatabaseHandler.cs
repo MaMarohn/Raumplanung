@@ -143,6 +143,7 @@ namespace Raumplanung.Database
             foreach (var d in dateandRooms)
             {
                 blockNrAndRooms.Add(new BlockNrAndRoomAndWeekday(d.block , d.room.RoomId , (int)startDate.DayOfWeek));
+                _reservationContext.BlockNrAndRoomAndWeekdays.Add(blockNrAndRooms.Last());
             }
 
             Course course = new Course
@@ -228,6 +229,9 @@ namespace Raumplanung.Database
                 TeacherId = teacherId
             };
             var c = _reservationContext.Courses.Add(course);
+            _reservationContext.SaveChanges();
+
+            _reservationContext.BlockNrAndRoomAndWeekdays.Find(blockNrAndRoom.Id).CourseId = c.Entity.CourseId;
             _reservationContext.SaveChanges();
 
             while (dateTimeStart <= dateTimeEnd)
@@ -399,7 +403,17 @@ namespace Raumplanung.Database
                 if (c.CourseId == id)
                     _reservationContext.Reservations.Remove(c);
             }
-            course.BlockAndRoomAndWeekDay.Clear();
+
+
+
+            foreach (var r in _reservationContext.BlockNrAndRoomAndWeekdays)
+            {
+                if (r.CourseId == course.CourseId)
+                    _reservationContext.BlockNrAndRoomAndWeekdays.Remove(r);
+            }
+
+            //course.BlockAndRoomAndWeekDay.
+            //_reservationContext.BlockNrAndRoomAndWeekdays.Remove().
             _reservationContext.Courses.Remove(course);
             _reservationContext.SaveChanges();
             return true;
