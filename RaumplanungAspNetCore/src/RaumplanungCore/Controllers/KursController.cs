@@ -43,73 +43,83 @@ namespace RaumplanungCore.Controllers
         [HttpPost]
         public IActionResult ShowRooms(KursViewModel kursViewModel)
         {
-            kursViewModel.Roomlist = new List<DayAndRooms>();
-           List<DateTime> datelist=new List<DateTime>();
-            List<Room> allRooms = _databaseHandler.GetAllRooms();
-                      
-            foreach (var day in kursViewModel.Days)
+            if (kursViewModel.Days!=null)
             {
-                DateTime dayformatted = DateTime.ParseExact(day, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
-                DayAndRooms dayAndRooms=new DayAndRooms()
+                kursViewModel.Roomlist = new List<DayAndRooms>();
+                List<DateTime> datelist = new List<DateTime>();
+                List<Room> allRooms = _databaseHandler.GetAllRooms();
+
+                foreach (var day in kursViewModel.Days)
                 {
-                    Date = dayformatted,
-                    Rooms = allRooms,
-                    block = Array.FindIndex(Data.BlockStartArray,s=>s.Equals(dayformatted.Hour+":"+dayformatted.Minute))+1
-                };
-                kursViewModel.Roomlist.Add(dayAndRooms);
-               
-            }
-            
-            DateTime dateStart = kursViewModel.start;
-            DateTime dateEnd = kursViewModel.end;
-            while (dateStart <= dateEnd)  //für den ganzen zeitraum
-            {
-                for(var x=0; x<kursViewModel.Roomlist.Count;x++)  //für jede tag/block Komponente
-                {
-                    DayAndRooms day = kursViewModel.Roomlist[x];
-                    DateTime date = new DateTime();
-                    if (dateStart.DayOfWeek <= day.Date.DayOfWeek)
+                    DateTime dayformatted = DateTime.ParseExact(day, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
+                    DayAndRooms dayAndRooms = new DayAndRooms()
                     {
-                        if (!(dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek) > dateEnd))
-                        {
-                            date = dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek);
-                        }
-                        
-                    }
-                    else
-                    {
-                        if (!(dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek))>dateEnd))
-                        {
-                            date = dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek));
-                        }
-                       
-                    }
-                    List<Room> resultrooms=new List<Room>();
-                    List<Room> availableRooms = _databaseHandler.GetFreeRoomsOnDateAndBlock(date, day.block);
-                    resultrooms = availableRooms.Intersect(day.Rooms).ToList();
-
-                    var roomlistobject = kursViewModel.Roomlist[x];
-                    roomlistobject.Rooms = resultrooms;
-                    kursViewModel.Roomlist[x] = roomlistobject;
-
-
-
-
-
-                    //kursViewModel.Roomlist[x].Rooms.Clear();
-                    //kursViewModel.Roomlist[x].Rooms.AddRange(resultrooms);
-                    datelist.Add(kursViewModel.Roomlist[x].Date);
+                        Date = dayformatted,
+                        Rooms = allRooms,
+                        block =
+                            Array.FindIndex(Data.BlockStartArray,
+                                s => s.Equals(dayformatted.Hour + ":" + dayformatted.Minute)) + 1
+                    };
+                    kursViewModel.Roomlist.Add(dayAndRooms);
 
                 }
-               
-                dateStart = dateStart.AddDays(7);
-               
-            }
-            
 
-            HttpContext.Session.SetObjectAsJson("datelist",datelist);
-            
-           return View(kursViewModel);
+                DateTime dateStart = kursViewModel.start;
+                DateTime dateEnd = kursViewModel.end;
+                while (dateStart <= dateEnd) //für den ganzen zeitraum
+                {
+                    for (var x = 0; x < kursViewModel.Roomlist.Count; x++) //für jede tag/block Komponente
+                    {
+                        DayAndRooms day = kursViewModel.Roomlist[x];
+                        DateTime date = new DateTime();
+                        if (dateStart.DayOfWeek <= day.Date.DayOfWeek)
+                        {
+                            if (!(dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek) > dateEnd))
+                            {
+                                date = dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek);
+                            }
+
+                        }
+                        else
+                        {
+                            if (!(dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek)) > dateEnd))
+                            {
+                                date = dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek));
+                            }
+
+                        }
+                        List<Room> resultrooms = new List<Room>();
+                        List<Room> availableRooms = _databaseHandler.GetFreeRoomsOnDateAndBlock(date, day.block);
+                        resultrooms = availableRooms.Intersect(day.Rooms).ToList();
+
+                        var roomlistobject = kursViewModel.Roomlist[x];
+                        roomlistobject.Rooms = resultrooms;
+                        kursViewModel.Roomlist[x] = roomlistobject;
+
+
+
+
+
+                        //kursViewModel.Roomlist[x].Rooms.Clear();
+                        //kursViewModel.Roomlist[x].Rooms.AddRange(resultrooms);
+                        datelist.Add(kursViewModel.Roomlist[x].Date);
+
+                    }
+
+                    dateStart = dateStart.AddDays(7);
+
+                }
+
+
+                HttpContext.Session.SetObjectAsJson("datelist", datelist);
+
+                return View(kursViewModel);
+            }
+            else
+            {
+                ViewData["ErrorTagauswahl"] = "Es wurden keine Tage ausgewählt!";
+                return View("CourseDays",kursViewModel);
+            }
         }
 
         [HttpPost]
@@ -151,6 +161,7 @@ namespace RaumplanungCore.Controllers
         [HttpGet("kurs/check/{startStop}")]
         public IActionResult Check(string startStop)
         {
+            ViewData["ErrorTagauswahl"] = "";
             string[] splittedStrings = startStop.Split(';');
             string name = splittedStrings[0];
             DateTime startDate = DateTime.Parse(splittedStrings[1]);

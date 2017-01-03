@@ -11,7 +11,7 @@
     string date = Model.start.ToString("yyyy-MM-dd");
 }
 <h1> Neuen Kurs anlegen </h1>
-
+<h3 style="color: red;">@ViewData["ErrorTagauswahl"]</h3>
 <p> Wählen Sie die Blöcke an den Tagen aus, an denen der Kurs stattfinden soll </p>
 <form asp-controller="Kurs" asp-action="ShowRooms" method="post">
     <input type="hidden" asp-for="start" value="@Model.start"/>
