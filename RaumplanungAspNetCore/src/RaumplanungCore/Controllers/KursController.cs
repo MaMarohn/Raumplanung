@@ -155,6 +155,7 @@ namespace RaumplanungCore.Controllers
             string name = splittedStrings[0];
             DateTime startDate = DateTime.Parse(splittedStrings[1]);
             DateTime stopDate = DateTime.Parse(splittedStrings[2]);
+            ViewData["DateError"] = "";
 
             if (startDate > stopDate)
             {

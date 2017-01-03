@@ -22,20 +22,15 @@
     <table>
         <tr>
             <th> Name </th>
-            <th> Raum </th>
-            <th> Block </th>
             <th> Startdatum </th>
             <th> Enddatum </th>
-            <th> Wochentag </th>
-            <th> Uhrzeit </th>
+            <th> Details </th>
             <th> Termine freigeben</th>
         </tr>
         @foreach (var course in Model.Courses)
         {
             <tr>
                 <td style="width: 100px"> @course.Name </td>
-                <td style="width: 100px"> @DatabaseHelper.GetRoomNameById(/*course.RoomId*/ course.CourseId) </td> 
-                <td style="width: 50px"> @(/*course.Block+1*/"BLOCKS")</td>
                 <td style="width: 100px"> @course.StartDate.ToString("dd.MM.yyyy")</td>
                 <td style="width: 100px"> @course.EndDate.ToString("dd.MM.yyyy")</td>      
                 <td style="width: 50px"> </td>          
