@@ -139,17 +139,17 @@ namespace Raumplanung.Database
             //List<int> blocks = dateandRooms.Select(d => d.block).ToList();
             //List<int> roomIds = dateandRooms.Select(d => d.room.RoomId).ToList();
 
-            List<BlockNrAndRoom> blockNrAndRooms  = new List<BlockNrAndRoom>();
+            List<BlockNrAndRoomAndWeekday> blockNrAndRooms  = new List<BlockNrAndRoomAndWeekday>();
             foreach (var d in dateandRooms)
             {
-                blockNrAndRooms.Add(new BlockNrAndRoom(d.block , d.room.RoomId));
+                blockNrAndRooms.Add(new BlockNrAndRoomAndWeekday(d.block , d.room.RoomId , (int)startDate.DayOfWeek));
             }
 
             Course course = new Course
             {
                 StartDate = dateTimeStart,
                 EndDate = dateTimeEnd,
-                BlockAndRoom = blockNrAndRooms,
+                BlockAndRoomAndWeekDay = blockNrAndRooms,
                 Name = courseName,
                 TeacherId = teacherId
             };
@@ -217,13 +217,13 @@ namespace Raumplanung.Database
 
             DateTime dateTimeStart = GetCorrectDatetime(startDate);
             DateTime dateTimeEnd = GetCorrectDatetime(endTime);
-            var blockNrAndRoom = new BlockNrAndRoom(block, room);
+            var blockNrAndRoom = new BlockNrAndRoomAndWeekday(block, room , dayOfWeek);
 
             Course course = new Course
             {
                 StartDate = dateTimeStart,
                 EndDate = dateTimeEnd,
-                BlockAndRoom = new List<BlockNrAndRoom> { blockNrAndRoom },                
+                BlockAndRoomAndWeekDay = new List<BlockNrAndRoomAndWeekday> { blockNrAndRoom },              
                 Name = nameOfCourse,
                 TeacherId = teacherId
             };
@@ -398,7 +398,8 @@ namespace Raumplanung.Database
             {
                 if (c.CourseId == id)
                     _reservationContext.Reservations.Remove(c);
-            }         
+            }
+            course.BlockAndRoomAndWeekDay.Clear();
             _reservationContext.Courses.Remove(course);
             _reservationContext.SaveChanges();
             return true;
