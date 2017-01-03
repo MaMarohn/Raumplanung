@@ -3,11 +3,11 @@
 *@
 @{
     ViewData["Title"] = "Neuer Kurs";
-    }
+}
 
 @section scripts
 {
-    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css" />
+    <link rel="stylesheet" href="/fullCalendar/fullcalendar.css"/>
     <script src="/fullCalendar/lib/moment.min.js"></script>
     <script src="/fullCalendar/fullcalendar.js"></script>
     <script src="/fullCalendar/locale/de.js"></script>
@@ -17,52 +17,54 @@
         var selectable = true;
         var startSubmit;
         var stopSubmit;
-        
+
         $(document)
-                    .ready(function() {
-                        $('#calendar')
-                            .fullCalendar({
-                                defaultView: 'month',
-                                weekends: false,
-                                editable: false,
-                                timezone: 'local',
-                                locale: 'de',
-                                views: {
-                                    month: {
-                                        timeFormat: 'HH:mm'
-                                    }
-                                },                                
-                                dayClick: function(date) {
-                                    var startDatum = moment(date).format("DD.MM.YYYY");
-                                    if (selectable) {
-                                        if (!trigger) {
-                                            document.getElementById("startDate").innerHTML = startDatum;
-                                            startSubmit = startDatum;
-                                            document.getElementById("info").innerHTML = "Wählen Sie ein Enddatum aus";
-                                            trigger = true;
-                                        } else {
-                                            document.getElementById("stopDate").innerHTML = startDatum;
-                                            stopSubmit = startDatum;
-                                            trigger = false;
-                                            selectable = false;
-                                        }
-                                    }
-                                    
-                                 
+            .ready(function() {
+                $('#calendar')
+                    .fullCalendar({
+                        defaultView: 'month',
+                        weekends: false,
+                        editable: false,
+                        timezone: 'local',
+                        locale: 'de',
+                        views: {
+                            month: {
+                                timeFormat: 'HH:mm'
+                            }
+                        },
+                        dayClick: function(date) {
+                            var startDatum = moment(date).format("DD.MM.YYYY");
+                            if (selectable) {
+                                if (!trigger) {
+                                    document.getElementById("startDate").innerHTML = startDatum;
+                                    startSubmit = startDatum;
+                                    document.getElementById("info").innerHTML = "Wählen Sie ein Enddatum aus";
+                                    trigger = true;
+                                } else {
+                                    document.getElementById("stopDate").innerHTML = startDatum;
+                                    stopSubmit = startDatum;
+                                    trigger = false;
+                                    selectable = false;
                                 }
-                            })
+                            }
+
+
+                        }
                     });
+            });
+
         function onSubmitClick() {
             if (document.getElementById("stopDate").innerHTML.localeCompare("")) {
-                window.open("/kurs/check/" + startSubmit + ";" + stopSubmit, "_self");
+                window.open("/kurs/check/" + document.getElementById("name").value + ";" + startSubmit + ";" + stopSubmit,
+            "_self");
             } else {
                 document.getElementById("error").innerHTML = "Bitte noch ein gültiges Enddatum auswählen!";
             }
-            
+
         }
 
-            window.open("/kurs/check/"+document.getElementById("name").value+";"+ startSubmit + ";" + stopSubmit, "_self");
-        }
+        
+    
 
         function resetFields() {
             document.getElementById("startDate").innerHTML = "";
@@ -77,14 +79,14 @@
 
 <h1> Neuen Kurs anlegen </h1>
 <label>Kursname:</label>
-<input id="name" type="text" />
+<input id="name" type="text"/>
 <br/>
 <p id="info"> Wählen Sie ein Startdatum aus </p>
 <p> Startdatum: <span id="startDate"></span> </p>
 <p> Enddatum: <span id="stopDate"></span> </p>
 <button type="button" onclick="onSubmitClick()" style="width: 12em"> Termine bestätigen </button>
-<button type="button" onclick="resetFields()" style="width: 12em" > Termine zurücksetzen</button>
-<br />
+<button type="button" onclick="resetFields()" style="width: 12em"> Termine zurücksetzen</button>
+<br/>
 <br/>
 <p id="error"> @ViewData["DateError"]</p>
 
