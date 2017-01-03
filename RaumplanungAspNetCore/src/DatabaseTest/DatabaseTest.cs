@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Castle.Core.Resource;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using Raumplanung.Database;
-using RaumplanungCore.Controllers;
 using RaumplanungCore.Database;
 using RaumplanungCore.Models;
 using Xunit;
 
-namespace DatabaseTest {
+namespace DatabaseTest
+{
 
     public class DatabaseTest
     {
         private readonly SqliteConnection _connection;
         private readonly ReservationContext _reservationContext;
         private readonly DatabaseHandler _databaseHandler;
-        private List<Teacher> _testTeachers;
-        private List<Room> _testRooms;
-        private List<Reservation> _testReservations;
+        private readonly List<Teacher> _testTeachers;
+        private readonly List<Room> _testRooms;
+        private readonly List<Reservation> _testReservations;
 
         public DatabaseTest()
         {
@@ -37,7 +35,7 @@ namespace DatabaseTest {
             _databaseHandler = new DatabaseHandler(_reservationContext);
 
             _testRooms = new List<Room> {new Room {Name = "D14"}, new Room {Name = "D15"}, new Room {Name = "D20"}};
-            _testTeachers = new List<Teacher> { new Teacher{ Vorname = "Frank"} , new Teacher { Vorname = "Peter" } , new Teacher{ Vorname = "Lisa"}, new Teacher { Vorname = "Martin" } };
+            _testTeachers = new List<Teacher> { new Teacher{ Vorname = "Frank"} , new Teacher { Vorname = "Peter" }};
             _testReservations = new List<Reservation> { new Reservation {} , new Reservation {}};
         }
 
@@ -48,18 +46,22 @@ namespace DatabaseTest {
             _reservationContext.SaveChanges();
 
             Assert.Equal(1 , _databaseHandler.GetAllRooms().Count);
-            _reservationContext.Rooms.Local.Clear();
+            Assert.NotEqual(2, _databaseHandler.GetAllRooms().Count);
 
+            Clear();
         }
 
         [Fact]
         public void TestGetAllTeachers()
         {
             _reservationContext.Teachers.Add(_testTeachers[0]);
+            _reservationContext.Teachers.Add(_testTeachers[1]);
             _reservationContext.SaveChanges();
 
-            Assert.Equal(1, _databaseHandler.GetAllTeachers().Count);
-            _reservationContext.Teachers.Local.Clear();
+            Assert.Equal(2, _databaseHandler.GetAllTeachers().Count);
+            Assert.NotEqual(1, _databaseHandler.GetAllTeachers().Count);
+
+            Clear();
         }
 
         [Fact]
@@ -69,16 +71,16 @@ namespace DatabaseTest {
 
             Assert.Equal(1, _databaseHandler.GetAllReservations().Count);
 
-            Clear();
-           
+            Clear();         
         }
 
         [Fact]
         public void TestAddRoom()
         {
-            _reservationContext.Rooms.Add(new Room {Name = "D20"});
-            _reservationContext.SaveChanges();
+            _databaseHandler.AddRoom("TestRoom");
+
             Assert.Equal(1 , _reservationContext.Rooms.Count());
+
             Clear();
         }
 
@@ -87,6 +89,7 @@ namespace DatabaseTest {
         {
 
             AddReservation(0, 0, 1, new DateTime(2017, 1, 1));
+            AddReservation(1, 1, 1, new DateTime(2017, 1, 2) , 1);
 
             Assert.Equal(1, _databaseHandler.GetReservationsOnDate(new DateTime(2017, 1, 1)).Count);
             Clear();
@@ -97,6 +100,7 @@ namespace DatabaseTest {
         {
 
             AddReservation(0, 0, 1, new DateTime(2017, 1, 1));
+            AddReservation(1, 1, 1, new DateTime(2017, 1, 2), 1);
             Assert.Equal(1, _databaseHandler.GetReservationsFromTeacher(_testTeachers[0].Id).Count);
             Clear();
         }
@@ -105,7 +109,7 @@ namespace DatabaseTest {
         public void TestGetReservationsFromRoom()
         {
             AddReservation(0, 0, 1, new DateTime(2017, 1, 1));
-
+            AddReservation(1, 1, 1, new DateTime(2017, 1, 2), 1);
             Assert.Equal(1, _databaseHandler.GetReservationsFromRoom(_testRooms[0].RoomId).Count);
             Clear();
         }
@@ -114,7 +118,8 @@ namespace DatabaseTest {
         public void TestGetReservationsOnDateInBlock()
         {
             AddReservation(0, 0, 1, new DateTime(2017, 1, 1));
-            
+            AddReservation(1, 1, 1, new DateTime(2017, 1, 2), 1);
+
             Assert.Equal(1, _databaseHandler.GetReservationsOnDateInBlock(new DateTime(2017, 1, 1) , 1).Count);
             Clear();
         }
@@ -123,9 +128,13 @@ namespace DatabaseTest {
         public void DeleteReservation()
         {
             AddReservation(0,0,1,new DateTime(2017,1,1));
-            int id = _reservationContext.Reservations.First().ReservationId;
-            _databaseHandler.DeleteReservation(id);
-            Assert.Equal(0 , _reservationContext.Reservations.Count());
+            AddReservation(1, 1, 1, new DateTime(2017, 1, 2), 1);
+
+            Assert.Equal(2, _reservationContext.Reservations.Count());
+            _databaseHandler.DeleteReservation(_testReservations[0].ReservationId);
+            Assert.Equal(1 , _reservationContext.Reservations.Count());
+            _databaseHandler.DeleteReservation(_testReservations[1].ReservationId);
+            Assert.Equal(0, _reservationContext.Reservations.Count());
             Clear();
         }
 
@@ -168,6 +177,8 @@ namespace DatabaseTest {
             _reservationContext.SaveChanges();
             Reservation r = _databaseHandler.GetReservation(_reservationContext.Reservations.First().ReservationId);
             Assert.NotNull(r);
+            Reservation r2 = _databaseHandler.GetReservation(-1);
+            Assert.Null(r2);
             Clear();
         }
 
@@ -202,6 +213,7 @@ namespace DatabaseTest {
             AddReservation(0, 0, 0, new DateTime(2017, 1, 1));
             _reservationContext.SaveChanges();
             Assert.Equal(true, _databaseHandler.CheckIfReservationsExistsOnDateInBlock(new DateTime(2017, 1, 1), 0, _testRooms[0].RoomId));
+            Assert.Equal(false, _databaseHandler.CheckIfReservationsExistsOnDateInBlock(new DateTime(2017, 1, 5), 0, _testRooms[0].RoomId));
             Clear();
         }
 
@@ -254,9 +266,12 @@ namespace DatabaseTest {
                 RoomId = _testRooms[0].RoomId,
                 TeacherId = _testTeachers[0].Id
             };
+
+            Assert.Equal(0, _reservationContext.Courses.Count());
+
             _reservationContext.Courses.Add(c);
             _reservationContext.SaveChanges(); 
-             
+            
             Assert.Equal(1, _reservationContext.Courses.Count());
 
             Clear();
@@ -278,6 +293,7 @@ namespace DatabaseTest {
             _reservationContext.Courses.Add(c);
             _reservationContext.SaveChanges();
             Assert.Equal(true , _databaseHandler.DeleteCourse(_reservationContext.Courses.First().CourseId));
+            Assert.Equal(0 , _reservationContext.Courses.Count());
             Clear();
         }
 
@@ -403,8 +419,8 @@ namespace DatabaseTest {
 
         /*
          * 
-         * ´Keine Tests
-         * 
+         * Keine Tests
+         * Nur Hilfsfunktione
          */
         private void AddExchangeReservation(int resIndexFrom, int resIndexTo)
         {
@@ -435,11 +451,18 @@ namespace DatabaseTest {
 
         private void Clear()
         {
-            _reservationContext.Reservations.Local.Clear();
-            _reservationContext.Teachers.Local.Clear();
-            _reservationContext.Rooms.Local.Clear();
-            _reservationContext.Courses.Local.Clear();
-            _reservationContext.ExchangeReservations.Local.Clear();
+            foreach (var entity in _reservationContext.Rooms)
+                _reservationContext.Rooms.Remove(entity);
+            foreach (var entity in _reservationContext.Teachers)
+                _reservationContext.Teachers.Remove(entity);
+            foreach (var entity in _reservationContext.Reservations)
+                _reservationContext.Reservations.Remove(entity);
+            foreach (var entity in _reservationContext.ExchangeReservations)
+                _reservationContext.ExchangeReservations.Remove(entity);
+            foreach (var entity in _reservationContext.Courses)
+                _reservationContext.Courses.Remove(entity);
+
+            _reservationContext.SaveChanges();
         }
     }
 }
