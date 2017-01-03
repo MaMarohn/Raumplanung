@@ -28,12 +28,12 @@ namespace RaumplanungCore.Models
 
         public String GetBlockAsString()
         {
-            String roomsString = "";
+            String blocksString = "";
             foreach (var b in BlockAndRoom)
             {
-                roomsString += b.Room + " ";
+                blocksString += b.Block + " ";
             }
-            return roomsString;
+            return blocksString;
         }
 
     }

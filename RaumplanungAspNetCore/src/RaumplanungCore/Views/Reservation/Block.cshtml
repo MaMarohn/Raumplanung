@@ -4,81 +4,78 @@
 @{
     ViewData["Title"] = "Reservierungen";
 }
-
 @using RaumplanungCore.ViewModels.Reservation
 @model IEnumerable<RaumplanungCore.ViewModels.RaumbelegungModel>
-@inject Microsoft.AspNetCore.Identity.UserManager<Teacher> TeacherManager
+@inject UserManager<Teacher> TeacherManager
 @inject DatabaseHelperViewModel DatabaseHelperView
 
 
-
 @{
-    Reservation reservation = new Reservation();
-}
-
-@{
-    string[] reservationString = new string[Model.Count()];
-    int index = 0;
+    var reservationString = new string[Model.Count()];
+    var index = 0;
 }
 <h1> Reservierungen im Block @(Model.ElementAt(0).Block + 1) </h1>
 
 <h3> @Model.ElementAt(0).Date.ToString("dd.MM.yyyy HH:mm") Uhr </h3>
-<br />
-    <table>
-        <tr>
-            <th> Raum </th>
-            <th> Lehrer </th>
-            <th> Belegen/Tauschen</th>
-        </tr>
-        @foreach (var belegung in Model)
-        {
+<br/>
+<table>
+    <tr>
+        <th> Raum </th>
+        <th> Lehrer </th>
+        <th> Belegen/Tauschen</th>
+    </tr>
+    @foreach (var belegung in Model)
+    {
         <tr>
             <td width="100px"> @belegung.Room.Name </td>
-            
+
             @if (belegung.Reserved)
             {
                 <td width="250px"> @belegung.Teacher.Anrede @belegung.Teacher.Vorname @belegung.Teacher.Nachname</td>
-                <td width="50px">                     
+                <td width="50px">
                     @if (TeacherManager.GetUserAsync(User).Result.Id != belegung.Teacher.Id)
-                {
-                    
+                    {
                         <a asp-controller="Reservation" asp-action="Tauschen" asp-route-reservationId="@belegung.Reservationid">Tausch vorschlagen </a>
-                       
-                        }
-                        else
-                        {
+                    }
+                    else
+                    {
                         <label>---------------</label>
-                        }
-</td>
+                    }
+                </td>
             }
             else
             {
                 <td width="50px"> - </td>
-                string userId = TeacherManager.FindByNameAsync(User.Identity.Name).Result.Id;
-                int block = belegung.Block;
-                DateTime date = belegung.Date;
-                int roomId = belegung.Room.RoomId;
+                var userId = TeacherManager.FindByNameAsync(User.Identity.Name).Result.Id;
+                var block = belegung.Block;
+                var date = belegung.Date;
+                var roomId = belegung.Room.RoomId;
                 reservationString[index] = date + ";" + block + ";" + userId + ";" + roomId;
 
-                bool alreadyReservedAtDateAndBlock = DatabaseHelperView.TeacherHasAlreadyReservationAtDateAndBlock(userId, date, block);
-                if (alreadyReservedAtDateAndBlock)
+                var alreadyReservedAtDateAndBlock = DatabaseHelperView.TeacherHasAlreadyReservationAtDateAndBlock(userId, date, block);
+                if (belegung.Date >= DateTime.Now)
                 {
-                    <td width="250px"> Bereits an diesem Termin reserviert </td>
+                    if (alreadyReservedAtDateAndBlock)
+                    {
+                        <td width="250px"> Bereits an diesem Termin reserviert </td>
+                    }
+                    else
+                    {
+                        <td width="50px">
+                            <a asp-controller="Reservation" asp-action="Reservieren" asp-route-id="@reservationString[index]"> Reservieren </a>
+                        </td>
+                    }
                 }
                 else
                 {
-                    <td width="50px"> <a asp-controller="Reservation" asp-action="Reservieren" asp-route-id="@reservationString[index]"> Reservieren </a> </td>
+                    <td width="250px"> Termin liegt in der Vergangenheit!</td>
                 }
+            }
 
-
-
+            @{
                 index++;
             }
+
         </tr>
-        }
-    </table>
-
-
-
-
-
+    }
+</table>
