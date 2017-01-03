@@ -19,9 +19,9 @@ namespace Raumplanung.Database
         private readonly ReservationContext _reservationContext;
         private const int Week = 7;
 
-        public DatabaseHandler(ReservationContext _reservation)
+        public DatabaseHandler(ReservationContext reservation)
         {
-            this._reservationContext = _reservation;
+            this._reservationContext = reservation;
         }
 
 
@@ -57,18 +57,19 @@ namespace Raumplanung.Database
                     BlockId = blockIndex
                 });
 
-                var resAmBlock = reservations.ToList().Where(r => r.Block == blockIndex);
+                List<Reservation> list = reservations.ToList();
+                var resAmBlock = list.Where(r => r.Block == blockIndex);
                 if (!resAmBlock.Any())
                 {
-                    //An diesem Block gibt es keine Reservierungen
-                    
+                    //An diesem Block gibt es keine Reservierungen                    
                     bloecke[blockIndex].FreeRooms = rooms;
                 }
                 else
                 {
                     foreach (var room in rooms)
                     {
-                        if (resAmBlock.ToList().Where(r => r.RoomId == room.RoomId).Count() == 0)
+                        int count = resAmBlock.Count(r => r.RoomId == room.RoomId);
+                        if (count == 0)
                         {
                             bloecke[blockIndex].FreeRooms.Add(room);
                         }
@@ -115,10 +116,6 @@ namespace Raumplanung.Database
             return true;
         }
 
-        /*
-            return new List<ExchangeReservation>(_reservationContext.ExchangeReservations);
-        }*/
-
         public List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id)
         {
             return new List<ExchangeReservation>(_reservationContext.ExchangeReservations.ToList().Where(r => r.TeacherFrom == id));
@@ -135,19 +132,11 @@ namespace Raumplanung.Database
 
             DateTime dateTimeStart = GetCorrectDatetime(startDate);
             DateTime dateTimeEnd = GetCorrectDatetime(endDate);
-            //List<int> blocks = dateandRooms.Select(d => d.block).ToList();
-            //List<int> roomIds = dateandRooms.Select(d => d.room.RoomId).ToList();
 
-            List<BlockNrAndRoomAndWeekday> blockNrAndRooms  = new List<BlockNrAndRoomAndWeekday>();
-            foreach (var d in dateandRooms)
-            {
+            var blockNrAndRooms  = dateandRooms.
+                Select(d => new BlockNrAndRoomAndWeekday(d.block, d.room.RoomId, d.weekday)).ToList();
 
-
-                blockNrAndRooms.Add(new BlockNrAndRoomAndWeekday(d.block , d.room.RoomId , d.weekday));
-                //_reservationContext.BlockNrAndRoomAndWeekdays.Add(blockNrAndRooms.Last());
-            }
-
-            Course course = new Course
+            var course = new Course
             {
                 StartDate = dateTimeStart,
                 EndDate = dateTimeEnd,
@@ -166,8 +155,6 @@ namespace Raumplanung.Database
 
             foreach (var dateAndRoom in dateandRooms)
             {
-                //AddCourse(startDate, endDate, dateAndRoom.block, teacherId,
-                    //dateAndRoom.room.RoomId , courseName ,dateAndRoom.weekday);
                 AddReservationsForCourse(startDate, endDate, dateAndRoom.block, teacherId, dateAndRoom.room.RoomId,
                     c.Entity.CourseId, dateAndRoom.weekday);
             }
@@ -179,9 +166,6 @@ namespace Raumplanung.Database
         {
             DateTime dateTimeStart = GetCorrectDatetime(startDate);
             DateTime dateTimeEnd = GetCorrectDatetime(endTime);
-
-            //DateTime dateStart = dateTimeStart;
-           // DateTime dateEnd = dateTimeEnd;
 
             if ((int)dateTimeStart.DayOfWeek != dayOfWeek)
             {
@@ -217,7 +201,6 @@ namespace Raumplanung.Database
 
             return true;
         }
-
 
         public bool AddCourse(DateTime startDate, DateTime endTime, int block, 
             string teacherId , int room , string nameOfCourse , int dayOfWeek)
@@ -265,20 +248,6 @@ namespace Raumplanung.Database
             return new List<ExchangeReservation>(_reservationContext.ExchangeReservations.ToList().Where(rr => rr.TeacherFrom == id));
         }
 
-
-        /*public List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId)
-        {
-            return new List<Course>(_reservationContext.Courses.ToList().Where
-                (c => c.Block == blockId && c.StartDate == GetCorrectDatetime(date)));
-        }*/
-
-        /* public List<CourseExceptions> GetAllCourseExceptionsesFromCourse(int courseId)
-         {
-            return new List<CourseExceptions>(_reservationContext.CourseExceptionses.ToList().Where
-                 (c => c.CourseId == courseId));
-
-         }*/
-
         public List<Room> GetFreeRoomsOnDateAndBlock(DateTime date, int block)
         {
             var freeRooms = new List<Room>();
@@ -290,7 +259,8 @@ namespace Raumplanung.Database
 
             foreach (var room in rooms)
             {
-                if (reservations.ToList().Where(r => r.RoomId == room.RoomId).Count() == 0)
+                int count = reservations.Count(r => r.RoomId == room.RoomId);
+                if (count == 0)
                 {
                     freeRooms.Add(room);
                 }
@@ -348,40 +318,6 @@ namespace Raumplanung.Database
             return new List<Reservation>(reservations);
         }
 
-        /*private List<Course> CheckWhichCourseTakesPlace(DateTime date , int blockNr)
-        {
-            date = GetCorrectDatetime(date);
-            List<Course> courses = GetAllCoursesInBlock(blockNr);
-            List<Course> coursesThatTakesPlace = new List<Course>();
-
-            foreach (var course in courses)
-            {
-                DateTime startdate = new DateTime
-                    (course.StartDate.Year , course.StartDate.Month , course.StartDate.Day);
-                bool b = CheckIfCourseTakesPlaceOnDate(date, startdate);
-                if (b)
-                {
-                    coursesThatTakesPlace.Add(course);
-                }
-            }
-
-            return coursesThatTakesPlace;
-        }
-
-        private Boolean CheckIfCourseTakesPlaceOnDate(DateTime pdate, DateTime pcourseTime)
-        {
-            DateTime dateTime = GetCorrectDatetime(pdate);
-            DateTime courseTime = GetCorrectDatetime(pcourseTime);
-
-            while (dateTime <= courseTime)
-            {
-                if (dateTime == courseTime)
-                    return true;
-                courseTime.AddDays(Week);
-            }
-            return false;
-        }*/
-
         public bool DeleteExchangeReservationByObject(ExchangeReservation exchangeReservation)
         {
             if (exchangeReservation == null) return false;
@@ -390,15 +326,9 @@ namespace Raumplanung.Database
             return true;
         }
 
-        /*public List<Course> GetAllCoursesInBlock(int blockNr)
-        {
-            return new List<Course>(_reservationContext.Courses.ToList().Where(r => r.Block == blockNr));
-        }*/
-
         public List<Course> GetAllCourses()
         {
             return _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).ToList();
-            //return new List<Course>(_reservationContext.Courses);
         }
 
         public bool DeleteCourse(int id)
@@ -412,16 +342,11 @@ namespace Raumplanung.Database
                     _reservationContext.Reservations.Remove(c);
             }
 
-
-
             foreach (var r in _reservationContext.BlockNrAndRoomAndWeekdays)
             {
                 if (r.CourseId == course.CourseId)
                     _reservationContext.BlockNrAndRoomAndWeekdays.Remove(r);
             }
-
-            //course.BlockAndRoomAndWeekDay.
-            //_reservationContext.BlockNrAndRoomAndWeekdays.Remove().
             _reservationContext.Courses.Remove(course);
             _reservationContext.SaveChanges();
             return true;
@@ -430,17 +355,12 @@ namespace Raumplanung.Database
         public Course GetCourseById(int id)
         {
             return _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).Single(rr => rr.CourseId ==  id);
-            //return _reservationContext.Courses.Find(id);
         }
 
         public List<Course> GetCoursesFromTeacher(string teacherId)
         {
             var courses = GetAllCourses();
             return new List<Course>(courses.ToList().Where(r => r.TeacherId == teacherId));
-            //var courseList = _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).ToList().Where(rr => rr.TeacherId == teacherId);
-            //return (List<Course>) courseList;
-            //return new List<Course>(_reservationContext.Courses.ToList().Where(
-            //   c => c.TeacherId == teacherId));
         }
 
         public ExchangeReservation GetExchangeReservationById(int id)
@@ -450,7 +370,7 @@ namespace Raumplanung.Database
 
         public bool DeleteExchangeReservationById(int id)
         {
-            ExchangeReservation exchangeReservation = GetExchangeReservationById(id);
+            var exchangeReservation = GetExchangeReservationById(id);
             if (exchangeReservation == null) return false;
             _reservationContext.ExchangeReservations.Remove(exchangeReservation);
             _reservationContext.SaveChanges();
@@ -459,7 +379,6 @@ namespace Raumplanung.Database
 
         public bool ExchangeReservation(string pTeacherFrom, int pReservationFrom , string pTeacherTo , int pReservationTo)
         {
-            //not tested
             if (_reservationContext.Teachers.Find(pTeacherFrom) == null ||
                 _reservationContext.Teachers.Find(pTeacherTo) == null)
             {
@@ -474,10 +393,8 @@ namespace Raumplanung.Database
                 reservationTo = _reservationContext.Reservations.Find(pReservationTo);
             }
             
-
             if ( reservationFrom == null ||(pReservationTo!=-1 && reservationTo == null))
             {
-                //Reservations couldnt be found
                 return false;
             }
 
@@ -488,13 +405,11 @@ namespace Raumplanung.Database
                 reservationTo.TeacherId = pTeacherFrom;
                 _reservationContext.Entry(reservationTo).State = EntityState.Modified;
             }
-           _reservationContext.Entry(reservationFrom).State = EntityState.Modified;
-           
-            _reservationContext.SaveChanges();
+           _reservationContext.Entry(reservationFrom).State = EntityState.Modified;           
+           _reservationContext.SaveChanges();
 
             return true;
         }
-
 
         public List<Teacher> GetAllTeachers()
         {
@@ -515,7 +430,6 @@ namespace Raumplanung.Database
 
         public bool AddReservation(DateTime date, int block, string teacherId, int roomId)
         {
-
             DateTime dateTime = new DateTime(date.Year, date.Month, date.Day);
 
             if (CheckIfReservationsExistsOnDateInBlock(date , block , roomId))

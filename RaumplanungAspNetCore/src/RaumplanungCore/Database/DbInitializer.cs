@@ -61,10 +61,10 @@ namespace RaumplanungCore.Database
             }
             context.SaveChanges();
 
-            if (context.Courses.Count() < 5)
+            /*if (context.Courses.Count() < 5)
             {
 
-                foreach (var entity in context.Reservations)
+                /*foreach (var entity in context.Reservations)
                     context.Reservations.Remove(entity);
                 foreach (var entity in context.Courses)
                     context.Courses.Remove(entity);
@@ -86,7 +86,7 @@ namespace RaumplanungCore.Database
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 4, 15), 4,
                     databaseHandler.GetAllTeachers()[4].Id, databaseHandler.GetAllRooms()[4].RoomId, "Erdkunde", 5);
             }
-
+            */
         
             /*var countT = context.Teachers.Count();
             if (context.Reservations.Count() < countT)
@@ -132,14 +132,14 @@ namespace RaumplanungCore.Database
         }
 
 
-        private static readonly Random rng = new Random();
+        private static readonly Random Rng = new Random();
         private static void Shuffle<T>(this IList<T> list)
         {
             int n = list.Count;
             while (n > 1)
             {
                 n--;
-                int k = rng.Next(n + 1);
+                int k = Rng.Next(n + 1);
                 T value = list[k];
                 list[k] = list[n];
                 list[n] = value;
