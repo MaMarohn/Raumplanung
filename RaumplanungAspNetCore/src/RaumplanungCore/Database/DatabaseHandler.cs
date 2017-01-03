@@ -143,7 +143,7 @@ namespace Raumplanung.Database
             foreach (var d in dateandRooms)
             {
                 blockNrAndRooms.Add(new BlockNrAndRoomAndWeekday(d.block , d.room.RoomId , (int)startDate.DayOfWeek));
-                _reservationContext.BlockNrAndRoomAndWeekdays.Add(blockNrAndRooms.Last());
+                //_reservationContext.BlockNrAndRoomAndWeekdays.Add(blockNrAndRooms.Last());
             }
 
             Course course = new Course
@@ -155,6 +155,12 @@ namespace Raumplanung.Database
                 TeacherId = teacherId
             };
             var c = _reservationContext.Courses.Add(course);
+            _reservationContext.SaveChanges();
+
+            foreach (var d in blockNrAndRooms)
+            {
+                _reservationContext.BlockNrAndRoomAndWeekdays.Find(d.Id).CourseId = c.Entity.CourseId;              
+            }
             _reservationContext.SaveChanges();
 
             foreach (var dateAndRoom in dateandRooms)
@@ -390,7 +396,8 @@ namespace Raumplanung.Database
 
         public List<Course> GetAllCourses()
         {
-            return new List<Course>(_reservationContext.Courses);
+            return _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).ToList();
+            //return new List<Course>(_reservationContext.Courses);
         }
 
         public bool DeleteCourse(int id)
@@ -421,13 +428,16 @@ namespace Raumplanung.Database
 
         public Course GetCourseById(int id)
         {
-            return _reservationContext.Courses.Find(id);
+            return _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).Single(rr => rr.CourseId ==  id);
+            //return _reservationContext.Courses.Find(id);
         }
 
         public List<Course> GetCoursesFromTeacher(string teacherId)
         {
-            return new List<Course>(_reservationContext.Courses.ToList().Where(
-                c => c.TeacherId == teacherId));
+            var courseList = _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).ToList().Where(rr => rr.TeacherId == teacherId);
+            return (List<Course>) courseList;
+            //return new List<Course>(_reservationContext.Courses.ToList().Where(
+            //   c => c.TeacherId == teacherId));
         }
 
         public ExchangeReservation GetExchangeReservationById(int id)
