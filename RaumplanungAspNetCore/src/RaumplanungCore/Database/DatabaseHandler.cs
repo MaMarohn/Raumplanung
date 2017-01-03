@@ -133,12 +133,83 @@ namespace Raumplanung.Database
         public bool AddCourse(List<DateandRoom> dateandRooms , DateTime startDate,
             DateTime endDate , string courseName , string teacherId)
         {
+
+            DateTime dateTimeStart = GetCorrectDatetime(startDate);
+            DateTime dateTimeEnd = GetCorrectDatetime(endDate);
+            //List<int> blocks = dateandRooms.Select(d => d.block).ToList();
+            //List<int> roomIds = dateandRooms.Select(d => d.room.RoomId).ToList();
+
+            List<BlockNrAndRoom> blockNrAndRooms  = new List<BlockNrAndRoom>();
+            foreach (var d in dateandRooms)
+            {
+                blockNrAndRooms.Add(new BlockNrAndRoom(d.block , d.room.RoomId));
+            }
+
+            Course course = new Course
+            {
+                StartDate = dateTimeStart,
+                EndDate = dateTimeEnd,
+                BlockAndRoom = blockNrAndRooms,
+                Name = courseName,
+                TeacherId = teacherId
+            };
+            var c = _reservationContext.Courses.Add(course);
+            _reservationContext.SaveChanges();
+
             foreach (var dateAndRoom in dateandRooms)
             {
-                AddCourse(startDate, endDate, dateAndRoom.block, teacherId, dateAndRoom.room.RoomId , courseName ,dateAndRoom.weekday);
+                //AddCourse(startDate, endDate, dateAndRoom.block, teacherId,
+                    //dateAndRoom.room.RoomId , courseName ,dateAndRoom.weekday);
+                AddReservationsForCourse(startDate, endDate, dateAndRoom.block, teacherId, dateAndRoom.room.RoomId,
+                    c.Entity.CourseId, dateAndRoom.weekday);
             }
             return true;
         }
+
+        private bool AddReservationsForCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room,
+            int courseId, int dayOfWeek)
+        {
+            DateTime dateTimeStart = GetCorrectDatetime(startDate);
+            DateTime dateTimeEnd = GetCorrectDatetime(endTime);
+
+            //DateTime dateStart = dateTimeStart;
+           // DateTime dateEnd = dateTimeEnd;
+
+            if ((int)dateTimeStart.DayOfWeek != dayOfWeek)
+            {
+                if ((int)startDate.DayOfWeek > dayOfWeek)
+                {
+                    int diff = (int)startDate.DayOfWeek - dayOfWeek;
+                    dateTimeStart = new DateTime(dateTimeStart.Year,
+                        dateTimeStart.Month, dateTimeStart.Day - diff);
+                }
+                else
+                {
+                    int diff = (int)startDate.DayOfWeek - dayOfWeek;
+                    dateTimeStart = new DateTime(dateTimeStart.Year,
+                        dateTimeStart.Month, dateTimeStart.Day - diff);
+                }
+            }
+
+            while (dateTimeStart <= dateTimeEnd)
+            {
+                _reservationContext.Add(new Reservation
+                {
+                    Block = block,
+                    TeacherId = teacherId,
+                    RoomId = room,
+                    Date = dateTimeStart,
+                    CourseId = courseId
+                });
+                dateTimeStart = dateTimeStart.AddDays(7);
+                _reservationContext.SaveChanges();
+            }
+
+            _reservationContext.SaveChanges();
+
+            return true;
+        }
+
 
         public bool AddCourse(DateTime startDate, DateTime endTime, int block, 
             string teacherId , int room , string nameOfCourse , int dayOfWeek)
@@ -146,48 +217,30 @@ namespace Raumplanung.Database
 
             DateTime dateTimeStart = GetCorrectDatetime(startDate);
             DateTime dateTimeEnd = GetCorrectDatetime(endTime);
+            var blockNrAndRoom = new BlockNrAndRoom(block, room);
 
             Course course = new Course
             {
                 StartDate = dateTimeStart,
                 EndDate = dateTimeEnd,
-                Block = block,
-                RoomId = room,
+                BlockAndRoom = new List<BlockNrAndRoom> { blockNrAndRoom },                
                 Name = nameOfCourse,
-                TeacherId = teacherId                
+                TeacherId = teacherId
             };
-            _reservationContext.Courses.Add(course);
+            var c = _reservationContext.Courses.Add(course);
+            _reservationContext.SaveChanges();
 
-            DateTime dateStart = dateTimeStart;
-            DateTime dateEnd = dateTimeEnd;
-
-            if ((int)dateTimeStart.DayOfWeek != dayOfWeek)
-            {
-                if ((int)startDate.DayOfWeek > dayOfWeek)
-                {
-                    int diff = (int)startDate.DayOfWeek - dayOfWeek;
-                    dateStart = new DateTime(dateTimeStart.Year,
-                        dateTimeStart.Month, dateTimeStart.Day - diff);
-                }
-                else
-                {
-                    int diff = (int)startDate.DayOfWeek - dayOfWeek;
-                    dateStart = new DateTime(dateTimeStart.Year,
-                        dateTimeStart.Month, dateTimeStart.Day - diff);
-                }
-            }
-
-            while (dateStart <= dateEnd)
+            while (dateTimeStart <= dateTimeEnd)
             {                
                 _reservationContext.Add(new Reservation
                 {
-                    Block = course.Block,
+                    Block = block,
                     TeacherId = course.TeacherId,
-                    RoomId = course.RoomId,
-                    Date = dateStart,
-                    CourseId = course.CourseId
+                    RoomId = room,
+                    Date = dateTimeStart,
+                    CourseId = c.Entity.CourseId
                 });
-                dateStart = dateStart.AddDays(7);
+                dateTimeStart = dateTimeStart.AddDays(7);
                 _reservationContext.SaveChanges();
             }
 

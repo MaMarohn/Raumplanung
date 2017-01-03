@@ -35,6 +35,7 @@ namespace Raumplanung.Database
         List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id);
         List<ExchangeReservation> GetExchangeReservationByTeacherToId(string id);
 
+        //bool AddReservationsForCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, int courseID, int dayOfWeek);
         bool AddCourse(List<DateandRoom> dateandRooms, DateTime startDate,DateTime endDate, string courseName, string teacherId);
         bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse , int dayOfWeek);
        // List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId);
