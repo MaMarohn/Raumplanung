@@ -72,7 +72,7 @@ namespace RaumplanungCore.Database
                 context.SaveChanges();
 
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 2, 15), 0,
-                    databaseHandler.GetAllTeachers()[0].Id , databaseHandler.GetAllRooms()[0].RoomId , "Informatik", 1);
+                    databaseHandler.GetAllTeachers()[0].Id , databaseHandler.GetAllRooms()[0].RoomId , "Informatik", 3);
 
                 databaseHandler.AddCourse(new DateTime(2016, 12, 28), new DateTime(2017, 3, 15), 1,
                     databaseHandler.GetAllTeachers()[1].Id, databaseHandler.GetAllRooms()[1].RoomId, "Mathe", 2);
