@@ -54,22 +54,30 @@
             });
 
         function onSubmitClick() {
-            if (document.getElementById("stopDate").innerHTML.localeCompare("")) {
-                window.open("/kurs/check/" + document.getElementById("name").value + ";" + startSubmit + ";" + stopSubmit,
-            "_self");
+            if (document.getElementById("name").value.localeCompare("")===1) {
+                if (document.getElementById("stopDate").innerHTML.localeCompare("")===1) {
+                    window.open("/kurs/check/" +
+                        document.getElementById("name").value +
+                        ";" +
+                        startSubmit +
+                        ";" +
+                        stopSubmit,
+                        "_self");
+                } else {
+                    document.getElementById("error").innerHTML = "Bitte noch ein gültiges Enddatum auswählen!";
+                }
             } else {
-                document.getElementById("error").innerHTML = "Bitte noch ein gültiges Enddatum auswählen!";
+                document.getElementById("error").innerHTML = "Bitte tragen sie einen Namen für den Kurs ein!";
             }
+
 
         }
 
-        
-    
 
         function resetFields() {
             document.getElementById("startDate").innerHTML = "";
             document.getElementById("stopDate").innerHTML = "";
-            
+
             document.getElementById("info").innerHTML = "Wählen Sie ein Startdatum aus";
             selectable = true;
             trigger = false;
