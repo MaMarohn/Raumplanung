@@ -10,38 +10,49 @@
 @model RaumplanungCore.ViewModels.Kurs.KursViewModel
 @{
 }
-<h1>Wählen sie pro Tag einen Raum, indem dieser Kurs dann stattfinden wird.</h1>
+<h1>Wählen Sie pro Tag einen Raum, in dem dieser Kurs dann stattfinden wird.</h1>
 <form onload="onLoad" id="inputform" asp-controller="Kurs" asp-action="SubmitCourse">
     <input type="hidden" asp-for="start" value="@Model.start"/>
     <input type="hidden" asp-for="end" value="@Model.end" />
     <input type="hidden" asp-for="Days" value="@Model.Days" />
     <input type="hidden" asp-for="kursname" value="@Model.kursname"/>
     
-    
+    <br/>
     <button id="submit" type="submit">Tagauswahl annehmen</button>
     <br/>
-@for (var x=0;x<Model.Roomlist.Count;x++)
-{
-    
-    List<Room> rooms = Model.Roomlist[x].Rooms;
-    <label>@Data.DayStrings[(int) (Model.Roomlist[x].Date.DayOfWeek-1)] Block:@(Model.Roomlist[x].block+1)</label>
-    if (rooms.Count > 0)
-    {
-        <select asp-for="rooms" class="form-control-static" required>
-
-            @foreach (var room in rooms)
-            {
-                <option value="@room.Name">@room.Name</option>
-            }
-        </select>
-    }
-    else
-    {
-        <label>Keine Räume für diesen Block</label>
-
-    }
     <br/>
-}
+
+    <table>
+
+        @for (var x = 0; x < Model.Roomlist.Count; x++)
+        {
+
+            List<Room> rooms = Model.Roomlist[x].Rooms;
+
+            <tr>
+                <td style="width: 150px"><label>@Data.DayStringsLong[(int)(Model.Roomlist[x].Date.DayOfWeek - 1)], Block:@(Model.Roomlist[x].block + 1)</label> </td>
+
+                <td style="width: 100px">
+                    @if (rooms.Count > 0)
+                {
+
+                        <select asp-for="rooms" class="form-control-static" required>
+
+                            @foreach (var room in rooms)
+                    {
+                                <option value="@room.Name">@room.Name</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <label>Keine Räume für diesen Block</label>
+
+                    }
+                </td>
+            </tr>
+        }
+    </table>
     
 </form>
 

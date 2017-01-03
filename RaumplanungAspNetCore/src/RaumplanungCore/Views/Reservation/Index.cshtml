@@ -26,6 +26,7 @@
             <th> Enddatum </th>
             <th> Details </th>
             <th> Termine freigeben</th>
+            <th> Kurs löschen</th>
         </tr>
         @foreach (var course in Model.Courses)
         {
@@ -34,7 +35,8 @@
                 <td style="width: 100px"> @course.StartDate.ToString("dd.MM.yyyy")</td>
                 <td style="width: 100px"> @course.EndDate.ToString("dd.MM.yyyy")</td>      
                 <td style="width: 80px"> <a asp-controller="Kurs" asp-action="Details" asp-route-id=@course.CourseId> Details </a></td>
-                <td> <a asp-controller="Kurs" asp-action="freeDates" asp-route-id=@course.CourseId> Freigabe</a>  <a asp-controller="Reservation" asp-action="DeleteCourse" asp-route-coursesid="@course.CourseId">Löschen</a> </td>
+            <td style="width: 150px"> <a asp-controller="Kurs" asp-action="freeDates" asp-route-id=@course.CourseId> Freigabe</a> </td>  
+            <td><a asp-controller="Reservation" asp-action="DeleteCourse" asp-route-coursesid="@course.CourseId">Löschen</a> </td>
             </tr>
             
         }

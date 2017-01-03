@@ -13,6 +13,7 @@
 <h1> Neuen Kurs anlegen </h1>
 <h3 style="color: red;">@ViewData["ErrorTagauswahl"]</h3>
 <p> Wählen Sie die Blöcke an den Tagen aus, an denen der Kurs stattfinden soll </p>
+<br/>
 <form asp-controller="Kurs" asp-action="ShowRooms" method="post">
     <input type="hidden" asp-for="start" value="@Model.start"/>
     <input type="hidden" asp-for="end" value="@Model.end" />
@@ -21,7 +22,9 @@
         
     </div>
     <button type="submit">Tage annehmen</button>
+    <br/>
 </form>
+<br/>
 <button onclick="reset()">Zurücksetzen</button>
 
 
