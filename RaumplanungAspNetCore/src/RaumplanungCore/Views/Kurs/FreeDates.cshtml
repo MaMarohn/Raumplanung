@@ -4,22 +4,28 @@
 @{
     ViewData["Title"] = "Termine freigeben";
 }
+@using System.Threading.Tasks
+@using RaumplanungCore.ViewModels
 @model IEnumerable<Reservation>
 
 <h1> Raumfreigabe </h1>
-<h4>Löschen Sie einzelne Reservierungen Ihres Kurses, um die Räume für andere zur Reservierung freizugeben</h4>
+<h4>Löschen Sie einzelne Reservierungen Ihres Kurses, um die Räume für Andere freizugeben.</h4>
 
 <table>
     <tr>
-        <th> Reservierungsdatum </th>
+        <th> Datum </th>
+        <th> Uhrzeit </th>
         <th> Block </th>
+        <th> Wochentag </th>
         <th> Löschen </th>
     </tr>
     @foreach (var reservation in Model)
     {
         <tr>
-            <td style="width: 175px"> @reservation.Date.Value.ToString("dd.MM.yyyy") </td>
-            <td style="width: 75px"> @(reservation.Block + 1) </td>
+            <td style="width: 100px"> @reservation.Date.Value.ToString("dd.MM.yyyy") </td>
+            <td style="width: 80px"> @Data.BlockStartArray[reservation.Block] </td>
+            <td style="width: 50px"> @(reservation.Block + 1) </td>
+            <td style="width: 100px"> @Data.DayStringsLong[(int) reservation.Date.Value.DayOfWeek-1] </td>
             <td> <a asp-controller="Reservation" asp-action="Delete" asp-route-reservationId=@reservation.ReservationId> Löschen </a></td>
         </tr>
     }

@@ -3,7 +3,7 @@
 *@
 @{
     ViewData["Title"] = "Neuer Kurs";
-}
+    }
 
 @section scripts
 {
@@ -52,7 +52,12 @@
                             })
                     });
         function onSubmitClick() {
-            window.open("/kurs/check/" + startSubmit + ";" + stopSubmit, "_self");
+            if (document.getElementById("stopDate").innerHTML.localeCompare("")) {
+                window.open("/kurs/check/" + startSubmit + ";" + stopSubmit, "_self");
+            } else {
+                document.getElementById("error").innerHTML = "Bitte noch ein gültiges Enddatum auswählen!";
+            }
+            
         }
 
         function resetFields() {
@@ -71,7 +76,7 @@
 <br/>
 <p id="info"> Wählen Sie ein Startdatum aus </p>
 <p> Startdatum: <span id="startDate"></span> </p>
-<p> Enddatum: <span id="stopDate">  </span> </p>
+<p> Enddatum: <span id="stopDate"></span> </p>
 <button type="button" onclick="onSubmitClick()" style="width: 12em"> Termine bestätigen </button>
 <button type="button" onclick="resetFields()" style="width: 12em" > Termine zurücksetzen</button>
 <br />

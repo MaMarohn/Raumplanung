@@ -124,7 +124,7 @@ namespace RaumplanungCore.Controllers
             string[] splittedStrings = startStop.Split(';');
             DateTime startDate = DateTime.Parse(splittedStrings[0]);
             DateTime stopDate = DateTime.Parse(splittedStrings[1]);
-
+            ViewData["DateError"] = "";
             if (startDate > stopDate)
             {
                 ViewData["DateError"] = "Das Startdatum muss vor dem Enddatum liegen!";
