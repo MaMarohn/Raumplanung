@@ -141,7 +141,9 @@ namespace Raumplanung.Database
             List<BlockNrAndRoomAndWeekday> blockNrAndRooms  = new List<BlockNrAndRoomAndWeekday>();
             foreach (var d in dateandRooms)
             {
-                blockNrAndRooms.Add(new BlockNrAndRoomAndWeekday(d.block , d.room.RoomId , (int)startDate.DayOfWeek));
+
+
+                blockNrAndRooms.Add(new BlockNrAndRoomAndWeekday(d.block , d.room.RoomId , d.weekday));
                 //_reservationContext.BlockNrAndRoomAndWeekdays.Add(blockNrAndRooms.Last());
             }
 

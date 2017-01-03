@@ -84,6 +84,12 @@ namespace RaumplanungCore.Models
             Room = room;
             WeekDay = weekDay;
         }
+
+        public BlockNrAndRoomAndWeekday(int block, int room)
+        {
+            Block = block;
+            Room = room;
+        }
         public BlockNrAndRoomAndWeekday() { }
 
         public int Id { set; get; }
