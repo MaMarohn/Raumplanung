@@ -206,5 +206,10 @@ namespace RaumplanungCore.Controllers
             return View(reservations);
         }
 
+        public IActionResult Details(int id)
+        {
+            return View();
+        }
+
     }
 }
