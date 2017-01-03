@@ -96,7 +96,6 @@ namespace Raumplanung.Database
                 //Teachers couldnt be found
                 return false;
             }
-
             
             ExchangeReservation exchangeReservation = new ExchangeReservation
             {
@@ -434,8 +433,10 @@ namespace Raumplanung.Database
 
         public List<Course> GetCoursesFromTeacher(string teacherId)
         {
-            var courseList = _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).ToList().Where(rr => rr.TeacherId == teacherId);
-            return (List<Course>) courseList;
+            var courses = GetAllCourses();
+            return new List<Course>(courses.ToList().Where(r => r.TeacherId == teacherId));
+            //var courseList = _reservationContext.Courses.Include(r => r.BlockAndRoomAndWeekDay).ToList().Where(rr => rr.TeacherId == teacherId);
+            //return (List<Course>) courseList;
             //return new List<Course>(_reservationContext.Courses.ToList().Where(
             //   c => c.TeacherId == teacherId));
         }
@@ -536,6 +537,7 @@ namespace Raumplanung.Database
         {
             if (_reservationContext.Rooms.Count(r => r.Name == name) != 0) return false;
             _reservationContext.Rooms.Add(new Room {Name = name});
+            _reservationContext.SaveChanges();
             return true;
         }
 
