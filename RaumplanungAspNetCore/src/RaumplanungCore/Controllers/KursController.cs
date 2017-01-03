@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Raumplanung.Database;
 using RaumplanungCore.Database;
 using RaumplanungCore.Models;
+using RaumplanungCore.Services;
 using RaumplanungCore.ViewModels;
 using RaumplanungCore.ViewModels.Kurs;
 
@@ -19,11 +21,13 @@ namespace RaumplanungCore.Controllers
     {
         private readonly DatabaseHandler _databaseHandler;
         private readonly ReservationContext _reservationContext;
+        private readonly UserManager<Teacher> _userManager;
         // GET: /<controller>/
-        public KursController(ReservationContext context)
+        public KursController(ReservationContext context,UserManager<Teacher> UserManager )
         {
             _reservationContext = context;
             _databaseHandler = new DatabaseHandler(context);
+            _userManager = UserManager;
         }
 
         public IActionResult Index()
@@ -40,7 +44,7 @@ namespace RaumplanungCore.Controllers
         public IActionResult ShowRooms(KursViewModel kursViewModel)
         {
             kursViewModel.Roomlist = new List<DayAndRooms>();
-           
+           List<DateTime> datelist=new List<DateTime>();
             List<Room> allRooms = _databaseHandler.GetAllRooms();
                       
             foreach (var day in kursViewModel.Days)
@@ -53,6 +57,7 @@ namespace RaumplanungCore.Controllers
                     block = Array.FindIndex(Data.BlockStartArray,s=>s.Equals(dayformatted.Hour+":"+dayformatted.Minute))+1
                 };
                 kursViewModel.Roomlist.Add(dayAndRooms);
+               
             }
             
             DateTime dateStart = kursViewModel.start;
@@ -83,37 +88,62 @@ namespace RaumplanungCore.Controllers
                     List<Room> availableRooms = _databaseHandler.GetFreeRoomsOnDateAndBlock(date, day.block);
                     resultrooms = availableRooms.Intersect(day.Rooms).ToList();
 
-                    kursViewModel.Roomlist[x].Rooms.Clear();
-                    kursViewModel.Roomlist[x].Rooms.AddRange(resultrooms);
+                    var roomlistobject = kursViewModel.Roomlist[x];
+                    roomlistobject.Rooms = resultrooms;
+                    kursViewModel.Roomlist[x] = roomlistobject;
 
+
+
+
+
+                    //kursViewModel.Roomlist[x].Rooms.Clear();
+                    //kursViewModel.Roomlist[x].Rooms.AddRange(resultrooms);
+                    datelist.Add(kursViewModel.Roomlist[x].Date);
 
                 }
                
                 dateStart = dateStart.AddDays(7);
                
             }
+            
+
+            HttpContext.Session.SetObjectAsJson("datelist",datelist);
+            
            return View(kursViewModel);
         }
 
         [HttpPost]
-        public IActionResult SubmitCourse(KursViewModel kursViewModel,List<string> rooms)
+        public IActionResult SubmitCourse(KursViewModel kursViewModel)
         {
             List<Room> Rooms = _databaseHandler.GetAllRooms();
-
-            for (int x = 0; x < rooms.Count; x++)
+            List<DateTime> datelist = HttpContext.Session.GetObjectFromJson<List<DateTime>>("datelist");
+            for (int x = 0; x < kursViewModel.rooms.Count; x++)
             {
-                var roomlistobject = kursViewModel.Roomlist[x];
-                roomlistobject.ChosenRoom=Rooms.Find(r => r.Name.Equals(rooms[x]));
-                kursViewModel.Roomlist[x] = roomlistobject;
+                /*var roomlistobject = kursViewModel.Roomlist[x];
+                roomlistobject.ChosenRoom=Rooms.Find(r => r.Name.Equals(kursViewModel.rooms[x]));
+                kursViewModel.Roomlist[x] = roomlistobject;*/
             }
-            
-          
-            //kurs erstellen
-            
+            List<DateandRoom> datenandRooms=new List<DateandRoom>();
+            for (int x = 0; x < kursViewModel.rooms.Count; x++)
+            {
+                datenandRooms.Add(new DateandRoom
+                {
+                    block=Array.IndexOf(Data.BlockStartArray,datelist[x].ToString("HH:mm")),
+                    room = Rooms.Find(r => r.Name.Equals(kursViewModel.rooms[x])),
+                    weekday =(int) datelist[x].DayOfWeek
+                   
+                });
+            }
+
+
+            _databaseHandler.AddCourse(datenandRooms, kursViewModel.start, kursViewModel.end, kursViewModel.kursname,
+                _userManager.GetUserId(User));
 
 
 
-            return RedirectToAction("Reservation","Index");
+
+
+            return RedirectToAction("Index", "Reservation");
         }
 
 
@@ -122,8 +152,9 @@ namespace RaumplanungCore.Controllers
         public IActionResult Check(string startStop)
         {
             string[] splittedStrings = startStop.Split(';');
-            DateTime startDate = DateTime.Parse(splittedStrings[0]);
-            DateTime stopDate = DateTime.Parse(splittedStrings[1]);
+            string name = splittedStrings[0];
+            DateTime startDate = DateTime.Parse(splittedStrings[1]);
+            DateTime stopDate = DateTime.Parse(splittedStrings[2]);
 
             if (startDate > stopDate)
             {
@@ -134,6 +165,7 @@ namespace RaumplanungCore.Controllers
             {
                 KursViewModel result = new KursViewModel
                 {
+                    kursname = name,
                     start = startDate,
                     end = stopDate
                 };

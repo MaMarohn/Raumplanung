@@ -173,7 +173,7 @@ namespace Raumplanung.Database
                 {
                     int diff = (int)startDate.DayOfWeek - dayOfWeek;
                     dateStart = new DateTime(dateTimeStart.Year,
-                        dateTimeStart.Month, dateTimeStart.Day + diff);
+                        dateTimeStart.Month, dateTimeStart.Day - diff);
                 }
             }
 

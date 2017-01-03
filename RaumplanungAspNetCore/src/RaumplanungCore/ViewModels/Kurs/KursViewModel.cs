@@ -8,10 +8,12 @@ namespace RaumplanungCore.ViewModels.Kurs
 {
     public class KursViewModel
     {
+        public string kursname { get; set; }
         public DateTime start { get; set; }
         public DateTime end { get; set; }
         public List<string> Days { get; set; }
         public List<DayAndRooms> Roomlist { get; set; }
+        public List<string> rooms { get; set; }
     }
 
     public struct BlockandDay
@@ -36,4 +38,7 @@ namespace RaumplanungCore.ViewModels.Kurs
         public Room room { get; set; }
 
     }
+
+    
+
 }
