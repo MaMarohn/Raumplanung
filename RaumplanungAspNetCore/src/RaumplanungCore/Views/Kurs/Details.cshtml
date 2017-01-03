@@ -27,8 +27,8 @@
     @for (var i = 0; i < Model.AmountOfAll; i++)
     {
         <tr>
-            <td style="width: 100px"> @Data.DayStringsLong[Int32.Parse(Model.DayStrings[i])-1] </td>
-            <td style="width: 100px"> @(Model.BlockStrings[i]+1)</td>
+            <td style="width: 100px">  @Data.DayStringsLong[Int32.Parse(Model.DayStrings[i]) - 1] </td>
+            <td style="width: 80px"> @(Int32.Parse(Model.BlockStrings[i])+1)</td>
             <td style="width: 100px"> @Data.BlockStartArray[Int32.Parse(Model.BlockStrings[i])] Uhr </td>
             <td style="width: 100px"> @Model.RoomStrings[i] </td>
         </tr>
