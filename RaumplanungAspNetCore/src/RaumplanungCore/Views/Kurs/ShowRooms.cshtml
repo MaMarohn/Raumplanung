@@ -3,8 +3,10 @@
 *@
 @using System.Globalization
 @using System.Threading.Tasks
+@using Microsoft.AspNetCore.Http
 @using Raumplanung.Database
 @using RaumplanungCore.ViewModels.Kurs
+@using RaumplanungCore.ViewModels
 @model RaumplanungCore.ViewModels.Kurs.KursViewModel
 @{
 }
@@ -13,43 +15,36 @@
     <input type="hidden" asp-for="start" value="@Model.start"/>
     <input type="hidden" asp-for="end" value="@Model.end" />
     <input type="hidden" asp-for="Days" value="@Model.Days" />
-    <input type="hidden" asp-for="Roomlist" value="@Model.Roomlist" />
-</form>
+    <input type="hidden" asp-for="kursname" value="@Model.kursname"/>
+    
+    
+    <button type="submit">Tagauswahl annehmen</button>
+    <br/>
 @for (var x=0;x<Model.Roomlist.Count;x++)
 {
     
     List<Room> rooms = Model.Roomlist[x].Rooms;
-    <h3>@Model.Roomlist[x].Date.DayOfWeek</h3>
+    <label>@Data.DayStrings[(int) (Model.Roomlist[x].Date.DayOfWeek-1)] Block:@(Model.Roomlist[x].block+1)</label>
+    <select asp-for="rooms" class="form-control-static"  required>
+        
+        @foreach (var room in rooms)
+        {
+            <option value="@room.Name">@room.Name</option>
+        }
+    </select>
     <br/>
-    foreach (var room in rooms)
-    {
-        <div id="@(x+"_"+room.Name)"><a href="#" onclick="SelectRoom('@(x +"_"+ room.Name)'); return false;">@room.Name</a>
-</div> <br/>
-    }
 }
+    
+    
+    
+    
 
+</form>
 
 
 <script>
- 
-
-    function onLoad() {
-        for (var x = 0; x < @Model.Roomlist.Count; x++) {
-            var inputform=document.getElementById("inputform");
-            var input = document.createElement("input");
-            input.setAttribute("type", "hidden");
-            input.setAttribute("id", x + "");
-            input.setAttribute("name","Rooms");
-            inputform.appendChild(input);
-        }
-    }
-
-    function SelectRoom(divid) {
-        var id = divid.split("_")[0];
-        var room = divid.split("_")[1];
-        var input=document.getElementById(id);
-        input.setAttribute("value",room);
-
-    }
+  $(document).ready(function () {
+        $('select').removeAttr('multiple');
+    });
 
 </script>

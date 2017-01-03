@@ -10,15 +10,19 @@
 @{
     string date = Model.start.ToString("yyyy-MM-dd");
 }
+<h1> Neuen Kurs anlegen </h1>
 
+<p> Wählen Sie die Blöcke an den Tagen aus, an denen der Kurs stattfinden soll </p>
 <form asp-controller="Kurs" asp-action="ShowRooms" method="post">
     <input type="hidden" asp-for="start" value="@Model.start"/>
     <input type="hidden" asp-for="end" value="@Model.end" />
+    <input type="hidden" asp-for="kursname" value="@Model.kursname"/>
     <div id="inputform">
         
     </div>
     <button type="submit">Tage annehmen</button>
 </form>
+<button onclick="reset()">Zurücksetzen</button>
 
 
 
@@ -68,23 +72,24 @@
 
 
                                 form.appendChild(input);
-                                form.appendChild(document.createTextNode(start));
+                                
 
-                            } else {
-                                event.color = 'blue';
                             }
                             $('#calendar').fullCalendar('rerenderEvents');
                         }
 
+                        
+
                     });
             });
-
+        function reset() {
+            $("#calendar").fullCalendar('refetchEventSources', "/kurs/loadevents/");
+            document.getElementById("inputform").innerHTML = "";
+        }
 
     </script>
 }
-<h1> Neuen Kurs anlegen </h1>
 
-<p> Wählen Sie die Blöcke an den Tagen aus, an denen der Kurs stattfinden soll </p>
 <br/>
 <br />
 <div id="calendar" style="width: 55em" > </div>
