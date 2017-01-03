@@ -245,8 +245,9 @@ namespace DatabaseTest
             string tId = _reservationContext.Teachers.First().Id;
             int roomId = _reservationContext.Rooms.First().RoomId;
 
-            _databaseHandler.AddCourse(new DateTime(2017, 1, 1), new DateTime(2017, 1, 30), 0,
-                tId , roomId , "Informatik");
+            /*_databaseHandler.AddCourse(new DateTime(2017, 1, 1), new DateTime(2017, 1, 30), 0,
+                tId , roomId , "Informatik");*/
+            _databaseHandler.AddCourse(new DateTime(2017, 1, 1), new DateTime(2017, 1, 30),0,tId,roomId,"TestCourse",1);
             
             Assert.Equal(5 , _reservationContext.Reservations.Count());
 
@@ -260,10 +261,14 @@ namespace DatabaseTest
             _reservationContext.Teachers.Add(_testTeachers[0]);
             _reservationContext.SaveChanges();
 
+            BlockNrAndRoomAndWeekday d = new BlockNrAndRoomAndWeekday(0, _testRooms[0].RoomId, 1);
+            List<BlockNrAndRoomAndWeekday> liste = new List<BlockNrAndRoomAndWeekday>();
+            liste.Add(d);
+
             Course c = new Course
             {
-                Block = 1,
-                RoomId = _testRooms[0].RoomId,
+
+                BlockAndRoomAndWeekDay = liste,
                 TeacherId = _testTeachers[0].Id
             };
 
@@ -284,10 +289,13 @@ namespace DatabaseTest
             _reservationContext.Teachers.Add(_testTeachers[0]);
             _reservationContext.SaveChanges();
 
+            BlockNrAndRoomAndWeekday d = new BlockNrAndRoomAndWeekday(0, _testRooms[0].RoomId, 1);
+            List<BlockNrAndRoomAndWeekday> liste = new List<BlockNrAndRoomAndWeekday>();
+            liste.Add(d);
+
             Course c = new Course
             {
-                Block = 1,
-                RoomId = _testRooms[0].RoomId,
+                BlockAndRoomAndWeekDay = liste,
                 TeacherId = _testTeachers[0].Id
             };
             _reservationContext.Courses.Add(c);
@@ -304,10 +312,13 @@ namespace DatabaseTest
             _reservationContext.Teachers.Add(_testTeachers[0]);
             _reservationContext.SaveChanges();
 
+            BlockNrAndRoomAndWeekday d = new BlockNrAndRoomAndWeekday(0, _testRooms[0].RoomId, 1);
+            List<BlockNrAndRoomAndWeekday> liste = new List<BlockNrAndRoomAndWeekday>();
+            liste.Add(d);
+
             Course c = new Course
             {
-                Block = 1,
-                RoomId = _testRooms[0].RoomId,
+                BlockAndRoomAndWeekDay = liste,
                 TeacherId = _testTeachers[0].Id
             };
             _reservationContext.Courses.Add(c);
@@ -323,10 +334,13 @@ namespace DatabaseTest
             _reservationContext.Teachers.Add(_testTeachers[0]);
             _reservationContext.SaveChanges();
 
+            BlockNrAndRoomAndWeekday d = new BlockNrAndRoomAndWeekday(0, _testRooms[0].RoomId, 1);
+            List<BlockNrAndRoomAndWeekday> liste = new List<BlockNrAndRoomAndWeekday>();
+            liste.Add(d);
+
             Course c = new Course
             {
-                Block = 1,
-                RoomId = _testRooms[0].RoomId,
+                BlockAndRoomAndWeekDay = liste,
                 TeacherId = _testTeachers[0].Id
             };
             _reservationContext.Courses.Add(c);
@@ -459,6 +473,8 @@ namespace DatabaseTest
                 _reservationContext.Reservations.Remove(entity);
             foreach (var entity in _reservationContext.ExchangeReservations)
                 _reservationContext.ExchangeReservations.Remove(entity);
+            foreach (var entity in _reservationContext.BlockNrAndRoomAndWeekdays)
+                _reservationContext.BlockNrAndRoomAndWeekdays.Remove(entity);
             foreach (var entity in _reservationContext.Courses)
                 _reservationContext.Courses.Remove(entity);
 

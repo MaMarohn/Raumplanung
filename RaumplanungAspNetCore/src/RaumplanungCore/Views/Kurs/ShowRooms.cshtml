@@ -18,27 +18,31 @@
     <input type="hidden" asp-for="kursname" value="@Model.kursname"/>
     
     
-    <button type="submit">Tagauswahl annehmen</button>
+    <button id="submit" type="submit">Tagauswahl annehmen</button>
     <br/>
 @for (var x=0;x<Model.Roomlist.Count;x++)
 {
     
     List<Room> rooms = Model.Roomlist[x].Rooms;
     <label>@Data.DayStrings[(int) (Model.Roomlist[x].Date.DayOfWeek-1)] Block:@(Model.Roomlist[x].block+1)</label>
-    <select asp-for="rooms" class="form-control-static"  required>
-        
-        @foreach (var room in rooms)
-        {
-            <option value="@room.Name">@room.Name</option>
-        }
-    </select>
+    if (rooms.Count > 0)
+    {
+        <select asp-for="rooms" class="form-control-static" required>
+
+            @foreach (var room in rooms)
+            {
+                <option value="@room.Name">@room.Name</option>
+            }
+        </select>
+    }
+    else
+    {
+        <label>Keine Räume für diesen Block</label>
+
+    }
     <br/>
 }
     
-    
-    
-    
-
 </form>
 
 
@@ -47,4 +51,8 @@
         $('select').removeAttr('multiple');
     });
 
+
+  function unsubmit() {
+      document.getElementById.setAttribute("type", "hidden");
+  }
 </script>
