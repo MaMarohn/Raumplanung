@@ -203,7 +203,7 @@ namespace RaumplanungCore.Controllers
 
         public IActionResult FreeDates(int id)
         {
-            List<Reservation> reservations = _databaseHandler.GetAllReservationsFromCourse(id); // TODO: später: getReservationsFromCourse()
+            List<Reservation> reservations = _databaseHandler.GetAllReservationsFromCourse(id); 
             return View(reservations);
         }
 
@@ -215,7 +215,7 @@ namespace RaumplanungCore.Controllers
             string courseDays = course.GetWeekDayAsString();
 
             string[] blockSplitted = courseBlocks.Split(';');
-            string[] roomSplitted = courseRooms.Split(';');
+            string[] roomSplitted = getRoomNames(courseRooms);
             string[] daySplitted = courseDays.Split(';');
 
             if (blockSplitted.Length != roomSplitted.Length)
@@ -233,6 +233,19 @@ namespace RaumplanungCore.Controllers
             };
             
             return View(detail);
+        }
+
+        private string[] getRoomNames(string courseRooms)
+        {
+            string[] roomIdsSplitted = courseRooms.Split(';');
+            string[] result = new string[roomIdsSplitted.Length];
+            int index = 0;
+            foreach (var roomId in roomIdsSplitted)
+            {
+                result[index] =  _databaseHandler.GetRoom(Int32.Parse(roomId)).Name;
+                index++;
+            }
+            return result;
         }
 
     }

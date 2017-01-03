@@ -11,10 +11,10 @@
 
 <h1> Detaillierte Kursinformationen </h1>
 
-<p> Kursname: @Model.Course.Name </p>
-<p> Starttermin: @Model.Course.StartDate </p>
-<p> Endtermin: @Model.Course.EndDate </p>
 <br/>
+<p> Kursname: @Model.Course.Name </p>
+<p> Starttermin: @Model.Course.StartDate.ToString("dd.MM.yyyy") </p>
+<p> Endtermin: @Model.Course.EndDate.ToString("dd.MM.yyyy") </p>
 <br/>
 <p> Allgemeine Informationen </p>
 <table>
@@ -26,10 +26,12 @@
     </tr>
     @for (var i = 0; i < Model.AmountOfAll; i++)
     {
-        <tr> @Model.DayStrings[i] </tr>
-        <tr> @Model.BlockStrings[i] </tr>
-        <tr> @Data.BlockStartArray[Int32.Parse(Model.BlockStrings[i])] Uhr</tr>
-        <tr> @Model.RoomStrings[i]</tr>
+        <tr>
+            <td style="width: 100px"> @Data.DayStringsLong[Int32.Parse(Model.DayStrings[i])-1] </td>
+            <td style="width: 100px"> @(Model.BlockStrings[i]+1)</td>
+            <td style="width: 100px"> @Data.BlockStartArray[Int32.Parse(Model.BlockStrings[i])] Uhr </td>
+            <td style="width: 100px"> @Model.RoomStrings[i] </td>
+        </tr>
     }
 </table>
 

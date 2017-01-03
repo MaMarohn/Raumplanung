@@ -36,7 +36,7 @@ namespace RaumplanungCore.Controllers
         {
             string teacherId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
             List<Reservation> reservations = _databaseHandler.GetReservationsFromTeacher(teacherId);
-            List<Course> courses = _databaseHandler.GetAllCourses();
+            List<Course> courses = _databaseHandler.GetCoursesFromTeacher(teacherId);
             // Wieso nicht ????? _databaseHandler.GetCoursesFromTeacher(teacherId);
 
             int count;
