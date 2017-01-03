@@ -1,16 +1,50 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using System.Globalization
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Http
+@using Raumplanung.Database
+@using RaumplanungCore.ViewModels.Kurs
+@using RaumplanungCore.ViewModels
 @model RaumplanungCore.ViewModels.Kurs.KursViewModel
 @{
 }
-
-
-@foreach (var rooms in Model.Rooms)
+<h1>Wählen sie pro Tag einen Raum, indem dieser Kurs dann stattfinden wird.</h1>
+<form onload="onLoad" id="inputform" asp-controller="Kurs" asp-action="SubmitCourse">
+    <input type="hidden" asp-for="start" value="@Model.start"/>
+    <input type="hidden" asp-for="end" value="@Model.end" />
+    <input type="hidden" asp-for="Days" value="@Model.Days" />
+    <input type="hidden" asp-for="kursname" value="@Model.kursname"/>
+    
+    
+    <button type="submit">Tagauswahl annehmen</button>
+    <br/>
+@for (var x=0;x<Model.Roomlist.Count;x++)
 {
-    @Model.Rooms.BinarySearch(rooms) <br/>
-    foreach (var room in rooms)
-    {
-        @room.Name <br/>
-    }
+    
+    List<Room> rooms = Model.Roomlist[x].Rooms;
+    <label>@Data.DayStrings[(int) (Model.Roomlist[x].Date.DayOfWeek-1)] Block:@(Model.Roomlist[x].block+1)</label>
+    <select asp-for="rooms" class="form-control-static"  required>
+        
+        @foreach (var room in rooms)
+        {
+            <option value="@room.Name">@room.Name</option>
+        }
+    </select>
+    <br/>
 }
+    
+    
+    
+    
+
+</form>
+
+
+<script>
+  $(document).ready(function () {
+        $('select').removeAttr('multiple');
+    });
+
+</script>

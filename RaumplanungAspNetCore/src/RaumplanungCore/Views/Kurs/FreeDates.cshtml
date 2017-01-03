@@ -1,0 +1,26 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Termine freigeben";
+}
+@model IEnumerable<Reservation>
+
+<h1> Raumfreigabe </h1>
+<h4>Löschen Sie einzelne Reservierungen Ihres Kurses, um die Räume für andere zur Reservierung freizugeben</h4>
+
+<table>
+    <tr>
+        <th> Reservierungsdatum </th>
+        <th> Block </th>
+        <th> Löschen </th>
+    </tr>
+    @foreach (var reservation in Model)
+    {
+        <tr>
+            <td style="width: 175px"> @reservation.Date.Value.ToString("dd.MM.yyyy") </td>
+            <td style="width: 75px"> @(reservation.Block + 1) </td>
+            <td> <a asp-controller="Reservation" asp-action="Delete" asp-route-reservationId=@reservation.ReservationId> Löschen </a></td>
+        </tr>
+    }
+</table>

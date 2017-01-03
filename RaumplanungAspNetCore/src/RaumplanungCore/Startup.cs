@@ -36,7 +36,8 @@ namespace RaumplanungCore
            
             services.AddScoped<DatabaseHelperViewModel, DatabaseHelperViewModel>();
             services.AddScoped<DatabaseHandler,DatabaseHandler>();
-            
+            services.AddDistributedMemoryCache();
+            services.AddSession();
             
             
             services.AddEntityFramework()
@@ -95,6 +96,8 @@ namespace RaumplanungCore
 
             app.UseStaticFiles();
             app.UseIdentity();
+
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using RaumplanungCore.Models;
+using RaumplanungCore.ViewModels.Kurs;
 
 [assembly: InternalsVisibleTo("DatabaseTest")]
 namespace Raumplanung.Database
@@ -16,6 +17,7 @@ namespace Raumplanung.Database
         List<Reservation> GetReservationsFromTeacher(string teacherId);
         List<Reservation> GetReservationsFromRoom(int roomId);
         List<Reservation> GetReservationsOnDateInBlock(DateTime date, int blockNr);
+        List<Reservation> GetAllReservationsFromCourse(int courseId);
         
         bool DeleteReservation(int reservationId);
         bool AddReservation(DateTime date, int block, string teacherId, int roomId);
@@ -33,7 +35,8 @@ namespace Raumplanung.Database
         List<ExchangeReservation> GetExchangeReservationByTeacherFromId(string id);
         List<ExchangeReservation> GetExchangeReservationByTeacherToId(string id);
 
-        bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse);
+        bool AddCourse(List<DateandRoom> dateandRooms, DateTime startDate,DateTime endDate, string courseName, string teacherId);
+        bool AddCourse(DateTime startDate, DateTime endTime, int block, string teacherId, int room, string nameOfCourse , int dayOfWeek);
        // List<Course> GetCoursesOnDateInBlock(DateTime date, int blockId);
         List<Course> GetAllCourses();
         bool DeleteCourse(int id);
@@ -44,6 +47,6 @@ namespace Raumplanung.Database
         bool DeleteExchangeReservationByObject(ExchangeReservation exchangeReservation);
         //List<Course> GetAllCoursesInBlock(int blockNr);
         bool AddReservationSuggestion(string teacherFrom, int reservationFrom, string teacherTo, int reservationoffer, string message);
-
+        
     }
 }

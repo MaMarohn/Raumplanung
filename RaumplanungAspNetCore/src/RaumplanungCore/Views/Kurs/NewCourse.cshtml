@@ -17,6 +17,7 @@
         var selectable = true;
         var startSubmit;
         var stopSubmit;
+        
         $(document)
                     .ready(function() {
                         $('#calendar')
@@ -52,13 +53,13 @@
                             })
                     });
         function onSubmitClick() {
-            window.open("/kurs/check/" + startSubmit + ";" + stopSubmit, "_self");
+            window.open("/kurs/check/"+document.getElementById("name").value+";"+ startSubmit + ";" + stopSubmit, "_self");
         }
 
         function resetFields() {
             document.getElementById("startDate").innerHTML = "";
             document.getElementById("stopDate").innerHTML = "";
-            document.getElementById("stopDate").innerHTML = "";
+            document.getElementById("name").value = "";
             document.getElementById("info").innerHTML = "Wählen Sie ein Startdatum aus";
             selectable = true;
             trigger = false;
@@ -67,7 +68,8 @@
 }
 
 <h1> Neuen Kurs anlegen </h1>
-
+<label>Kursname:</label>
+<input id="name" type="text" />
 <br/>
 <p id="info"> Wählen Sie ein Startdatum aus </p>
 <p> Startdatum: <span id="startDate"></span> </p>

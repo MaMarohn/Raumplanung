@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Raumplanung.Database;
 using RaumplanungCore.Database;
 using RaumplanungCore.Models;
+using RaumplanungCore.Services;
 using RaumplanungCore.ViewModels;
 using RaumplanungCore.ViewModels.Kurs;
 
@@ -18,11 +21,13 @@ namespace RaumplanungCore.Controllers
     {
         private readonly DatabaseHandler _databaseHandler;
         private readonly ReservationContext _reservationContext;
+        private readonly UserManager<Teacher> _userManager;
         // GET: /<controller>/
-        public KursController(ReservationContext context)
+        public KursController(ReservationContext context,UserManager<Teacher> UserManager )
         {
             _reservationContext = context;
             _databaseHandler = new DatabaseHandler(context);
+            _userManager = UserManager;
         }
 
         public IActionResult Index()
@@ -38,56 +43,108 @@ namespace RaumplanungCore.Controllers
         [HttpPost]
         public IActionResult ShowRooms(KursViewModel kursViewModel)
         {
-            List<List<Room>> freeRoomsPerDay=new List<List<Room>>(); 
-            List<Room> Rooms = _databaseHandler.GetAllRooms();
-            for (int i = 0; i < kursViewModel.Days.Count; i++)
+            kursViewModel.Roomlist = new List<DayAndRooms>();
+           List<DateTime> datelist=new List<DateTime>();
+            List<Room> allRooms = _databaseHandler.GetAllRooms();
+                      
+            foreach (var day in kursViewModel.Days)
             {
-                
-                freeRoomsPerDay.Add(Rooms);//liste mit allen räumen füllen
+                DateTime dayformatted = DateTime.ParseExact(day, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
+                DayAndRooms dayAndRooms=new DayAndRooms()
+                {
+                    Date = dayformatted,
+                    Rooms = allRooms,
+                    block = Array.FindIndex(Data.BlockStartArray,s=>s.Equals(dayformatted.Hour+":"+dayformatted.Minute))+1
+                };
+                kursViewModel.Roomlist.Add(dayAndRooms);
+               
             }
+            
             DateTime dateStart = kursViewModel.start;
             DateTime dateEnd = kursViewModel.end;
             while (dateStart <= dateEnd)  //für den ganzen zeitraum
             {
-                foreach(BlockandDay day in kursViewModel.Days)  //für jede tag/block Komponente
+                for(var x=0; x<kursViewModel.Roomlist.Count;x++)  //für jede tag/block Komponente
                 {
+                    DayAndRooms day = kursViewModel.Roomlist[x];
                     DateTime date = new DateTime();
-                    if (dateStart.DayOfWeek <= day.Day.DayOfWeek)
+                    if (dateStart.DayOfWeek <= day.Date.DayOfWeek)
                     {
-                        date = dateStart.AddDays(day.Day.DayOfWeek - dateStart.DayOfWeek);
+                        if (!(dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek) > dateEnd))
+                        {
+                            date = dateStart.AddDays(day.Date.DayOfWeek - dateStart.DayOfWeek);
+                        }
+                        
                     }
                     else
                     {
-                        date = dateStart.AddDays(7-(dateStart.DayOfWeek - day.Day.DayOfWeek));
-                    }
-
-                    List<Room> availableRooms = _databaseHandler.GetFreeRoomsOnDateAndBlock(date, day.Block);
-
-                    int i = kursViewModel.Days.BinarySearch(day); //momentaner index
-                   
-                        List<Room> okayRooms=new List<Room>();
-                        foreach (var room in freeRoomsPerDay[i])  // jeder raum von den räumen des tages
+                        if (!(dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek))>dateEnd))
                         {
-                            if (availableRooms.Contains(room))   //wenn der raum in beiden existiert, wird er behalten
-                            {
-                                okayRooms.Add(room);
-                            }
+                            date = dateStart.AddDays(7 + (dateStart.DayOfWeek - day.Date.DayOfWeek));
                         }
-                        freeRoomsPerDay[i] = okayRooms;
-                    
+                       
+                    }
+                    List<Room> resultrooms=new List<Room>();
+                    List<Room> availableRooms = _databaseHandler.GetFreeRoomsOnDateAndBlock(date, day.block);
+                    resultrooms = availableRooms.Intersect(day.Rooms).ToList();
+
+                    var roomlistobject = kursViewModel.Roomlist[x];
+                    roomlistobject.Rooms = resultrooms;
+                    kursViewModel.Roomlist[x] = roomlistobject;
+
+
+
+
+
+                    //kursViewModel.Roomlist[x].Rooms.Clear();
+                    //kursViewModel.Roomlist[x].Rooms.AddRange(resultrooms);
+                    datelist.Add(kursViewModel.Roomlist[x].Date);
+
                 }
                
                 dateStart = dateStart.AddDays(7);
                
             }
-
-            kursViewModel.Rooms = freeRoomsPerDay;
             
 
-            return View(kursViewModel);
+            HttpContext.Session.SetObjectAsJson("datelist",datelist);
+            
+           return View(kursViewModel);
         }
 
+        [HttpPost]
+        public IActionResult SubmitCourse(KursViewModel kursViewModel)
+        {
+            List<Room> Rooms = _databaseHandler.GetAllRooms();
+            List<DateTime> datelist = HttpContext.Session.GetObjectFromJson<List<DateTime>>("datelist");
+            for (int x = 0; x < kursViewModel.rooms.Count; x++)
+            {
+                /*var roomlistobject = kursViewModel.Roomlist[x];
+                roomlistobject.ChosenRoom=Rooms.Find(r => r.Name.Equals(kursViewModel.rooms[x]));
+                kursViewModel.Roomlist[x] = roomlistobject;*/
+            }
+            List<DateandRoom> datenandRooms=new List<DateandRoom>();
+            for (int x = 0; x < kursViewModel.rooms.Count; x++)
+            {
+                datenandRooms.Add(new DateandRoom
+                {
+                    block=Array.IndexOf(Data.BlockStartArray,datelist[x].ToString("HH:mm")),
+                    room = Rooms.Find(r => r.Name.Equals(kursViewModel.rooms[x])),
+                    weekday =(int) datelist[x].DayOfWeek
+                   
+                });
+            }
 
+
+            _databaseHandler.AddCourse(datenandRooms, kursViewModel.start, kursViewModel.end, kursViewModel.kursname,
+                _userManager.GetUserId(User));
+
+
+
+
+
+            return RedirectToAction("Index", "Reservation");
+        }
 
 
 
@@ -95,8 +152,9 @@ namespace RaumplanungCore.Controllers
         public IActionResult Check(string startStop)
         {
             string[] splittedStrings = startStop.Split(';');
-            DateTime startDate = DateTime.Parse(splittedStrings[0]);
-            DateTime stopDate = DateTime.Parse(splittedStrings[1]);
+            string name = splittedStrings[0];
+            DateTime startDate = DateTime.Parse(splittedStrings[1]);
+            DateTime stopDate = DateTime.Parse(splittedStrings[2]);
 
             if (startDate > stopDate)
             {
@@ -107,6 +165,7 @@ namespace RaumplanungCore.Controllers
             {
                 KursViewModel result = new KursViewModel
                 {
+                    kursname = name,
                     start = startDate,
                     end = stopDate
                 };
@@ -140,6 +199,11 @@ namespace RaumplanungCore.Controllers
             return eventList;
         }
 
+        public IActionResult FreeDates(int id)
+        {
+            List<Reservation> reservations = _databaseHandler.GetAllReservationsFromCourse(id); // TODO: später: getReservationsFromCourse()
+            return View(reservations);
+        }
 
     }
 }
