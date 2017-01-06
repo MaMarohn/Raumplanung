@@ -67,11 +67,19 @@ namespace RaumplanungCore.Controllers
         }
 
 
+
         [HttpGet]
         public IActionResult DeleteCourse(int coursesid)
         {
             _databaseHandler.DeleteCourse(coursesid);
             return Index();
+        }
+
+        [HttpGet]
+        public IActionResult Detail(int reservationId)
+        {
+            ViewData["ReservationId"] = reservationId;
+            return View();
         }
 
         [HttpGet]
