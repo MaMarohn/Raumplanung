@@ -400,9 +400,11 @@ namespace Raumplanung.Database
 
             //Es wird getauscht
             reservationFrom.TeacherId = pTeacherTo;
+            reservationFrom.CourseId = null;
             if (pReservationTo != -1)
             {
                 reservationTo.TeacherId = pTeacherFrom;
+                reservationTo.CourseId = null;
                 _reservationContext.Entry(reservationTo).State = EntityState.Modified;
             }
            _reservationContext.Entry(reservationFrom).State = EntityState.Modified;           
